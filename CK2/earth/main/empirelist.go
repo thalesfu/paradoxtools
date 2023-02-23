@@ -1,15 +1,16 @@
-package feud
+package main
 
 import (
 	"fmt"
 	"github.com/thalesfu/paradoxtools/CK2/ck2utils"
 	"github.com/thalesfu/paradoxtools/CK2/config"
+	"github.com/thalesfu/paradoxtools/CK2/feud"
 	"github.com/thalesfu/paradoxtools/CK2/history/province"
 	"github.com/thalesfu/paradoxtools/CK2/translations"
 	"github.com/thalesfu/paradoxtools/segments"
 )
 
-var AllEmpires = map[string]Empire{}
+var AllEmpires = map[string]feud.Empire{}
 
 func init() {
 	segments := segments.LoadSegments(config.LandedTitleFile)
@@ -26,8 +27,8 @@ func tryAppendEmpire(segment *segments.Segment) {
 	}
 }
 
-func generateEmpire(segment *segments.Segment) Empire {
-	empire := &BaseEmpire{}
+func generateEmpire(segment *segments.Segment) feud.Empire {
+	empire := &feud.BaseEmpire{}
 	empire.TitleCode = segment.Name
 	empire.Title = ck2utils.GetFeudName(segment.Name)
 	empire.TitleName = translations.GetFeudName(segment.Name)
@@ -38,17 +39,17 @@ func generateEmpire(segment *segments.Segment) Empire {
 	return empire
 }
 
-func tryAppendKingdom(e *BaseEmpire, segment *segments.Segment) {
+func tryAppendKingdom(e *feud.BaseEmpire, segment *segments.Segment) {
 	if ck2utils.IsKingdomSegment(segment) {
 		if e.Kingdoms == nil {
-			e.Kingdoms = make(map[string]Kingdom)
+			e.Kingdoms = make(map[string]feud.Kingdom)
 		}
 		e.Kingdoms[segment.Name] = generateKingdom(e, segment)
 	}
 }
 
-func generateKingdom(e *BaseEmpire, segment *segments.Segment) Kingdom {
-	kingdom := &BaseKingdom{}
+func generateKingdom(e *feud.BaseEmpire, segment *segments.Segment) feud.Kingdom {
+	kingdom := &feud.BaseKingdom{}
 	kingdom.TitleCode = segment.Name
 	kingdom.Title = ck2utils.GetFeudName(segment.Name)
 	kingdom.TitleName = translations.GetFeudName(segment.Name)
@@ -60,17 +61,17 @@ func generateKingdom(e *BaseEmpire, segment *segments.Segment) Kingdom {
 	return kingdom
 }
 
-func tryAppendDuke(k *BaseKingdom, segment *segments.Segment) {
+func tryAppendDuke(k *feud.BaseKingdom, segment *segments.Segment) {
 	if ck2utils.IsDukeSegment(segment) {
 		if k.Dukes == nil {
-			k.Dukes = make(map[string]Duke)
+			k.Dukes = make(map[string]feud.Duke)
 		}
 		k.Dukes[segment.Name] = generateDuke(k, segment)
 	}
 }
 
-func generateDuke(k *BaseKingdom, segment *segments.Segment) Duke {
-	duke := &BaseDuke{}
+func generateDuke(k *feud.BaseKingdom, segment *segments.Segment) feud.Duke {
+	duke := &feud.BaseDuke{}
 	duke.TitleCode = segment.Name
 	duke.Title = ck2utils.GetFeudName(segment.Name)
 	duke.TitleName = translations.GetFeudName(segment.Name)
@@ -82,17 +83,17 @@ func generateDuke(k *BaseKingdom, segment *segments.Segment) Duke {
 	return duke
 }
 
-func tryAppendCounty(d *BaseDuke, segment *segments.Segment) {
+func tryAppendCounty(d *feud.BaseDuke, segment *segments.Segment) {
 	if ck2utils.IsCountySegment(segment) {
 		if d.Counties == nil {
-			d.Counties = make(map[string]County)
+			d.Counties = make(map[string]feud.County)
 		}
 		d.Counties[segment.Name] = generateCounty(d, segment)
 	}
 }
 
-func generateCounty(d *BaseDuke, segment *segments.Segment) County {
-	county := &BaseCounty{}
+func generateCounty(d *feud.BaseDuke, segment *segments.Segment) feud.County {
+	county := &feud.BaseCounty{}
 	county.TitleCode = segment.Name
 	county.Title = ck2utils.GetFeudName(segment.Name)
 	county.TitleName = translations.GetFeudName(county.TitleCode)
@@ -112,17 +113,17 @@ func generateCounty(d *BaseDuke, segment *segments.Segment) County {
 	return county
 }
 
-func tryAppendBarony(c *BaseCounty, segment *segments.Segment) {
+func tryAppendBarony(c *feud.BaseCounty, segment *segments.Segment) {
 	if ck2utils.IsBaronySegment(segment) {
 		if c.Baronies == nil {
-			c.Baronies = make(map[string]Barony)
+			c.Baronies = make(map[string]feud.Barony)
 		}
 		c.Baronies[segment.Name] = generateBarony(c, segment)
 	}
 }
 
-func generateBarony(c *BaseCounty, segment *segments.Segment) Barony {
-	barony := &BaseBarony{}
+func generateBarony(c *feud.BaseCounty, segment *segments.Segment) feud.Barony {
+	barony := &feud.BaseBarony{}
 	barony.TitleCode = segment.Name
 	barony.Title = ck2utils.GetFeudName(segment.Name)
 	barony.TitleName = translations.GetFeudName(segment.Name)

@@ -12,9 +12,9 @@ var earthFolder = "../CK2Commands/earth"
 var wg sync.WaitGroup
 
 func main() {
-	CreateEarthFile(feud.AllEmpires)
+	CreateEarthFile(AllEmpires)
 
-	for _, empire := range feud.AllEmpires {
+	for _, empire := range AllEmpires {
 		wg.Add(1)
 		go CreateEmpireFile(empire)
 	}
