@@ -1,0 +1,12 @@
+package earth
+
+import (
+{{- range $k, $v := .}}
+	"github.com/thalesfu/CK2Commands/earth/{{$v.GetTitle}}"
+{{- end}}
+)
+var (
+{{- range $k, $v := .}}
+    {{FirstUpper $v.GetTitle}}{{$v.GetTitleName}} = {{$v.GetTitle}}.E{{FirstUpper $v.GetTitle}}{{$v.GetTitleName}}
+{{- end}}
+)

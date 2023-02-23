@@ -1,0 +1,20 @@
+package {{.GetParent.GetTitle}}
+
+import (
+	"github.com/thalesfu/paradoxtools/CK2/feud"
+)
+
+type {{.GetTitleName}}{{FirstUpper .GetTitle}}Barony struct {
+	feud.BaseBarony
+}
+
+var B{{FirstUpper .GetTitle}}{{.GetTitleName}} feud.Barony = &{{.GetTitleName}}{{FirstUpper .GetTitle}}Barony{}
+
+func init() {
+    f := B{{FirstUpper .GetTitle}}{{.GetTitleName}}.(*{{.GetTitleName}}{{FirstUpper .GetTitle}}Barony)
+	f.BaseBarony = feud.BaseBarony{
+		Title:     "{{.GetTitle}}",
+		TitleName: "{{.GetTitleName}}",
+		TitleCode: "{{.GetTitleCode}}",
+	}
+}

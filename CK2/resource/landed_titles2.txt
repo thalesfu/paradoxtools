@@ -1,0 +1,42 @@
+d_sunni = {
+	allow = {
+		conditional_tooltip = {
+			trigger = {
+				NOT = {
+					has_alternate_start_parameter = { key = religion_names value = random }
+				}
+			}
+		}
+	}
+
+	caliphate = yes
+
+	coat_of_arms=
+	{
+		data=
+		{
+			0 0 0 3 0 2 2
+		}
+		religion=sunni
+	}
+}
+
+e_cordoba = {
+	color={ 255 218 185 }
+	color2={ 255 255 255 }
+
+	capital = 181 # Cordoba
+
+	title = "CALIPH"
+	title_female = "CALIPHA"
+	foa = "CALIPH_FOA"
+	#short_name = yes
+
+	religion = sunni
+
+	allow = {
+		always = no
+	}
+
+	caliphate = yes
+}

@@ -1,0 +1,48 @@
+package {{.GetTitle}}
+
+import (
+	"github.com/thalesfu/paradoxtools/CK2/feud"
+)
+
+type {{ FirstUpper .GetTitle}}County interface {
+    feud.County
+{{- with .GetChildren}}
+    {{- range $k, $v := .}}
+    B{{FirstUpper $v.GetTitle}}{{$v.GetTitleName}}() {{"\t"}}feud.Barony
+    {{- end}}
+{{- end}}
+}
+
+type {{.GetTitleName}}{{FirstUpper .GetTitle}}County struct {
+	feud.BaseCounty
+{{- with .GetChildren}}
+	{{- range $k, $v := .}}
+	{{$v.GetTitleName}}{{FirstUpper $v.GetTitle}} {{"\t"}}feud.Barony
+	{{- end}}
+{{- end}}
+}
+{{with .GetChildren}}
+    {{- range $k, $v := .}}
+func (c *{{$v.Parent.GetTitleName}}{{FirstUpper $v.Parent.GetTitle}}County) B{{FirstUpper $v.GetTitle}}{{$v.GetTitleName}}() feud.Barony {
+	return c.{{$v.GetTitleName}}{{FirstUpper $v.GetTitle}}
+}
+    {{end}}
+{{- end}}
+var C{{FirstUpper .GetTitle}}{{.GetTitleName}} {{ FirstUpper .GetTitle }}County = &{{.GetTitleName}}{{FirstUpper .GetTitle}}County{}
+
+func init() {
+	f := C{{FirstUpper .GetTitle}}{{.GetTitleName}}.(*{{.GetTitleName}}{{FirstUpper .GetTitle}}County)
+	f.BaseCounty = feud.BaseCounty{
+		ID:        "{{.GetID}}",
+		Title:     "{{.GetTitle}}",
+		TitleName: "{{.GetTitleName}}",
+		TitleCode: "{{.GetTitleCode}}",
+		Baronies:  map[string]feud.Barony{},
+	}
+{{with .GetChildren}}
+	{{- range $k, $v := .}}
+	f.{{$v.GetTitleName}}{{FirstUpper $v.GetTitle}} = B{{FirstUpper $v.GetTitle}}{{$v.GetTitleName}}
+	f.{{$v.GetTitleName}}{{FirstUpper $v.GetTitle}}.SetParent(f)
+	{{end}}
+{{- end}}
+}

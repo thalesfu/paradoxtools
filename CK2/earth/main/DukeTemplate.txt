@@ -1,0 +1,52 @@
+package {{.GetTitle}}
+
+import (
+{{- with .GetChildren}}
+	{{- range $k, $v := .}}
+	"github.com/thalesfu/CK2Commands/earth/{{$v.Parent.GetParent.GetParent.GetTitle}}/{{$v.Parent.GetParent.GetTitle}}/{{$v.Parent.GetTitle}}/{{$v.GetTitle}}"
+	{{- end}}
+{{- end}}
+	"github.com/thalesfu/paradoxtools/CK2/feud"
+)
+
+type {{ FirstUpper .GetTitle }}Duke interface {
+    feud.Duke
+{{- with .GetChildren}}
+    {{- range $k, $v := .}}
+    C{{FirstUpper $v.GetTitle}}{{$v.GetTitleName}}() {{"\t"}}{{$v.GetTitle}}.{{FirstUpper $v.GetTitle}}County
+    {{- end}}
+{{- end}}
+}
+
+type {{.GetTitleName}}{{FirstUpper .GetTitle}}Duke struct {
+	feud.BaseDuke
+{{- with .GetChildren}}
+	{{- range $k, $v := .}}
+	{{$v.GetTitleName}}{{FirstUpper $v.GetTitle}} {{"\t"}}{{$v.GetTitle}}.{{FirstUpper $v.GetTitle}}County
+	{{- end}}
+{{- end}}
+}
+{{with .GetChildren}}
+    {{- range $k, $v := .}}
+func (d *{{$v.Parent.GetTitleName}}{{FirstUpper $v.Parent.GetTitle}}Duke) C{{FirstUpper $v.GetTitle}}{{$v.GetTitleName}}() {{$v.GetTitle}}.{{FirstUpper $v.GetTitle}}County {
+	return d.{{$v.GetTitleName}}{{FirstUpper $v.GetTitle}}
+}
+    {{end}}
+{{- end}}
+var D{{FirstUpper .GetTitle}}{{.GetTitleName}} {{FirstUpper .GetTitle}}Duke = &{{.GetTitleName}}{{FirstUpper .GetTitle}}Duke{}
+
+func init() {
+	f := D{{FirstUpper .GetTitle}}{{.GetTitleName}}.(*{{.GetTitleName}}{{FirstUpper .GetTitle}}Duke)
+	f.BaseDuke = feud.BaseDuke{
+		Title:     "{{.GetTitle}}",
+		TitleName: "{{.GetTitleName}}",
+		TitleCode: "{{.GetTitleCode}}",
+		Counties:  map[string]feud.County{},
+	}
+{{with .GetChildren}}
+	{{- range $k, $v := .}}
+	f.{{$v.GetTitleName}}{{FirstUpper $v.GetTitle}} = {{$v.GetTitle}}.C{{FirstUpper $v.GetTitle}}{{$v.GetTitleName}}
+	f.{{$v.GetTitleName}}{{FirstUpper $v.GetTitle}}.SetParent(f)
+	{{end}}
+{{- end}}
+}
