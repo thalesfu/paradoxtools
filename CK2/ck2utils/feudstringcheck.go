@@ -1,19 +1,22 @@
 package ck2utils
 
-import "regexp"
+import (
+	"github.com/thalesfu/paradoxtools/utils"
+	"regexp"
+)
 
-var rxEmpire = regexp.MustCompile(`^(e_)([a-z]+)$`)
-var rxKingdom = regexp.MustCompile(`^(k_)([a-z]+)$`)
-var rxDuke = regexp.MustCompile(`^(d_)([a-z]+)$`)
-var rxCount = regexp.MustCompile(`^(c_)([a-z]+)$`)
-var rxBaron = regexp.MustCompile(`^(b_)([a-z]+)$`)
-var rxFeud = regexp.MustCompile(`^([ekdcb]_)([a-z]+)$`)
-var rxEmpireAdj = regexp.MustCompile(`^(e_)([a-z]+)_adj$`)
-var rxKingdomAdj = regexp.MustCompile(`^(k_)([a-z]+)_adj$`)
-var rxDukeAdj = regexp.MustCompile(`^(d_)([a-z]+)_adj$`)
-var rxCountAdj = regexp.MustCompile(`^(c_)([a-z]+)_adj$`)
-var rxBaronAdj = regexp.MustCompile(`^(b_)([a-z]+)_adj$`)
-var rxFeudAdj = regexp.MustCompile(`^([ekdcb]_)([a-z]+)_adj$`)
+var rxEmpire = regexp.MustCompile(`^(e_)([a-z_\.\-—]+)$`)
+var rxKingdom = regexp.MustCompile(`^(k_)([a-z_\.\-—]+)$`)
+var rxDuke = regexp.MustCompile(`^(d_)([a-z_\.\-—]+)$`)
+var rxCount = regexp.MustCompile(`^(c_)([a-z_\.\-—]+)$`)
+var rxBaron = regexp.MustCompile(`^(b_)([a-z_\.\-—]+)$`)
+var rxFeud = regexp.MustCompile(`^([ekdcb]_)([a-z_\.\-—]+)$`)
+var rxEmpireAdj = regexp.MustCompile(`^(e_)([a-z_\.\-—]+)_adj$`)
+var rxKingdomAdj = regexp.MustCompile(`^(k_)([a-z_\.\-—]+)_adj$`)
+var rxDukeAdj = regexp.MustCompile(`^(d_)([a-z_\.\-—]+)_adj$`)
+var rxCountAdj = regexp.MustCompile(`^(c_)([a-z_\.\-—]+)_adj$`)
+var rxBaronAdj = regexp.MustCompile(`^(b_)([a-z_\.\-—]+)_adj$`)
+var rxFeudAdj = regexp.MustCompile(`^([ekdcb]_)([a-z_\.\-—]+)_adj$`)
 
 func IsEmpireString(s string) bool {
 	return rxEmpire.MatchString(s)
@@ -66,7 +69,7 @@ func IsFeudAdjString(s string) bool {
 func GetFeudName(s string) string {
 	matchString := rxFeud.MatchString(s)
 	if matchString {
-		return rxFeud.FindStringSubmatch(s)[2]
+		return utils.ReplaceSpecialChars(rxFeud.FindStringSubmatch(s)[2])
 	}
 
 	return ""

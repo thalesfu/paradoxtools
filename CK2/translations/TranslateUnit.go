@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/thalesfu/paradoxtools/CK2/ck2utils"
 	"github.com/thalesfu/paradoxtools/CK2/config"
+	"github.com/thalesfu/paradoxtools/utils"
 	"os"
 	"path/filepath"
 	"strings"
@@ -70,21 +71,13 @@ func init() {
 
 func GetFeudName(name string) string {
 	if u, ok := FeudTranslations[name]; ok {
-		return ReplaceSpecialChars(u.Translation)
+		return utils.ReplaceSpecialChars(u.Translation)
 	}
 
 	if u, ok := FeudAdjTranslations[name+"_adj"]; ok {
-		return ReplaceSpecialChars(u.Translation)
+		return utils.ReplaceSpecialChars(u.Translation)
 	}
 
 	fmt.Println("No translation for", name)
 	return name
-}
-
-func ReplaceSpecialChars(name string) string {
-	result := strings.ReplaceAll(name, " ", "")
-	result = strings.ReplaceAll(result, "\uE000", "")
-	result = strings.ReplaceAll(result, "-", "_")
-
-	return result
 }
