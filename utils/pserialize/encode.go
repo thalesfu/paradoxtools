@@ -59,7 +59,7 @@ import (
 //
 // The "omitempty" option specifies that the field should be omitted
 // from the encoding if the field has an empty value, defined as
-// false, 0, a nil pointer, a nil interface value, and any empty array,
+// false, 0, a nil pointer, a nil interface value, and any empty list,
 // slice, map, or string.
 //
 // As a special case, if the field tag is "-", the field is always omitted.
@@ -1174,8 +1174,28 @@ type field struct {
 	typ       reflect.Type
 	omitEmpty bool
 	quoted    bool
+	list      bool
+	fieldList bool
+	mapValue  bool
+	mapName   string
 
 	encoder encoderFunc
+}
+
+func (f field) IsList() bool {
+	return f.list
+}
+
+func (f field) IsFieldList() bool {
+	return f.fieldList
+}
+
+func (f field) IsMapValue() bool {
+	return f.mapValue
+}
+
+func (f field) MapName() string {
+	return f.mapName
 }
 
 // byIndex sorts field by index sequence.
@@ -1245,7 +1265,7 @@ func typeFields(t reflect.Type) structFields {
 					// Ignore unexported non-embedded fields.
 					continue
 				}
-				tag := sf.Tag.Get("json")
+				tag := sf.Tag.Get("paradox_field")
 				if tag == "-" {
 					continue
 				}
@@ -1289,6 +1309,10 @@ func typeFields(t reflect.Type) structFields {
 						typ:       ft,
 						omitEmpty: opts.Contains("omitempty"),
 						quoted:    quoted,
+						list:      sf.Tag.Get("paradox_type") == "list",
+						fieldList: sf.Tag.Get("paradox_type") == "field_list",
+						mapValue:  sf.Tag.Get("paradox_type") == "map_value",
+						mapName:   sf.Tag.Get("paradox_map_name"),
 					}
 					field.nameBytes = []byte(field.name)
 					field.equalFold = foldFunc(field.nameBytes)

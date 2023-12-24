@@ -66,7 +66,7 @@ func newline(dst *bytes.Buffer, prefix, indent string, depth int) {
 }
 
 // Indent appends to dst an indented form of the JSON-encoded src.
-// Each element in a JSON object or array begins on a new,
+// Each element in a JSON object or list begins on a new,
 // indented line beginning with prefix followed by one or more
 // copies of indent according to the indentation nesting.
 // The data appended to dst does not begin with the prefix nor
@@ -107,7 +107,7 @@ func Indent(dst *bytes.Buffer, src []byte, prefix, indent string) error {
 		// Add spacing around real punctuation.
 		switch c {
 		case '{', '[':
-			// delay indent so that empty object and array are formatted as {} and [].
+			// delay indent so that empty object and list are formatted as {} and [].
 			needIndent = true
 			dst.WriteByte(c)
 
@@ -121,7 +121,7 @@ func Indent(dst *bytes.Buffer, src []byte, prefix, indent string) error {
 
 		case '}', ']':
 			if needIndent {
-				// suppress indent in empty object/array
+				// suppress indent in empty object/list
 				needIndent = false
 			} else {
 				depth--

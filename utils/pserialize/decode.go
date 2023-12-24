@@ -1,16 +1,16 @@
 package pserialize
 
 import (
+	"bufio"
 	"encoding"
 	"encoding/base64"
+	"errors"
 	"fmt"
+	"github.com/thalesfu/paradoxtools/utils"
 	"log"
 	"reflect"
 	"strconv"
 	"strings"
-	"unicode"
-	"unicode/utf16"
-	"unicode/utf8"
 )
 
 func UnmarshalP[T any](content string) (t *T, ok bool) {
@@ -18,15 +18,53 @@ func UnmarshalP[T any](content string) (t *T, ok bool) {
 
 	if needRemove(firstLine) {
 		content = content[firstLinePosition:]
+
+		last := strings.LastIndex(content, "}")
+		content = "{\n" + content[:last+1]
 	}
 
-	last := strings.LastIndex(content, "}")
-	content = content[:last]
+	logPosition := 0
+	var writer *bufio.Writer
+	if logPosition > 0 {
+		line := 1
+		logWriter, deferFunc := utils.CreateLogWriter("punmarshal")
+		writer = logWriter
+		defer deferFunc()
+
+		for i, c := range []byte(content) {
+			writer.WriteByte(c)
+			if c == '\n' {
+				line++
+				if err := writer.Flush(); err != nil {
+					log.Fatal(err)
+				}
+			}
+
+			if i == logPosition {
+				endMessage := "\t<-- " + "at " + strconv.Itoa(i) + " line:" + strconv.Itoa(line) + " "
+				_, err := writer.WriteString(endMessage)
+				if err != nil {
+					log.Fatal(err)
+				}
+				if err := writer.Flush(); err != nil {
+					log.Fatal(err)
+				}
+				break
+			}
+		}
+	}
 
 	err := Unmarshal([]byte(content), &t)
 	if err != nil {
-		log.Printf("解析%T类型P设文件失败\nerror:\n%s", t, err)
-		return nil, false
+		switch e := err.(type) {
+		case *UnmarshalTypeError:
+			log.Printf("解析%T类型P设文件失败 at %d error:\n%s", t, e.Offset, e.Error())
+			return nil, false
+		default:
+			log.Printf("解析%T类型P设文件失败 error:\n%s", t, e.Error())
+			return nil, false
+		}
+
 	}
 
 	return t, true
@@ -104,17 +142,17 @@ func needRemove(line string) bool {
 //	map[string]interface{}, for JSON objects
 //	nil for JSON null
 //
-// To unmarshal a JSON array into a slice, Unmarshal resets the slice length
+// To unmarshal a JSON list into a slice, Unmarshal resets the slice length
 // to zero and then appends each element to the slice.
-// As a special case, to unmarshal an empty JSON array into a slice,
+// As a special case, to unmarshal an empty JSON list into a slice,
 // Unmarshal replaces the slice with a new empty slice.
 //
-// To unmarshal a JSON array into a Go array, Unmarshal decodes
-// JSON array elements into corresponding Go array elements.
-// If the Go array is smaller than the JSON array,
-// the additional JSON array elements are discarded.
-// If the JSON array is smaller than the Go array,
-// the additional Go array elements are set to zero values.
+// To unmarshal a JSON list into a Go list, Unmarshal decodes
+// JSON list elements into corresponding Go list elements.
+// If the Go list is smaller than the JSON list,
+// the additional JSON list elements are discarded.
+// If the JSON list is smaller than the Go list,
+// the additional Go list elements are set to zero values.
 //
 // To unmarshal a JSON object into a map, Unmarshal first establishes a map to
 // use. If the map is nil, Unmarshal allocates a new map. Otherwise Unmarshal
@@ -165,13 +203,13 @@ func Unmarshal(data []byte, v any) error {
 // By convention, to approximate the behavior of Unmarshal itself,
 // Unmarshalers implement UnmarshalJSON([]byte("null")) as a no-op.
 type Unmarshaler interface {
-	UnmarshalJSON([]byte) error
+	UnmarshalP([]byte) error
 }
 
 // An UnmarshalTypeError describes a JSON value that was
 // not appropriate for a value of a specific Go type.
 type UnmarshalTypeError struct {
-	Value  string       // description of JSON value - "bool", "array", "number -5"
+	Value  string       // description of JSON value - "bool", "list", "number -5"
 	Type   reflect.Type // type of Go value it could not be assigned to
 	Offset int64        // error occurred after reading Offset bytes
 	Struct string       // name of the struct type containing the field
@@ -183,20 +221,6 @@ func (e *UnmarshalTypeError) Error() string {
 		return "json: cannot unmarshal " + e.Value + " into Go struct field " + e.Struct + "." + e.Field + " of type " + e.Type.String()
 	}
 	return "json: cannot unmarshal " + e.Value + " into Go value of type " + e.Type.String()
-}
-
-// An UnmarshalFieldError describes a JSON object key that
-// led to an unexported (and therefore unwritable) struct field.
-//
-// Deprecated: No longer used; kept for compatibility.
-type UnmarshalFieldError struct {
-	Key   string
-	Type  reflect.Type
-	Field reflect.StructField
-}
-
-func (e *UnmarshalFieldError) Error() string {
-	return "json: cannot unmarshal object key " + strconv.Quote(e.Key) + " into unexported field " + e.Field.Name + " of type " + e.Type.String()
 }
 
 // An InvalidUnmarshalError describes an invalid argument passed to Unmarshal.
@@ -217,6 +241,7 @@ func (e *InvalidUnmarshalError) Error() string {
 }
 
 func (d *decodeState) unmarshal(v any) error {
+	d.target = v
 	rv := reflect.ValueOf(v)
 	if rv.Kind() != reflect.Pointer || rv.IsNil() {
 		return &InvalidUnmarshalError{reflect.TypeOf(v)}
@@ -230,7 +255,20 @@ func (d *decodeState) unmarshal(v any) error {
 	if err != nil {
 		return d.addErrorContext(err)
 	}
-	return d.savedError
+
+	if d.savedError != nil {
+		return d.savedError
+	}
+
+	for _, f := range d.afterFunctions {
+		err := f()
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // A Number represents a JSON number literal.
@@ -265,6 +303,8 @@ type decodeState struct {
 	savedError            error
 	useNumber             bool
 	disallowUnknownFields bool
+	target                any
+	afterFunctions        []func() error
 }
 
 // readIndex returns the position of the last byte read.
@@ -375,21 +415,16 @@ Switch:
 				break Switch
 			}
 		}
-	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-': // number
+	case 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+		'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-':
 		for ; i < len(data); i++ {
-			switch data[i] {
-			case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-				'.', 'e', 'E', '+', '-':
-			default:
+			c := data[i]
+			if '0' <= c && c <= '9' || 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || c == '_' || c == '.' || c == '-' {
+			} else {
 				break Switch
 			}
 		}
-	case 't': // true
-		i += len("rue")
-	case 'f': // false
-		i += len("alse")
-	case 'n': // null
-		i += len("ull")
 	}
 	if i < len(data) {
 		d.opcode = stateEndValue(&d.scan, data[i])
@@ -397,6 +432,208 @@ Switch:
 		d.opcode = scanEnd
 	}
 	d.off = i + 1
+}
+
+func (d *decodeState) mapValueValue(v reflect.Value, f *field) error {
+	if v.IsValid() {
+		// Check for unmarshaler.
+		u, ut, pv := indirect(v, false)
+		if u != nil {
+			start := d.readIndex()
+			d.skip()
+			return u.UnmarshalP(d.data[start:d.off])
+		}
+		if ut != nil {
+			d.saveError(&UnmarshalTypeError{Value: "map_value", Type: v.Type(), Offset: int64(d.off)})
+			d.skip()
+			return nil
+		}
+		v = pv
+
+		c := d.data[d.off-1]
+
+		if isSpace(c) {
+			d.scanWhile(scanSkipSpace)
+			c = d.data[d.off]
+		}
+
+		if c == '{' {
+			if err := d.value(v); err != nil {
+				return err
+			}
+		} else {
+			start := d.readIndex()
+			d.rescanLiteral()
+
+			name := string(d.data[start:d.readIndex()])
+			d.afterFunctions = append(d.afterFunctions, func() error {
+				m, ok := findFieldMapValue(d.target, f.mapName)
+
+				if ok {
+					key := m.Type().Key()
+
+					kv := reflect.ValueOf(name).Convert(key)
+
+					mv := m.MapIndex(kv)
+
+					if mv.IsNil() {
+						return errors.New("not found map value " + string(name) + " in " + f.mapName)
+					}
+
+					_, _, rmv := indirect(mv, false)
+					v.Set(rmv)
+
+					return nil
+				}
+
+				return errors.New("not found map " + f.mapName)
+			})
+		}
+	} else {
+		d.skip()
+	}
+	d.scanNext()
+
+	return nil
+}
+
+func findFieldMapValue(value any, path string) (reflect.Value, bool) {
+	_, _, v := indirect(reflect.ValueOf(value), false)
+
+	for i := 0; i < v.NumField(); i++ {
+		f := v.Field(i)
+		t := v.Type().Field(i)
+		fieldName := t.Tag.Get("paradox_field")
+		if fieldName == path {
+			return f, true
+		}
+	}
+
+	return reflect.Value{}, false
+}
+
+func (d *decodeState) fieldListValue(v reflect.Value) error {
+
+	if v.IsValid() {
+		// Check for unmarshaler.
+		u, ut, pv := indirect(v, false)
+		if u != nil {
+			start := d.readIndex()
+			d.skip()
+			return u.UnmarshalP(d.data[start:d.off])
+		}
+		if ut != nil {
+			d.saveError(&UnmarshalTypeError{Value: "field_list", Type: v.Type(), Offset: int64(d.off)})
+			d.skip()
+			return nil
+		}
+		v = pv
+
+		c := d.data[d.off-1]
+
+		if isSpace(c) {
+			d.scanWhile(scanSkipSpace)
+			c = d.data[d.off]
+		}
+
+		if c != '{' {
+			v.Set(reflect.MakeSlice(v.Type(), 1, 4))
+
+			start := d.readIndex()
+			d.rescanLiteral()
+
+			if err := d.literalStore(d.data[start:d.readIndex()], v.Index(v.Len()-1), false); err != nil {
+				return err
+			}
+		} else {
+
+			i := 0
+			for {
+				// Look ahead for ] - can only happen on first iteration.
+				d.scanWhile(scanSkipSpace)
+				if d.opcode == scanEndObject {
+					break
+				}
+
+				d.opcode = scanBeginArray
+
+				if v.IsNil() {
+					v.Set(reflect.MakeSlice(v.Type(), 1, 4))
+				} else {
+					if v.Len() == v.Cap() {
+						newCap := v.Cap() + v.Cap()/2
+						newSplice := reflect.MakeSlice(v.Type(), v.Len()+1, newCap)
+						reflect.Copy(newSplice, v)
+						v.Set(newSplice)
+					} else {
+						v.SetLen(v.Len() + 1)
+					}
+
+				}
+
+				start := d.readIndex()
+				d.rescanLiteral()
+
+				if err := d.literalStore(d.data[start:d.readIndex()], v.Index(v.Len()-1), false); err != nil {
+					return err
+				}
+
+				if d.opcode == scanEndObject {
+					break
+				}
+
+				i++
+			}
+		}
+
+	} else {
+		d.skip()
+	}
+	d.scanNext()
+
+	return nil
+}
+
+func (d *decodeState) listValue(v reflect.Value) error {
+	if v.IsValid() {
+		// Check for unmarshaler.
+		u, ut, pv := indirect(v, false)
+		if u != nil {
+			start := d.readIndex()
+			d.skip()
+			return u.UnmarshalP(d.data[start:d.off])
+		}
+		if ut != nil {
+			d.saveError(&UnmarshalTypeError{Value: "list", Type: v.Type(), Offset: int64(d.off)})
+			d.skip()
+			return nil
+		}
+		v = pv
+
+		if v.IsNil() {
+			v.Set(reflect.MakeSlice(v.Type(), 1, 4))
+		} else {
+			if v.Len() == v.Cap() {
+				newCap := v.Cap() + v.Cap()/2
+				newSplice := reflect.MakeSlice(v.Type(), v.Len()+1, newCap)
+				reflect.Copy(newSplice, v)
+				v.Set(newSplice)
+			} else {
+				v.SetLen(v.Len() + 1)
+			}
+
+		}
+
+		if err := d.value(v.Index(v.Len() - 1)); err != nil {
+			return err
+		}
+
+	} else {
+		d.skip()
+	}
+	d.scanNext()
+
+	return nil
 }
 
 // value consumes a JSON value from d.data[d.off-1:], decoding into v, and
@@ -552,10 +789,10 @@ func (d *decodeState) array(v reflect.Value) error {
 	if u != nil {
 		start := d.readIndex()
 		d.skip()
-		return u.UnmarshalJSON(d.data[start:d.off])
+		return u.UnmarshalP(d.data[start:d.off])
 	}
 	if ut != nil {
-		d.saveError(&UnmarshalTypeError{Value: "array", Type: v.Type(), Offset: int64(d.off)})
+		d.saveError(&UnmarshalTypeError{Value: "list", Type: v.Type(), Offset: int64(d.off)})
 		d.skip()
 		return nil
 	}
@@ -573,7 +810,7 @@ func (d *decodeState) array(v reflect.Value) error {
 		// Otherwise it's invalid.
 		fallthrough
 	default:
-		d.saveError(&UnmarshalTypeError{Value: "array", Type: v.Type(), Offset: int64(d.off)})
+		d.saveError(&UnmarshalTypeError{Value: "list", Type: v.Type(), Offset: int64(d.off)})
 		d.skip()
 		return nil
 	case reflect.Array, reflect.Slice:
@@ -588,7 +825,7 @@ func (d *decodeState) array(v reflect.Value) error {
 			break
 		}
 
-		// Get element of array, growing if necessary.
+		// Get element of list, growing if necessary.
 		if v.Kind() == reflect.Slice {
 			// Grow slice if necessary
 			if i >= v.Cap() {
@@ -611,7 +848,7 @@ func (d *decodeState) array(v reflect.Value) error {
 				return err
 			}
 		} else {
-			// Ran out of fixed array: skip.
+			// Ran out of fixed list: skip.
 			if err := d.value(reflect.Value{}); err != nil {
 				return err
 			}
@@ -658,7 +895,7 @@ func (d *decodeState) object(v reflect.Value) error {
 	if u != nil {
 		start := d.readIndex()
 		d.skip()
-		return u.UnmarshalJSON(d.data[start:d.off])
+		return u.UnmarshalP(d.data[start:d.off])
 	}
 	if ut != nil {
 		d.saveError(&UnmarshalTypeError{Value: "object", Type: v.Type(), Offset: int64(d.off)})
@@ -730,13 +967,17 @@ func (d *decodeState) object(v reflect.Value) error {
 		d.rescanLiteral()
 		item := d.data[start:d.readIndex()]
 		key, ok := unquoteBytes(item)
+		keyName := string(key)
 		if !ok {
+			log.Printf("json: invalid key: %q", keyName)
 			panic(phasePanicMsg)
 		}
 
 		// Figure out field corresponding to key.
 		var subv reflect.Value
 		destring := false // whether the value is wrapped in a string to be decoded first
+
+		var f *field
 
 		if v.Kind() == reflect.Map {
 			elemType := t.Elem()
@@ -747,7 +988,6 @@ func (d *decodeState) object(v reflect.Value) error {
 			}
 			subv = mapElem
 		} else {
-			var f *field
 			if i, ok := fields.nameIndex[string(key)]; ok {
 				// Found an exact name match.
 				f = &fields.list[i]
@@ -820,8 +1060,22 @@ func (d *decodeState) object(v reflect.Value) error {
 				d.saveError(fmt.Errorf("json: invalid use of ,string struct tag, trying to unmarshal unquoted value into %v", subv.Type()))
 			}
 		} else {
-			if err := d.value(subv); err != nil {
-				return err
+			if f != nil && f.IsMapValue() {
+				if err := d.mapValueValue(subv, f); err != nil {
+					return err
+				}
+			} else if f != nil && f.IsFieldList() {
+				if err := d.fieldListValue(subv); err != nil {
+					return err
+				}
+			} else if f != nil && f.IsList() {
+				if err := d.listValue(subv); err != nil {
+					return err
+				}
+			} else {
+				if err := d.value(subv); err != nil {
+					return err
+				}
 			}
 		}
 
@@ -863,25 +1117,27 @@ func (d *decodeState) object(v reflect.Value) error {
 			}
 			if kv.IsValid() {
 				v.SetMapIndex(kv, subv)
+				_, _, subvv := indirect(subv, false)
+				if subvv.Kind() == reflect.Struct {
+					for i := 0; i < subvv.NumField(); i++ {
+						if subvv.Type().Field(i).Tag.Get("paradox_type") == "map_key" {
+							subvv.Field(i).Set(kv)
+							break
+						}
+					}
+				}
 			}
 		}
 
-		// Next token must be , or }.
-		if d.opcode == scanSkipSpace {
-			d.scanWhile(scanSkipSpace)
-		}
 		if d.errorContext != nil {
 			// Reset errorContext to its original state.
-			// Keep the same underlying array for FieldStack, to reuse the
+			// Keep the same underlying list for FieldStack, to reuse the
 			// space and avoid unnecessary allocs.
 			d.errorContext.FieldStack = d.errorContext.FieldStack[:len(origErrorContext.FieldStack)]
 			d.errorContext.Struct = origErrorContext.Struct
 		}
 		if d.opcode == scanEndObject {
 			break
-		}
-		if d.opcode != scanObjectValue {
-			panic(phasePanicMsg)
 		}
 	}
 	return nil
@@ -917,7 +1173,7 @@ func (d *decodeState) literalStore(item []byte, v reflect.Value, fromQuoted bool
 	isNull := item[0] == 'n' // null
 	u, ut, pv := indirect(v, isNull)
 	if u != nil {
-		return u.UnmarshalJSON(item)
+		return u.UnmarshalP(item)
 	}
 	if ut != nil {
 		if item[0] != '"' {
@@ -948,46 +1204,10 @@ func (d *decodeState) literalStore(item []byte, v reflect.Value, fromQuoted bool
 	v = pv
 
 	switch c := item[0]; c {
-	case 'n': // null
-		// The main parser checks that only true and false can reach here,
-		// but if this was a quoted string input, it could be anything.
-		if fromQuoted && string(item) != "null" {
-			d.saveError(fmt.Errorf("json: invalid use of ,string struct tag, trying to unmarshal %q into %v", item, v.Type()))
-			break
-		}
-		switch v.Kind() {
-		case reflect.Interface, reflect.Pointer, reflect.Map, reflect.Slice:
-			v.Set(reflect.Zero(v.Type()))
-			// otherwise, ignore null for primitives/string
-		}
-	case 't', 'f': // true, false
-		value := item[0] == 't'
-		// The main parser checks that only true and false can reach here,
-		// but if this was a quoted string input, it could be anything.
-		if fromQuoted && string(item) != "true" && string(item) != "false" {
-			d.saveError(fmt.Errorf("json: invalid use of ,string struct tag, trying to unmarshal %q into %v", item, v.Type()))
-			break
-		}
-		switch v.Kind() {
-		default:
-			if fromQuoted {
-				d.saveError(fmt.Errorf("json: invalid use of ,string struct tag, trying to unmarshal %q into %v", item, v.Type()))
-			} else {
-				d.saveError(&UnmarshalTypeError{Value: "bool", Type: v.Type(), Offset: int64(d.readIndex())})
-			}
-		case reflect.Bool:
-			v.SetBool(value)
-		case reflect.Interface:
-			if v.NumMethod() == 0 {
-				v.Set(reflect.ValueOf(value))
-			} else {
-				d.saveError(&UnmarshalTypeError{Value: "bool", Type: v.Type(), Offset: int64(d.readIndex())})
-			}
-		}
-
 	case '"': // string
 		s, ok := unquoteBytes(item)
 		if !ok {
+			s, ok = unquoteBytes(item)
 			if fromQuoted {
 				return fmt.Errorf("json: invalid use of ,string struct tag, trying to unmarshal %q into %v", item, v.Type())
 			}
@@ -1022,7 +1242,7 @@ func (d *decodeState) literalStore(item []byte, v reflect.Value, fromQuoted bool
 		}
 
 	default: // number
-		if c != '-' && (c < '0' || c > '9') {
+		if !('0' <= c && c <= '9' || 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || c == '_' || c == '.' || c == '-') {
 			if fromQuoted {
 				return fmt.Errorf("json: invalid use of ,string struct tag, trying to unmarshal %q into %v", item, v.Type())
 			}
@@ -1031,7 +1251,7 @@ func (d *decodeState) literalStore(item []byte, v reflect.Value, fromQuoted bool
 		s := string(item)
 		switch v.Kind() {
 		default:
-			if v.Kind() == reflect.String && v.Type() == numberType {
+			if v.Kind() == reflect.String {
 				// s must be a valid number, because it's
 				// already been tokenized.
 				v.SetString(s)
@@ -1076,6 +1296,14 @@ func (d *decodeState) literalStore(item []byte, v reflect.Value, fromQuoted bool
 				break
 			}
 			v.SetFloat(n)
+
+		case reflect.Bool:
+			b, err := strconv.ParseBool(s)
+			if err != nil {
+				d.saveError(&UnmarshalTypeError{Value: "bool " + s, Type: v.Type(), Offset: int64(d.readIndex())})
+				break
+			}
+			v.SetBool(b)
 		}
 	}
 	return nil
@@ -1245,115 +1473,9 @@ func unquote(s []byte) (t string, ok bool) {
 }
 
 func unquoteBytes(s []byte) (t []byte, ok bool) {
-	if len(s) < 2 || s[0] != '"' || s[len(s)-1] != '"' {
-		return
-	}
-	s = s[1 : len(s)-1]
-
-	// Check for unusual characters. If there are none,
-	// then no unquoting is needed, so return a slice of the
-	// original bytes.
-	r := 0
-	for r < len(s) {
-		c := s[r]
-		if c == '\\' || c == '"' || c < ' ' {
-			break
-		}
-		if c < utf8.RuneSelf {
-			r++
-			continue
-		}
-		rr, size := utf8.DecodeRune(s[r:])
-		if rr == utf8.RuneError && size == 1 {
-			break
-		}
-		r += size
-	}
-	if r == len(s) {
-		return s, true
+	if len(s) >= 2 && s[0] == '"' && s[len(s)-1] == '"' {
+		s = s[1 : len(s)-1]
 	}
 
-	b := make([]byte, len(s)+2*utf8.UTFMax)
-	w := copy(b, s[0:r])
-	for r < len(s) {
-		// Out of room? Can only happen if s is full of
-		// malformed UTF-8 and we're replacing each
-		// byte with RuneError.
-		if w >= len(b)-2*utf8.UTFMax {
-			nb := make([]byte, (len(b)+utf8.UTFMax)*2)
-			copy(nb, b[0:w])
-			b = nb
-		}
-		switch c := s[r]; {
-		case c == '\\':
-			r++
-			if r >= len(s) {
-				return
-			}
-			switch s[r] {
-			default:
-				return
-			case '"', '\\', '/', '\'':
-				b[w] = s[r]
-				r++
-				w++
-			case 'b':
-				b[w] = '\b'
-				r++
-				w++
-			case 'f':
-				b[w] = '\f'
-				r++
-				w++
-			case 'n':
-				b[w] = '\n'
-				r++
-				w++
-			case 'r':
-				b[w] = '\r'
-				r++
-				w++
-			case 't':
-				b[w] = '\t'
-				r++
-				w++
-			case 'u':
-				r--
-				rr := getu4(s[r:])
-				if rr < 0 {
-					return
-				}
-				r += 6
-				if utf16.IsSurrogate(rr) {
-					rr1 := getu4(s[r:])
-					if dec := utf16.DecodeRune(rr, rr1); dec != unicode.ReplacementChar {
-						// A valid pair; consume.
-						r += 6
-						w += utf8.EncodeRune(b[w:], dec)
-						break
-					}
-					// Invalid surrogate; fall back to replacement rune.
-					rr = unicode.ReplacementChar
-				}
-				w += utf8.EncodeRune(b[w:], rr)
-			}
-
-		// Quote, control characters are invalid.
-		case c == '"', c < ' ':
-			return
-
-		// ASCII
-		case c < utf8.RuneSelf:
-			b[w] = c
-			r++
-			w++
-
-		// Coerce to well-formed UTF-8.
-		default:
-			rr, size := utf8.DecodeRune(s[r:])
-			r += size
-			w += utf8.EncodeRune(b[w:], rr)
-		}
-	}
-	return b[0:w], true
+	return s, true
 }

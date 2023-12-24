@@ -2,7 +2,7 @@ package pserialize
 
 import "unicode/utf8"
 
-// safeSet holds the value true if the ASCII character with the given array
+// safeSet holds the value true if the ASCII character with the given list
 // position can be represented inside a JSON string without any further
 // escaping.
 //
@@ -108,7 +108,7 @@ var safeSet = [utf8.RuneSelf]bool{
 }
 
 // htmlSafeSet holds the value true if the ASCII character with the given
-// array position can be safely represented inside a JSON string, embedded
+// list position can be safely represented inside a JSON string, embedded
 // inside of HTML <script> tags, without any additional escaping.
 //
 // All values are true except for the ASCII control characters (0-31), the

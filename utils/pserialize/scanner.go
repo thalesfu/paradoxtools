@@ -3,12 +3,10 @@ package pserialize
 import (
 	"bufio"
 	"errors"
+	"github.com/thalesfu/paradoxtools/utils"
 	"log"
-	"os"
-	"path/filepath"
 	"strconv"
 	"sync"
-	"time"
 )
 
 // Valid reports whether data is a valid JSON encoding.
@@ -24,10 +22,10 @@ func Valid(data []byte) bool {
 func checkValid(data []byte, scan *scanner) error {
 	scan.reset()
 	line := 1
-	writeLog := false
+	writeLog := true
 	var writer *bufio.Writer
 	if writeLog {
-		logWriter, deferFunc := createLogWriter("scanerror")
+		logWriter, deferFunc := utils.CreateLogWriter("scanerror")
 		writer = logWriter
 		defer deferFunc()
 	}
@@ -109,7 +107,7 @@ type scanner struct {
 	// Reached end of top-level value.
 	endTop bool
 
-	// Stack of what we're in the middle of - array values, object keys, object values.
+	// Stack of what we're in the middle of - list values, object keys, object values.
 	parseState []int
 
 	// Error that happened, if any.
@@ -157,9 +155,9 @@ const (
 	scanObjectKey           // just finished object key (string)
 	scanObjectValue         // just finished non-last object value
 	scanEndObject           // end object (implies scanObjectValue if possible)
-	scanBeginArray          // begin array
-	scanArrayValue          // just finished array value
-	scanEndArray            // end array (implies scanArrayValue if possible)
+	scanBeginArray          // begin list
+	scanArrayValue          // just finished list value
+	scanEndArray            // end list (implies scanArrayValue if possible)
 	scanSkipSpace           // space byte; can skip; known to be last "continue" result
 
 	// Stop.
@@ -174,7 +172,7 @@ const (
 const (
 	parseObjectKey   = iota // parsing object key (before colon)
 	parseObjectValue        // parsing object value (after colon)
-	parseArrayValue         // parsing array value
+	parseArrayValue         // parsing list value
 )
 
 // This limits the max nesting depth to prevent stack overflow.
@@ -335,12 +333,14 @@ func stateEndValue(s *scanner, c byte) int {
 		}
 		return stateBeginValue(s, c)
 	}
-	if isSpace(c) {
-		return scanSkipSpace
-	}
 	ps := s.parseState[n-1]
 	switch ps {
 	case parseObjectKey:
+		if isSpace(c) {
+			s.parseState[n-1] = parseObjectValue
+			s.step = stateBeginValue
+			return scanSkipSpace
+		}
 		if c == ':' {
 			s.parseState[n-1] = parseObjectValue
 			s.step = stateBeginValue
@@ -392,6 +392,11 @@ func stateEndValue(s *scanner, c byte) int {
 			s.step = stateInExpression
 			return scanBeginLiteral
 		}
+		if isSpace(c) {
+			s.parseState[n-1] = parseObjectKey
+			s.step = stateBeginValue
+			return scanSkipSpace
+		}
 		if c == '}' {
 			s.popParseState()
 			nn := len(s.parseState)
@@ -423,6 +428,10 @@ func stateEndValue(s *scanner, c byte) int {
 			s.step = stateNeg
 			return scanBeginLiteral
 		}
+		if isSpace(c) {
+			s.step = stateBeginValue
+			return scanSkipSpace
+		}
 		if c == '}' {
 			s.popParseState()
 			nn := len(s.parseState)
@@ -432,7 +441,7 @@ func stateEndValue(s *scanner, c byte) int {
 			s.step = stateBeginValue
 			return scanEndObject
 		}
-		return s.error(c, "after array element")
+		return s.error(c, "after list element")
 	}
 	return s.error(c, "")
 }
@@ -665,32 +674,4 @@ func quoteChar(c byte) string {
 	// use quoted string with different quotation marks
 	s := strconv.Quote(string(c))
 	return "'" + s[1:len(s)-1] + "'"
-}
-
-func createLogWriter(logType string) (*bufio.Writer, func()) {
-	// 获取当前时间
-	now := time.Now()
-
-	// 格式化日期和时间
-	dateStr := now.Format("2006-01-02")
-	timeStr := now.Format("15_04_05_000")
-	filePath := filepath.Join("logs", logType, dateStr, timeStr+".log")
-
-	if err := os.MkdirAll(filepath.Dir(filePath), 0755); err != nil {
-		log.Fatalf("创建目录失败：%s\nerror:%v", filePath, err)
-	}
-
-	file, err := os.Create(filePath)
-	if err != nil {
-		log.Fatalf("创建文件失败：%s\nerror:%v", filePath, err)
-	}
-
-	writer := bufio.NewWriter(file)
-	deferFunc := func() {
-		closeErr := file.Close()
-		if closeErr != nil {
-			log.Fatalf("关闭文件失败：%s\nerror:%v", filePath, closeErr)
-		}
-	}
-	return writer, deferFunc
 }
