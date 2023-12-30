@@ -434,6 +434,85 @@ Switch:
 	d.off = i + 1
 }
 
+func (d *decodeState) MapValue(v reflect.Value, keyName string) error {
+	if v.IsValid() {
+		// Check for unmarshaler.
+		u, ut, pv := indirect(v, false)
+		if u != nil {
+			start := d.readIndex()
+			d.skip()
+			return u.UnmarshalP(d.data[start:d.off])
+		}
+		if ut != nil {
+			d.saveError(&UnmarshalTypeError{Value: "list", Type: v.Type(), Offset: int64(d.off)})
+			d.skip()
+			return nil
+		}
+		v = pv
+		t := v.Type()
+
+		if v.IsNil() {
+			v.Set(reflect.MakeMap(t))
+		}
+
+		var mapElem reflect.Value
+		elemType := t.Elem()
+		if !mapElem.IsValid() {
+			mapElem = reflect.New(elemType).Elem()
+		} else {
+			mapElem.Set(reflect.Zero(elemType))
+		}
+
+		if err := d.value(mapElem); err != nil {
+			return err
+		}
+
+		kt := t.Key()
+		var kv reflect.Value
+		switch {
+		case kt.Kind() == reflect.String:
+			kv = reflect.ValueOf(keyName).Convert(kt)
+		default:
+			switch kt.Kind() {
+			case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+				n, err := strconv.ParseInt(keyName, 10, 64)
+				if err != nil || reflect.Zero(kt).OverflowInt(n) {
+					d.saveError(&UnmarshalTypeError{Value: "number " + keyName, Type: kt})
+					break
+				}
+				kv = reflect.ValueOf(n).Convert(kt)
+			case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+				n, err := strconv.ParseUint(keyName, 10, 64)
+				if err != nil || reflect.Zero(kt).OverflowUint(n) {
+					d.saveError(&UnmarshalTypeError{Value: "number " + keyName, Type: kt})
+					break
+				}
+				kv = reflect.ValueOf(n).Convert(kt)
+			default:
+				panic("json: Unexpected key type") // should never occur
+			}
+		}
+		if kv.IsValid() {
+			v.SetMapIndex(kv, mapElem)
+			_, _, subvv := indirect(mapElem, false)
+			if subvv.Kind() == reflect.Struct {
+				for i := 0; i < subvv.NumField(); i++ {
+					if subvv.Type().Field(i).Tag.Get("paradox_type") == "map_key" {
+						subvv.Field(i).Set(kv)
+						break
+					}
+				}
+			}
+		}
+
+	} else {
+		d.skip()
+	}
+	d.scanNext()
+
+	return nil
+}
+
 func (d *decodeState) mapValueValue(v reflect.Value, f *field) error {
 	if v.IsValid() {
 		// Check for unmarshaler.
@@ -632,6 +711,104 @@ func (d *decodeState) listValue(v reflect.Value) error {
 		d.skip()
 	}
 	d.scanNext()
+
+	return nil
+}
+
+func (d *decodeState) Entity(v reflect.Value, fff *field) error {
+	if d.opcode == scanBeginObject {
+		if v.IsValid() {
+			if err := d.object(v); err != nil {
+				return err
+			}
+		} else {
+			d.skip()
+		}
+		d.scanNext()
+		return nil
+	}
+
+	// Check for unmarshaler.
+	u, ut, pv := indirect(v, false)
+	if u != nil {
+		start := d.readIndex()
+		d.skip()
+		return u.UnmarshalP(d.data[start:d.off])
+	}
+	if ut != nil {
+		d.saveError(&UnmarshalTypeError{Value: "object", Type: v.Type(), Offset: int64(d.off)})
+		d.skip()
+		return nil
+	}
+	v = pv
+	t := v.Type()
+
+	if v.Kind() == reflect.Interface && v.NumMethod() == 0 {
+		oi := d.objectInterface()
+		v.Set(reflect.ValueOf(oi))
+		return nil
+	}
+
+	var fields structFields
+
+	if v.Kind() == reflect.Struct {
+		fields = cachedTypeFields(t)
+	} else {
+		d.saveError(&UnmarshalTypeError{Value: "object", Type: t, Offset: int64(d.off)})
+		d.skip()
+		return nil
+	}
+
+	var f *field
+
+	if i, ok := fields.nameIndex[fff.defaultField]; ok {
+		// Found an exact name match.
+		f = &fields.list[i]
+	}
+
+	var subv reflect.Value
+
+	if f != nil {
+		subv = v
+		for _, i := range f.index {
+			if subv.Kind() == reflect.Pointer {
+				if subv.IsNil() {
+					// If a struct embeds a pointer to an unexported type,
+					// it is not possible to set a newly allocated value
+					// since the field is unexported.
+					//
+					// See https://golang.org/issue/21357
+					if !subv.CanSet() {
+						d.saveError(fmt.Errorf("json: cannot set embedded pointer to unexported struct: %v", subv.Type().Elem()))
+						// Invalidate subv to ensure d.value(subv) skips over
+						// the JSON value without assigning it to subv.
+						subv = reflect.Value{}
+						break
+					}
+					subv.Set(reflect.New(subv.Type().Elem()))
+				}
+				subv = subv.Elem()
+			}
+			subv = subv.Field(i)
+		}
+		if d.errorContext == nil {
+			d.errorContext = new(errorContext)
+		}
+		d.errorContext.FieldStack = append(d.errorContext.FieldStack, f.name)
+		d.errorContext.Struct = t
+	} else if d.disallowUnknownFields {
+		d.saveError(fmt.Errorf("json: unknown field %q", fff.defaultField))
+	}
+
+	// All bytes inside literal return scanContinue op code.
+	start := d.readIndex()
+	d.rescanLiteral()
+
+	if v.IsValid() {
+		if err := d.literalStore(d.data[start:d.readIndex()], subv, false); err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
@@ -1000,6 +1177,10 @@ func (d *decodeState) object(v reflect.Value) error {
 						f = ff
 						break
 					}
+					if ff.IsMatch(key) {
+						f = ff
+						break
+					}
 				}
 			}
 			if f != nil {
@@ -1060,7 +1241,15 @@ func (d *decodeState) object(v reflect.Value) error {
 				d.saveError(fmt.Errorf("json: invalid use of ,string struct tag, trying to unmarshal unquoted value into %v", subv.Type()))
 			}
 		} else {
-			if f != nil && f.IsMapValue() {
+			if f != nil && f.IsEntity() {
+				if err := d.Entity(subv, f); err != nil {
+					return err
+				}
+			} else if f != nil && f.IsMap() {
+				if err := d.MapValue(subv, keyName); err != nil {
+					return err
+				}
+			} else if f != nil && f.IsMapValue() {
 				if err := d.mapValueValue(subv, f); err != nil {
 					return err
 				}

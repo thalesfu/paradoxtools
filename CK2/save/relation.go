@@ -3,329 +3,329 @@ package save
 import "github.com/thalesfu/paradoxtools/utils/pserialize"
 
 type CasusBelli struct {
-	CasusBelli  string          `paradox_field:"casus_belli" paradox_type:"field" json:"casus_belli,omitempty"`
-	Actor       int             `paradox_field:"actor" paradox_type:"field" json:"actor,omitempty"`
-	Recipient   int             `paradox_field:"recipient" paradox_type:"field" json:"recipient,omitempty"`
-	ThirdParty  int             `paradox_field:"thirdparty" paradox_type:"field" json:"thirdparty,omitempty"`
+	CasusBelli  string          `paradox_field:"casus_belli" json:"casus_belli,omitempty"`
+	Actor       int             `paradox_field:"actor" json:"actor,omitempty"`
+	Recipient   int             `paradox_field:"recipient" json:"recipient,omitempty"`
+	ThirdParty  int             `paradox_field:"thirdparty" json:"thirdparty,omitempty"`
 	LandedTitle *Title          `paradox_field:"landed_title" paradox_type:"map_value" paradox_map_name:"title" json:"landed_title,omitempty"`
-	Date        pserialize.Year `paradox_field:"date" paradox_type:"field" json:"date,omitempty"`
+	Date        pserialize.Year `paradox_field:"date" json:"date,omitempty"`
 }
 
 type MarriageTie struct {
-	First  int `paradox_field:"first" paradox_type:"field" json:"first,omitempty"`
-	Second int `paradox_field:"second" paradox_type:"field" json:"second,omitempty"`
+	First  int `paradox_field:"first" json:"first,omitempty"`
+	Second int `paradox_field:"second" json:"second,omitempty"`
 }
 
 type CommonRelation struct {
-	Date              pserialize.Year `paradox_field:"d" paradox_type:"field" json:"d,omitempty"`
-	Multiplier        int             `paradox_field:"multiplier" paradox_type:"field" json:"multiplier,omitempty"`
-	DecayCount        int             `paradox_field:"decay_count" paradox_type:"field" json:"decay_count,omitempty"`
-	DecaySpeed        int             `paradox_field:"decay_speed" paradox_type:"field" json:"decay_speed,omitempty"`
-	OriginDescription string          `paradox_field:"origin_description" paradox_type:"field" json:"origin_description,omitempty"`
+	Date              pserialize.Year `paradox_field:"d" json:"d,omitempty"`
+	Multiplier        int             `paradox_field:"multiplier" json:"multiplier,omitempty"`
+	DecayCount        int             `paradox_field:"decay_count" json:"decay_count,omitempty"`
+	DecaySpeed        int             `paradox_field:"decay_speed" json:"decay_speed,omitempty"`
+	OriginDescription string          `paradox_field:"origin_description" json:"origin_description,omitempty"`
 }
 
 type Tributary struct {
-	TributaryType              string  `paradox_field:"tributary_type" paradox_type:"field" json:"tributary_type,omitempty"`
-	Tributary                  int     `paradox_field:"tributary" paradox_type:"field" json:"tributary,omitempty"`
-	IncomeTributePercentage    float32 `paradox_field:"income_tribute_percentage" paradox_type:"field" json:"income_tribute_percentage,omitempty"`
-	ReinforceTributePercentage float32 `paradox_field:"reinforce_tribute_percentage" paradox_type:"field" json:"reinforce_tribute_percentage,omitempty"`
+	TributaryType              string  `paradox_field:"tributary_type" json:"tributary_type,omitempty"`
+	Tributary                  int     `paradox_field:"tributary" json:"tributary,omitempty"`
+	IncomeTributePercentage    float32 `paradox_field:"income_tribute_percentage" json:"income_tribute_percentage,omitempty"`
+	ReinforceTributePercentage float32 `paradox_field:"reinforce_tribute_percentage" json:"reinforce_tribute_percentage,omitempty"`
 }
 
 type Truce struct {
-	Truce      pserialize.Year `paradox_field:"truce" paradox_type:"field" json:"truce,omitempty"`
-	Name       string          `paradox_field:"name" paradox_type:"field" json:"name,omitempty"`
-	PeaceOffer int             `paradox_field:"peace_offer" paradox_type:"field" json:"peace_offer,omitempty"`
-	Attacker   int             `paradox_field:"attacker" paradox_type:"field" json:"attacker,omitempty"`
-	Defender   int             `paradox_field:"defender" paradox_type:"field" json:"defender,omitempty"`
+	Truce      pserialize.Year `paradox_field:"truce" json:"truce,omitempty"`
+	Name       string          `paradox_field:"name" json:"name,omitempty"`
+	PeaceOffer int             `paradox_field:"peace_offer" json:"peace_offer,omitempty"`
+	Attacker   int             `paradox_field:"attacker" json:"attacker,omitempty"`
+	Defender   int             `paradox_field:"defender" json:"defender,omitempty"`
 }
 
 type PersonRelation struct {
 	ID                                            string           `paradox_type:"map_key" json:"id,omitempty"`
-	MarriageTie                                   *MarriageTie     `paradox_field:"marriage_tie" paradox_type:"field" json:"marriage_tie,omitempty"`
-	RY                                            int              `paradox_field:"ry" paradox_type:"field" json:"ry,omitempty"`
-	AbuseOfOffice                                 *CommonRelation  `paradox_field:"abuse_of_office" paradox_type:"field" json:"abuse_of_office,omitempty"`
-	AcknowledgedBastard                           *CommonRelation  `paradox_field:"acknowledged_bastard" paradox_type:"field" json:"acknowledged_bastard,omitempty"`
-	AcknowledgedChild                             *CommonRelation  `paradox_field:"acknowledged_child" paradox_type:"field" json:"acknowledged_child,omitempty"`
-	Alliance                                      pserialize.PBool `paradox_field:"alliance" paradox_type:"field" json:"alliance,omitempty"`
-	AmbitiousPos                                  *CommonRelation  `paradox_field:"ambitious_pos" paradox_type:"field" json:"ambitious_pos,omitempty"`
-	ApprovesOfMyBehaviour                         *CommonRelation  `paradox_field:"approves_of_my_behaviour" paradox_type:"field" json:"approves_of_my_behaviour,omitempty"`
-	AttemptedMurder                               *CommonRelation  `paradox_field:"attempted_murder" paradox_type:"field" json:"attempted_murder,omitempty"`
-	AttemptedMurderOfChild                        *CommonRelation  `paradox_field:"attempted_murder_of_child" paradox_type:"field" json:"attempted_murder_of_child,omitempty"`
-	AttemptedMurderOfSibling                      *CommonRelation  `paradox_field:"attempted_murder_of_sibling" paradox_type:"field" json:"attempted_murder_of_sibling,omitempty"`
-	BadSuccLawChange                              *CommonRelation  `paradox_field:"bad_succ_law_change" paradox_type:"field" json:"bad_succ_law_change,omitempty"`
-	BoughtIndulgences                             *CommonRelation  `paradox_field:"bought_indulgences" paradox_type:"field" json:"bought_indulgences,omitempty"`
-	BravePos                                      *CommonRelation  `paradox_field:"brave_pos" paradox_type:"field" json:"brave_pos,omitempty"`
-	BrokenNonAggressionPact                       *CommonRelation  `paradox_field:"broken_non_aggression_pact" paradox_type:"field" json:"broken_non_aggression_pact,omitempty"`
-	CanCallToWar                                  pserialize.PBool `paradox_field:"can_call_to_war" paradox_type:"field" json:"can_call_to_war,omitempty"`
-	ComfortedOpinion                              *CommonRelation  `paradox_field:"comforted_opinion" paradox_type:"field" json:"comforted_opinion,omitempty"`
-	CravenPos                                     *CommonRelation  `paradox_field:"craven_pos" paradox_type:"field" json:"craven_pos,omitempty"`
-	DeclaredWar                                   *CommonRelation  `paradox_field:"declared_war" paradox_type:"field" json:"declared_war,omitempty"`
-	DemandReligiousConversionInteractionOnDecline *CommonRelation  `paradox_field:"DEMAND_RELIGIOUS_CONVERSION_INTERACTION_ON_DECLINE" paradox_type:"field" json:"DEMAND_RELIGIOUS_CONVERSION_INTERACTION_ON_DECLINE,omitempty"`
-	DeniedCowardRumour                            *CommonRelation  `paradox_field:"denied_coward_rumour" paradox_type:"field" json:"denied_coward_rumour,omitempty"`
-	DeniedOccultistRumour                         *CommonRelation  `paradox_field:"denied_occultist_rumour" paradox_type:"field" json:"denied_occultist_rumour,omitempty"`
-	DeniedSodomiteRumour                          *CommonRelation  `paradox_field:"denied_sodomite_rumour" paradox_type:"field" json:"denied_sodomite_rumour,omitempty"`
-	DenouncedChild                                *CommonRelation  `paradox_field:"denounced_child" paradox_type:"field" json:"denounced_child,omitempty"`
-	DespiseDrunkard                               *CommonRelation  `paradox_field:"despise_drunkard" paradox_type:"field" json:"despise_drunkard,omitempty"`
-	DiligentPos                                   *CommonRelation  `paradox_field:"diligent_pos" paradox_type:"field" json:"diligent_pos,omitempty"`
-	DisableNonAggressionPacts                     pserialize.PBool `paradox_field:"disable_non_aggression_pacts" paradox_type:"field" json:"disable_non_aggression_pacts,omitempty"`
-	DisrespectsDynasty                            *CommonRelation  `paradox_field:"disrespects_dynasty" paradox_type:"field" json:"disrespects_dynasty,omitempty"`
-	EnviousNeg                                    *CommonRelation  `paradox_field:"envious_neg" paradox_type:"field" json:"envious_neg,omitempty"`
-	EnviousPos                                    *CommonRelation  `paradox_field:"envious_pos" paradox_type:"field" json:"envious_pos,omitempty"`
-	FirstFavorMonthStart                          int              `paradox_field:"first_favor_month_start" paradox_type:"field" json:"first_favor_month_start,omitempty"`
-	FirstFavorStatus                              pserialize.PBool `paradox_field:"first_favor_status" paradox_type:"field" json:"first_favor_status,omitempty"`
-	GoodSuccLawChange                             *CommonRelation  `paradox_field:"good_succ_law_change" paradox_type:"field" json:"good_succ_law_change,omitempty"`
-	GregariousNeg                                 *CommonRelation  `paradox_field:"gregarious_neg" paradox_type:"field" json:"gregarious_neg,omitempty"`
-	GrievouslyOffended                            *CommonRelation  `paradox_field:"grievously_offended" paradox_type:"field" json:"grievously_offended,omitempty"`
-	IgnoresLocalSaints                            *CommonRelation  `paradox_field:"ignores_local_saints" paradox_type:"field" json:"ignores_local_saints,omitempty"`
-	IsLooter                                      pserialize.PBool `paradox_field:"is_looter" paradox_type:"field" json:"is_looter,omitempty"`
-	JoinedMyWar                                   *CommonRelation  `paradox_field:"joined_my_war" paradox_type:"field" json:"joined_my_war,omitempty"`
-	LooterHostilityDays                           int              `paradox_field:"looter_hostility_days" paradox_type:"field" json:"looter_hostility_days,omitempty"`
-	LostWar                                       *CommonRelation  `paradox_field:"lost_war" paradox_type:"field" json:"lost_war,omitempty"`
-	MarshalOverruled                              *CommonRelation  `paradox_field:"marshal_overruled" paradox_type:"field" json:"marshal_overruled,omitempty"`
-	NotARealMan                                   *CommonRelation  `paradox_field:"not_a_real_man" paradox_type:"field" json:"not_a_real_man,omitempty"`
-	NotFeelingApreciated                          *CommonRelation  `paradox_field:"not_feeling_apreciated" paradox_type:"field" json:"not_feeling_apreciated,omitempty"`
-	OpinionAbductedSpouse                         *CommonRelation  `paradox_field:"opinion_abducted_spouse" paradox_type:"field" json:"opinion_abducted_spouse,omitempty"`
-	OpinionAbsorbedMyClan                         *CommonRelation  `paradox_field:"opinion_absorbed_my_clan" paradox_type:"field" json:"opinion_absorbed_my_clan,omitempty"`
-	OpinionAccusedApostate                        *CommonRelation  `paradox_field:"opinion_accused_apostate" paradox_type:"field" json:"opinion_accused_apostate,omitempty"`
-	OpinionAcquaintance                           *CommonRelation  `paradox_field:"opinion_acquaintance" paradox_type:"field" json:"opinion_acquaintance,omitempty"`
-	OpinionAllowedMissionary                      *CommonRelation  `paradox_field:"opinion_allowed_missionary" paradox_type:"field" json:"opinion_allowed_missionary,omitempty"`
-	OpinionAntagonized1                           *CommonRelation  `paradox_field:"opinion_antagonized_1" paradox_type:"field" json:"opinion_antagonized_1,omitempty"`
-	OpinionAntagonized2                           *CommonRelation  `paradox_field:"opinion_antagonized_2" paradox_type:"field" json:"opinion_antagonized_2,omitempty"`
-	OpinionAntagonized3                           *CommonRelation  `paradox_field:"opinion_antagonized_3" paradox_type:"field" json:"opinion_antagonized_3,omitempty"`
-	OpinionArrestAttempt                          *CommonRelation  `paradox_field:"opinion_arrest_attempt" paradox_type:"field" json:"opinion_arrest_attempt,omitempty"`
-	OpinionBanishedSameFaith                      *CommonRelation  `paradox_field:"opinion_banished_same_faith" paradox_type:"field" json:"opinion_banished_same_faith,omitempty"`
-	OpinionBaptized                               *CommonRelation  `paradox_field:"opinion_baptized" paradox_type:"field" json:"opinion_baptized,omitempty"`
-	OpinionBetrayed                               *CommonRelation  `paradox_field:"opinion_betrayed" paradox_type:"field" json:"opinion_betrayed,omitempty"`
-	OpinionBetrothalBroken                        *CommonRelation  `paradox_field:"opinion_betrothal_broken" paradox_type:"field" json:"opinion_betrothal_broken,omitempty"`
-	OpinionBoring                                 *CommonRelation  `paradox_field:"opinion_boring" paradox_type:"field" json:"opinion_boring,omitempty"`
-	OpinionBuddingFriendship                      *CommonRelation  `paradox_field:"opinion_budding_friendship" paradox_type:"field" json:"opinion_budding_friendship,omitempty"`
-	OpinionBuddingRomance                         *CommonRelation  `paradox_field:"opinion_budding_romance" paradox_type:"field" json:"opinion_budding_romance,omitempty"`
-	OpinionCarousing                              *CommonRelation  `paradox_field:"opinion_carousing" paradox_type:"field" json:"opinion_carousing,omitempty"`
-	OpinionCastratedMe                            *CommonRelation  `paradox_field:"opinion_castrated_me" paradox_type:"field" json:"opinion_castrated_me,omitempty"`
-	OpinionCautious                               *CommonRelation  `paradox_field:"opinion_cautious" paradox_type:"field" json:"opinion_cautious,omitempty"`
-	OpinionChargeDeviant                          *CommonRelation  `paradox_field:"opinion_charge_deviant" paradox_type:"field" json:"opinion_charge_deviant,omitempty"`
-	OpinionChargeDw                               *CommonRelation  `paradox_field:"opinion_charge_dw" paradox_type:"field" json:"opinion_charge_dw,omitempty"`
-	OpinionChargeInfidel                          *CommonRelation  `paradox_field:"opinion_charge_infidel" paradox_type:"field" json:"opinion_charge_infidel,omitempty"`
-	OpinionChasingSpouse                          *CommonRelation  `paradox_field:"opinion_chasing_spouse" paradox_type:"field" json:"opinion_chasing_spouse,omitempty"`
-	OpinionChastisedByLiege                       *CommonRelation  `paradox_field:"opinion_chastised_by_liege" paradox_type:"field" json:"opinion_chastised_by_liege,omitempty"`
-	OpinionClaimantAdventureTarget                *CommonRelation  `paradox_field:"opinion_claimant_adventure_target" paradox_type:"field" json:"opinion_claimant_adventure_target,omitempty"`
-	OpinionCloisteredMe                           *CommonRelation  `paradox_field:"opinion_cloistered_me" paradox_type:"field" json:"opinion_cloistered_me,omitempty"`
-	OpinionCoercedIntoJoiningFaction              *CommonRelation  `paradox_field:"opinion_coerced_into_joining_faction" paradox_type:"field" json:"opinion_coerced_into_joining_faction,omitempty"`
-	OpinionCoercedIntoLeavingFaction              *CommonRelation  `paradox_field:"opinion_coerced_into_leaving_faction" paradox_type:"field" json:"opinion_coerced_into_leaving_faction,omitempty"`
-	OpinionComplaining                            *CommonRelation  `paradox_field:"opinion_complaining" paradox_type:"field" json:"opinion_complaining,omitempty"`
-	OpinionConvertedProvince                      *CommonRelation  `paradox_field:"opinion_converted_province" paradox_type:"field" json:"opinion_converted_province,omitempty"`
-	OpinionCoward                                 *CommonRelation  `paradox_field:"opinion_coward" paradox_type:"field" json:"opinion_coward,omitempty"`
-	OpinionCravings                               *CommonRelation  `paradox_field:"opinion_cravings" paradox_type:"field" json:"opinion_cravings,omitempty"`
-	OpinionCruel                                  *CommonRelation  `paradox_field:"opinion_cruel" paradox_type:"field" json:"opinion_cruel,omitempty"`
-	OpinionDeclinedParty                          *CommonRelation  `paradox_field:"opinion_declined_party" paradox_type:"field" json:"opinion_declined_party,omitempty"`
-	OpinionDefeatedRebels                         *CommonRelation  `paradox_field:"opinion_defeated_rebels" paradox_type:"field" json:"opinion_defeated_rebels,omitempty"`
-	OpinionDelighted                              *CommonRelation  `paradox_field:"opinion_delighted" paradox_type:"field" json:"opinion_delighted,omitempty"`
-	OpinionDeniedAdvice                           *CommonRelation  `paradox_field:"opinion_denied_advice" paradox_type:"field" json:"opinion_denied_advice,omitempty"`
-	OpinionDeniedRequest                          *CommonRelation  `paradox_field:"opinion_denied_request" paradox_type:"field" json:"opinion_denied_request,omitempty"`
-	OpinionDestroyedDjLiegeTitle                  *CommonRelation  `paradox_field:"opinion_destroyed_dj_liege_title" paradox_type:"field" json:"opinion_destroyed_dj_liege_title,omitempty"`
-	OpinionDidNotTrustMe                          *CommonRelation  `paradox_field:"opinion_did_not_trust_me" paradox_type:"field" json:"opinion_did_not_trust_me,omitempty"`
-	OpinionDishonorable                           *CommonRelation  `paradox_field:"opinion_dishonorable" paradox_type:"field" json:"opinion_dishonorable,omitempty"`
-	OpinionDishonorableDuel                       *CommonRelation  `paradox_field:"opinion_dishonorable_duel" paradox_type:"field" json:"opinion_dishonorable_duel,omitempty"`
-	OpinionDishonorableDuelMajor                  *CommonRelation  `paradox_field:"opinion_dishonorable_duel_major" paradox_type:"field" json:"opinion_dishonorable_duel_major,omitempty"`
-	OpinionDishonorableDuelMinor                  *CommonRelation  `paradox_field:"opinion_dishonorable_duel_minor" paradox_type:"field" json:"opinion_dishonorable_duel_minor,omitempty"`
-	OpinionDishonorableScum                       *CommonRelation  `paradox_field:"opinion_dishonorable_scum" paradox_type:"field" json:"opinion_dishonorable_scum,omitempty"`
-	OpinionDislike                                *CommonRelation  `paradox_field:"opinion_dislike" paradox_type:"field" json:"opinion_dislike,omitempty"`
-	OpinionDislikesNewObligationLaw               *CommonRelation  `paradox_field:"opinion_dislikes_new_obligation_law" paradox_type:"field" json:"opinion_dislikes_new_obligation_law,omitempty"`
-	OpinionDisrespectfulSubject                   *CommonRelation  `paradox_field:"opinion_disrespectful_subject" paradox_type:"field" json:"opinion_disrespectful_subject,omitempty"`
-	OpinionDisrespectingCulture                   *CommonRelation  `paradox_field:"opinion_disrespecting_culture" paradox_type:"field" json:"opinion_disrespecting_culture,omitempty"`
-	OpinionDisrespectsMe                          *CommonRelation  `paradox_field:"opinion_disrespects_me" paradox_type:"field" json:"opinion_disrespects_me,omitempty"`
-	OpinionElderFulfilledDemand                   *CommonRelation  `paradox_field:"opinion_elder_fulfilled_demand" paradox_type:"field" json:"opinion_elder_fulfilled_demand,omitempty"`
-	OpinionElderTraitor                           *CommonRelation  `paradox_field:"opinion_elder_traitor" paradox_type:"field" json:"opinion_elder_traitor,omitempty"`
-	OpinionEldersPleased                          *CommonRelation  `paradox_field:"opinion_elders_pleased" paradox_type:"field" json:"opinion_elders_pleased,omitempty"`
-	OpinionEmbarrassed                            *CommonRelation  `paradox_field:"opinion_embarrassed" paradox_type:"field" json:"opinion_embarrassed,omitempty"`
-	OpinionEvilTyrant                             *CommonRelation  `paradox_field:"opinion_evil_tyrant" paradox_type:"field" json:"opinion_evil_tyrant,omitempty"`
-	OpinionFailedCorruption                       *CommonRelation  `paradox_field:"opinion_failed_corruption" paradox_type:"field" json:"opinion_failed_corruption,omitempty"`
-	OpinionFavorite                               *CommonRelation  `paradox_field:"opinion_favorite" paradox_type:"field" json:"opinion_favorite,omitempty"`
-	OpinionFineGift                               *CommonRelation  `paradox_field:"opinion_fine_gift" paradox_type:"field" json:"opinion_fine_gift,omitempty"`
-	OpinionFledDuel                               *CommonRelation  `paradox_field:"opinion_fled_duel" paradox_type:"field" json:"opinion_fled_duel,omitempty"`
-	OpinionForcedConsort                          *CommonRelation  `paradox_field:"opinion_forced_consort" paradox_type:"field" json:"opinion_forced_consort,omitempty"`
-	OpinionForcedRelativeConsort                  *CommonRelation  `paradox_field:"opinion_forced_relative_consort" paradox_type:"field" json:"opinion_forced_relative_consort,omitempty"`
-	OpinionForcedWifeConsort                      *CommonRelation  `paradox_field:"opinion_forced_wife_consort" paradox_type:"field" json:"opinion_forced_wife_consort,omitempty"`
-	OpinionFormerLover                            *CommonRelation  `paradox_field:"opinion_former_lover" paradox_type:"field" json:"opinion_former_lover,omitempty"`
-	OpinionFoughtDuel                             *CommonRelation  `paradox_field:"opinion_fought_duel" paradox_type:"field" json:"opinion_fought_duel,omitempty"`
-	OpinionFoughtForClaimant                      *CommonRelation  `paradox_field:"opinion_fought_for_claimant" paradox_type:"field" json:"opinion_fought_for_claimant,omitempty"`
-	OpinionFriend                                 *CommonRelation  `paradox_field:"opinion_friend" paradox_type:"field" json:"opinion_friend,omitempty"`
-	OpinionGivenCouncilPosition2                  *CommonRelation  `paradox_field:"opinion_given_council_position_2" paradox_type:"field" json:"opinion_given_council_position_2,omitempty"`
-	OpinionGodfather                              *CommonRelation  `paradox_field:"opinion_godfather" paradox_type:"field" json:"opinion_godfather,omitempty"`
-	OpinionGoodWork                               *CommonRelation  `paradox_field:"opinion_good_work" paradox_type:"field" json:"opinion_good_work,omitempty"`
-	OpinionGrantedBarony                          *CommonRelation  `paradox_field:"opinion_granted_barony" paradox_type:"field" json:"opinion_granted_barony,omitempty"`
-	OpinionGrateful                               *CommonRelation  `paradox_field:"opinion_grateful" paradox_type:"field" json:"opinion_grateful,omitempty"`
-	OpinionGreatLeader                            *CommonRelation  `paradox_field:"opinion_great_leader" paradox_type:"field" json:"opinion_great_leader,omitempty"`
-	OpinionHate                                   *CommonRelation  `paradox_field:"opinion_hate" paradox_type:"field" json:"opinion_hate,omitempty"`
-	OpinionHeldContest                            *CommonRelation  `paradox_field:"opinion_held_contest" paradox_type:"field" json:"opinion_held_contest,omitempty"`
-	OpinionHumiliatedCloseKin                     *CommonRelation  `paradox_field:"opinion_humiliated_close_kin" paradox_type:"field" json:"opinion_humiliated_close_kin,omitempty"`
-	OpinionHumiliatedFamily                       *CommonRelation  `paradox_field:"opinion_humiliated_family" paradox_type:"field" json:"opinion_humiliated_family,omitempty"`
-	OpinionHumiliatedMe                           *CommonRelation  `paradox_field:"opinion_humiliated_me" paradox_type:"field" json:"opinion_humiliated_me,omitempty"`
-	OpinionHypocritRuler                          *CommonRelation  `paradox_field:"opinion_hypocrit_ruler" paradox_type:"field" json:"opinion_hypocrit_ruler,omitempty"`
-	OpinionIgnoredInfidel                         *CommonRelation  `paradox_field:"opinion_ignored_infidel" paradox_type:"field" json:"opinion_ignored_infidel,omitempty"`
-	OpinionImpressed                              *CommonRelation  `paradox_field:"opinion_impressed" paradox_type:"field" json:"opinion_impressed,omitempty"`
-	OpinionImpressedMeInBattle                    *CommonRelation  `paradox_field:"opinion_impressed_me_in_battle" paradox_type:"field" json:"opinion_impressed_me_in_battle,omitempty"`
-	OpinionIncreasedCouncilPower                  *CommonRelation  `paradox_field:"opinion_increased_council_power" paradox_type:"field" json:"opinion_increased_council_power,omitempty"`
-	OpinionInfatuated                             *CommonRelation  `paradox_field:"opinion_infatuated" paradox_type:"field" json:"opinion_infatuated,omitempty"`
-	OpinionInjuredMeInBattle                      *CommonRelation  `paradox_field:"opinion_injured_me_in_battle" paradox_type:"field" json:"opinion_injured_me_in_battle,omitempty"`
-	OpinionIrritated                              *CommonRelation  `paradox_field:"opinion_irritated" paradox_type:"field" json:"opinion_irritated,omitempty"`
-	OpinionKilledCloseKin                         *CommonRelation  `paradox_field:"opinion_killed_close_kin" paradox_type:"field" json:"opinion_killed_close_kin,omitempty"`
-	OpinionKind                                   *CommonRelation  `paradox_field:"opinion_kind" paradox_type:"field" json:"opinion_kind,omitempty"`
-	OpinionKindWinner                             *CommonRelation  `paradox_field:"opinion_kind_winner" paradox_type:"field" json:"opinion_kind_winner,omitempty"`
-	OpinionKnownCorrupter                         *CommonRelation  `paradox_field:"opinion_known_corrupter" paradox_type:"field" json:"opinion_known_corrupter,omitempty"`
-	OpinionLikesNewObligationLaw                  *CommonRelation  `paradox_field:"opinion_likes_new_obligation_law" paradox_type:"field" json:"opinion_likes_new_obligation_law,omitempty"`
-	OpinionLooted                                 *CommonRelation  `paradox_field:"opinion_looted" paradox_type:"field" json:"opinion_looted,omitempty"`
-	OpinionLoser                                  *CommonRelation  `paradox_field:"opinion_loser" paradox_type:"field" json:"opinion_loser,omitempty"`
-	OpinionLostRespect                            *CommonRelation  `paradox_field:"opinion_lost_respect" paradox_type:"field" json:"opinion_lost_respect,omitempty"`
-	OpinionLousyTeacher                           *CommonRelation  `paradox_field:"opinion_lousy_teacher" paradox_type:"field" json:"opinion_lousy_teacher,omitempty"`
-	OpinionLousyWinner                            *CommonRelation  `paradox_field:"opinion_lousy_winner" paradox_type:"field" json:"opinion_lousy_winner,omitempty"`
-	OpinionLover                                  *CommonRelation  `paradox_field:"opinion_lover" paradox_type:"field" json:"opinion_lover,omitempty"`
-	OpinionLoyalServant                           *CommonRelation  `paradox_field:"opinion_loyal_servant" paradox_type:"field" json:"opinion_loyal_servant,omitempty"`
-	OpinionLyingAboutConfession                   *CommonRelation  `paradox_field:"opinion_lying_about_confession" paradox_type:"field" json:"opinion_lying_about_confession,omitempty"`
-	OpinionMaritalLove                            *CommonRelation  `paradox_field:"opinion_marital_love" paradox_type:"field" json:"opinion_marital_love,omitempty"`
-	OpinionMentor                                 *CommonRelation  `paradox_field:"opinion_mentor" paradox_type:"field" json:"opinion_mentor,omitempty"`
-	OpinionMerciful                               *CommonRelation  `paradox_field:"opinion_merciful" paradox_type:"field" json:"opinion_merciful,omitempty"`
-	OpinionMildlyDisappointed                     *CommonRelation  `paradox_field:"opinion_mildly_disappointed" paradox_type:"field" json:"opinion_mildly_disappointed,omitempty"`
-	OpinionMocked                                 *CommonRelation  `paradox_field:"opinion_mocked" paradox_type:"field" json:"opinion_mocked,omitempty"`
-	OpinionMotherlyLove                           *CommonRelation  `paradox_field:"opinion_motherly_love" paradox_type:"field" json:"opinion_motherly_love,omitempty"`
-	OpinionMurderAttempt                          *CommonRelation  `paradox_field:"opinion_murder_attempt" paradox_type:"field" json:"opinion_murder_attempt,omitempty"`
-	OpinionMutilatedMe                            *CommonRelation  `paradox_field:"opinion_mutilated_me" paradox_type:"field" json:"opinion_mutilated_me,omitempty"`
-	OpinionMySaviour                              *CommonRelation  `paradox_field:"opinion_my_saviour" paradox_type:"field" json:"opinion_my_saviour,omitempty"`
-	OpinionNomuslim                               *CommonRelation  `paradox_field:"opinion_nomuslim" paradox_type:"field" json:"opinion_nomuslim,omitempty"`
-	OpinionPleased                                *CommonRelation  `paradox_field:"opinion_pleased" paradox_type:"field" json:"opinion_pleased,omitempty"`
-	OpinionPoisonousWoman                         *CommonRelation  `paradox_field:"opinion_poisonous_woman" paradox_type:"field" json:"opinion_poisonous_woman,omitempty"`
-	OpinionRebelTraitor                           *CommonRelation  `paradox_field:"opinion_rebel_traitor" paradox_type:"field" json:"opinion_rebel_traitor,omitempty"`
-	OpinionRecentlyFired                          *CommonRelation  `paradox_field:"opinion_recently_fired" paradox_type:"field" json:"opinion_recently_fired,omitempty"`
-	OpinionRefusedCouncil                         *CommonRelation  `paradox_field:"opinion_refused_council" paradox_type:"field" json:"opinion_refused_council,omitempty"`
-	OpinionRegretsAccusation                      *CommonRelation  `paradox_field:"opinion_regrets_accusation" paradox_type:"field" json:"opinion_regrets_accusation,omitempty"`
-	OpinionRejectedFriend                         *CommonRelation  `paradox_field:"opinion_rejected_friend" paradox_type:"field" json:"opinion_rejected_friend,omitempty"`
-	OpinionRekindleLove                           *CommonRelation  `paradox_field:"opinion_rekindle_love" paradox_type:"field" json:"opinion_rekindle_love,omitempty"`
-	OpinionReleasedPrisoner                       *CommonRelation  `paradox_field:"opinion_released_prisoner" paradox_type:"field" json:"opinion_released_prisoner,omitempty"`
-	OpinionRelieved                               *CommonRelation  `paradox_field:"opinion_relieved" paradox_type:"field" json:"opinion_relieved,omitempty"`
-	OpinionReligiousQuarrel                       *CommonRelation  `paradox_field:"opinion_religious_quarrel" paradox_type:"field" json:"opinion_religious_quarrel,omitempty"`
-	OpinionResignedFromCouncil                    *CommonRelation  `paradox_field:"opinion_resigned_from_council" paradox_type:"field" json:"opinion_resigned_from_council,omitempty"`
-	OpinionRevokedATitle                          *CommonRelation  `paradox_field:"opinion_revoked_a_title" paradox_type:"field" json:"opinion_revoked_a_title,omitempty"`
-	OpinionRevokedMarshalTitle                    *CommonRelation  `paradox_field:"opinion_revoked_marshal_title" paradox_type:"field" json:"opinion_revoked_marshal_title,omitempty"`
-	OpinionRevokedMyTitle                         *CommonRelation  `paradox_field:"opinion_revoked_my_title" paradox_type:"field" json:"opinion_revoked_my_title,omitempty"`
-	OpinionRival                                  *CommonRelation  `paradox_field:"opinion_rival" paradox_type:"field" json:"opinion_rival,omitempty"`
-	OpinionRulerDoNotTrustHim                     *CommonRelation  `paradox_field:"opinion_ruler_do_not_trust_him" paradox_type:"field" json:"opinion_ruler_do_not_trust_him,omitempty"`
-	OpinionRuthless                               *CommonRelation  `paradox_field:"opinion_ruthless" paradox_type:"field" json:"opinion_ruthless,omitempty"`
-	OpinionSad                                    *CommonRelation  `paradox_field:"opinion_sad" paradox_type:"field" json:"opinion_sad,omitempty"`
-	OpinionSatisfied                              *CommonRelation  `paradox_field:"opinion_satisfied" paradox_type:"field" json:"opinion_satisfied,omitempty"`
-	OpinionSeducedRefused                         *CommonRelation  `paradox_field:"opinion_seduced_refused" paradox_type:"field" json:"opinion_seduced_refused,omitempty"`
-	OpinionSeducedYearning                        *CommonRelation  `paradox_field:"opinion_seduced_yearning" paradox_type:"field" json:"opinion_seduced_yearning,omitempty"`
-	OpinionSeducing                               *CommonRelation  `paradox_field:"opinion_seducing" paradox_type:"field" json:"opinion_seducing,omitempty"`
-	OpinionSentPreacher                           *CommonRelation  `paradox_field:"opinion_sent_preacher" paradox_type:"field" json:"opinion_sent_preacher,omitempty"`
-	OpinionShieldmaiden                           *CommonRelation  `paradox_field:"opinion_shieldmaiden" paradox_type:"field" json:"opinion_shieldmaiden,omitempty"`
-	OpinionShocked                                *CommonRelation  `paradox_field:"opinion_shocked" paradox_type:"field" json:"opinion_shocked,omitempty"`
-	OpinionSpoiledIngrate                         *CommonRelation  `paradox_field:"opinion_spoiled_ingrate" paradox_type:"field" json:"opinion_spoiled_ingrate,omitempty"`
-	OpinionSpouseSlayer                           *CommonRelation  `paradox_field:"opinion_spouse_slayer" paradox_type:"field" json:"opinion_spouse_slayer,omitempty"`
-	OpinionSpurned                                *CommonRelation  `paradox_field:"opinion_spurned" paradox_type:"field" json:"opinion_spurned,omitempty"`
-	OpinionSpyBlackmailed                         *CommonRelation  `paradox_field:"opinion_spy_blackmailed" paradox_type:"field" json:"opinion_spy_blackmailed,omitempty"`
-	OpinionSpyingOn                               *CommonRelation  `paradox_field:"opinion_spying_on" paradox_type:"field" json:"opinion_spying_on,omitempty"`
-	OpinionStraightenedUp                         *CommonRelation  `paradox_field:"opinion_straightened_up" paradox_type:"field" json:"opinion_straightened_up,omitempty"`
-	OpinionStubbornRival                          *CommonRelation  `paradox_field:"opinion_stubborn_rival" paradox_type:"field" json:"opinion_stubborn_rival,omitempty"`
-	OpinionSubjugated                             *CommonRelation  `paradox_field:"opinion_subjugated" paradox_type:"field" json:"opinion_subjugated,omitempty"`
-	OpinionSuccessfulCorruption                   *CommonRelation  `paradox_field:"opinion_successful_corruption" paradox_type:"field" json:"opinion_successful_corruption,omitempty"`
-	OpinionSuspectedAdultery                      *CommonRelation  `paradox_field:"opinion_suspected_adultery" paradox_type:"field" json:"opinion_suspected_adultery,omitempty"`
-	OpinionSwayed1                                *CommonRelation  `paradox_field:"opinion_swayed_1" paradox_type:"field" json:"opinion_swayed_1,omitempty"`
-	OpinionSwayed2                                *CommonRelation  `paradox_field:"opinion_swayed_2" paradox_type:"field" json:"opinion_swayed_2,omitempty"`
-	OpinionTargetedByAdventurer                   *CommonRelation  `paradox_field:"opinion_targeted_by_adventurer" paradox_type:"field" json:"opinion_targeted_by_adventurer,omitempty"`
-	OpinionTradePartner                           *CommonRelation  `paradox_field:"opinion_trade_partner" paradox_type:"field" json:"opinion_trade_partner,omitempty"`
-	OpinionTraitor                                *CommonRelation  `paradox_field:"opinion_traitor" paradox_type:"field" json:"opinion_traitor,omitempty"`
-	OpinionTriedToGetMeKilled                     *CommonRelation  `paradox_field:"opinion_tried_to_get_me_killed" paradox_type:"field" json:"opinion_tried_to_get_me_killed,omitempty"`
-	OpinionTurnedABlindEye                        *CommonRelation  `paradox_field:"opinion_turned_a_blind_eye" paradox_type:"field" json:"opinion_turned_a_blind_eye,omitempty"`
-	OpinionUnappreciated                          *CommonRelation  `paradox_field:"opinion_unappreciated" paradox_type:"field" json:"opinion_unappreciated,omitempty"`
-	OpinionUnchristian                            *CommonRelation  `paradox_field:"opinion_unchristian" paradox_type:"field" json:"opinion_unchristian,omitempty"`
-	OpinionUnfaithfulHusband                      *CommonRelation  `paradox_field:"opinion_unfaithful_husband" paradox_type:"field" json:"opinion_unfaithful_husband,omitempty"`
-	OpinionUnhappy                                *CommonRelation  `paradox_field:"opinion_unhappy" paradox_type:"field" json:"opinion_unhappy,omitempty"`
-	OpinionUpset                                  *CommonRelation  `paradox_field:"opinion_upset" paradox_type:"field" json:"opinion_upset,omitempty"`
-	OpinionUpsetMother                            *CommonRelation  `paradox_field:"opinion_upset_mother" paradox_type:"field" json:"opinion_upset_mother,omitempty"`
-	OpinionVeryDisappointed                       *CommonRelation  `paradox_field:"opinion_very_disappointed" paradox_type:"field" json:"opinion_very_disappointed,omitempty"`
-	OpinionVeryGrateful                           *CommonRelation  `paradox_field:"opinion_very_grateful" paradox_type:"field" json:"opinion_very_grateful,omitempty"`
-	OpinionWasPraised                             *CommonRelation  `paradox_field:"opinion_was_praised" paradox_type:"field" json:"opinion_was_praised,omitempty"`
-	OpinionWasWildlyPraised                       *CommonRelation  `paradox_field:"opinion_was_wildly_praised" paradox_type:"field" json:"opinion_was_wildly_praised,omitempty"`
-	OpinionWhipped                                *CommonRelation  `paradox_field:"opinion_whipped" paradox_type:"field" json:"opinion_whipped,omitempty"`
-	PaidForCelebrationArtifact                    *CommonRelation  `paradox_field:"paid_for_celebration_artifact" paradox_type:"field" json:"paid_for_celebration_artifact,omitempty"`
-	PerfectPunishment                             *CommonRelation  `paradox_field:"perfect_punishment" paradox_type:"field" json:"perfect_punishment,omitempty"`
-	PopeHeathenRemovalApprove2                    *CommonRelation  `paradox_field:"pope_heathen_removal_approve_2" paradox_type:"field" json:"pope_heathen_removal_approve_2,omitempty"`
-	ProudNeg                                      *CommonRelation  `paradox_field:"proud_neg" paradox_type:"field" json:"proud_neg,omitempty"`
-	RaisedDays                                    int              `paradox_field:"raised_days" paradox_type:"field" json:"raised_days,omitempty"`
-	RequestedLand                                 *CommonRelation  `paradox_field:"requested_land" paradox_type:"field" json:"requested_land,omitempty"`
-	RevealedPlot                                  *CommonRelation  `paradox_field:"revealed_plot" paradox_type:"field" json:"revealed_plot,omitempty"`
-	SchemingBastard                               *CommonRelation  `paradox_field:"scheming_bastard" paradox_type:"field" json:"scheming_bastard,omitempty"`
-	SecondFavorMonthStart                         int              `paradox_field:"second_favor_month_start" paradox_type:"field" json:"second_favor_month_start,omitempty"`
-	SecondFavorStatus                             pserialize.PBool `paradox_field:"second_favor_status" paradox_type:"field" json:"second_favor_status,omitempty"`
-	SlothfulNeg                                   *CommonRelation  `paradox_field:"slothful_neg" paradox_type:"field" json:"slothful_neg,omitempty"`
-	SpouseEncouraged                              *CommonRelation  `paradox_field:"spouse_encouraged" paradox_type:"field" json:"spouse_encouraged,omitempty"`
-	SpouseIgnoresMe                               *CommonRelation  `paradox_field:"spouse_ignores_me" paradox_type:"field" json:"spouse_ignores_me,omitempty"`
-	SuccLawChange                                 *CommonRelation  `paradox_field:"succ_law_change" paradox_type:"field" json:"succ_law_change,omitempty"`
-	Succession                                    pserialize.PBool `paradox_field:"succession" paradox_type:"field" json:"succession,omitempty"`
-	SuspectedCowardRumour                         *CommonRelation  `paradox_field:"suspected_coward_rumour" paradox_type:"field" json:"suspected_coward_rumour,omitempty"`
-	SuspectedOccultistRumour                      *CommonRelation  `paradox_field:"suspected_occultist_rumour" paradox_type:"field" json:"suspected_occultist_rumour,omitempty"`
-	TalentRecognized                              *CommonRelation  `paradox_field:"talent_recognized" paradox_type:"field" json:"talent_recognized,omitempty"`
-	TeenageInfatuation                            *CommonRelation  `paradox_field:"teenage_infatuation" paradox_type:"field" json:"teenage_infatuation,omitempty"`
-	CalledIntoWar                                 *CommonRelation  `paradox_field:"called_into_war" paradox_type:"field" json:"called_into_war,omitempty"`
-	ContentNeg                                    *CommonRelation  `paradox_field:"content_neg" paradox_type:"field" json:"content_neg,omitempty"`
-	CynicalNeg                                    *CommonRelation  `paradox_field:"cynical_neg" paradox_type:"field" json:"cynical_neg,omitempty"`
-	DemandReligiousConversionInteractionOnAccept  *CommonRelation  `paradox_field:"DEMAND_RELIGIOUS_CONVERSION_INTERACTION_ON_ACCEPT" paradox_type:"field" json:"DEMAND_RELIGIOUS_CONVERSION_INTERACTION_ON_ACCEPT,omitempty"`
-	GluttonousNeg                                 *CommonRelation  `paradox_field:"gluttonous_neg" paradox_type:"field" json:"gluttonous_neg,omitempty"`
-	GreedyNeg                                     *CommonRelation  `paradox_field:"greedy_neg" paradox_type:"field" json:"greedy_neg,omitempty"`
-	HonoredAlliance                               *CommonRelation  `paradox_field:"honored_alliance" paradox_type:"field" json:"honored_alliance,omitempty"`
-	Insulted                                      *CommonRelation  `paradox_field:"insulted" paradox_type:"field" json:"insulted,omitempty"`
-	JustPos                                       *CommonRelation  `paradox_field:"just_pos" paradox_type:"field" json:"just_pos,omitempty"`
-	OfferMarrigeInteractionOnAccept               *CommonRelation  `paradox_field:"OFFER_MARRIGE_INTERACTION_ON_ACCEPT" paradox_type:"field" json:"OFFER_MARRIGE_INTERACTION_ON_ACCEPT,omitempty"`
-	OpinionAmbitionFulfilled                      *CommonRelation  `paradox_field:"opinion_ambition_fulfilled" paradox_type:"field" json:"opinion_ambition_fulfilled,omitempty"`
-	OpinionAngry                                  *CommonRelation  `paradox_field:"opinion_angry" paradox_type:"field" json:"opinion_angry,omitempty"`
-	OpinionChargeSlanderer                        *CommonRelation  `paradox_field:"opinion_charge_slanderer" paradox_type:"field" json:"opinion_charge_slanderer,omitempty"`
-	OpinionChasingFriend                          *CommonRelation  `paradox_field:"opinion_chasing_friend" paradox_type:"field" json:"opinion_chasing_friend,omitempty"`
-	OpinionCuckolded                              *CommonRelation  `paradox_field:"opinion_cuckolded" paradox_type:"field" json:"opinion_cuckolded,omitempty"`
-	OpinionCuckoldedPrivate                       *CommonRelation  `paradox_field:"opinion_cuckolded_private" paradox_type:"field" json:"opinion_cuckolded_private,omitempty"`
-	OpinionDemandedConversion                     *CommonRelation  `paradox_field:"opinion_demanded_conversion" paradox_type:"field" json:"opinion_demanded_conversion,omitempty"`
-	OpinionDisappointed                           *CommonRelation  `paradox_field:"opinion_disappointed" paradox_type:"field" json:"opinion_disappointed,omitempty"`
-	OpinionDiscoveredPlotting                     *CommonRelation  `paradox_field:"opinion_discovered_plotting" paradox_type:"field" json:"opinion_discovered_plotting,omitempty"`
-	OpinionEntrustedWard                          *CommonRelation  `paradox_field:"opinion_entrusted_ward" paradox_type:"field" json:"opinion_entrusted_ward,omitempty"`
-	OpinionFailedPlot                             *CommonRelation  `paradox_field:"opinion_failed_plot" paradox_type:"field" json:"opinion_failed_plot,omitempty"`
-	OpinionFamilyLove                             *CommonRelation  `paradox_field:"opinion_family_love" paradox_type:"field" json:"opinion_family_love,omitempty"`
-	OpinionFiredFromCouncil                       *CommonRelation  `paradox_field:"opinion_fired_from_council" paradox_type:"field" json:"opinion_fired_from_council,omitempty"`
-	OpinionFlattered                              *CommonRelation  `paradox_field:"opinion_flattered" paradox_type:"field" json:"opinion_flattered,omitempty"`
-	OpinionFulfilledMarriageWish                  *CommonRelation  `paradox_field:"opinion_fulfilled_marriage_wish" paradox_type:"field" json:"opinion_fulfilled_marriage_wish,omitempty"`
-	OpinionFurious                                *CommonRelation  `paradox_field:"opinion_furious" paradox_type:"field" json:"opinion_furious,omitempty"`
-	OpinionGlad                                   *CommonRelation  `paradox_field:"opinion_glad" paradox_type:"field" json:"opinion_glad,omitempty"`
-	OpinionGrantedCounty                          *CommonRelation  `paradox_field:"opinion_granted_county" paradox_type:"field" json:"opinion_granted_county,omitempty"`
-	OpinionGrantedDuchy                           *CommonRelation  `paradox_field:"opinion_granted_duchy" paradox_type:"field" json:"opinion_granted_duchy,omitempty"`
-	OpinionHappy                                  *CommonRelation  `paradox_field:"opinion_happy" paradox_type:"field" json:"opinion_happy,omitempty"`
-	OpinionImprisonedMissionary                   *CommonRelation  `paradox_field:"opinion_imprisoned_missionary" paradox_type:"field" json:"opinion_imprisoned_missionary,omitempty"`
-	OpinionImprovedRelations                      *CommonRelation  `paradox_field:"opinion_improved_relations" paradox_type:"field" json:"opinion_improved_relations,omitempty"`
-	OpinionIncreasedTribalOrganization            *CommonRelation  `paradox_field:"opinion_increased_tribal_organization" paradox_type:"field" json:"opinion_increased_tribal_organization,omitempty"`
-	OpinionInsulted                               *CommonRelation  `paradox_field:"opinion_insulted" paradox_type:"field" json:"opinion_insulted,omitempty"`
-	OpinionMercifulQadi                           *CommonRelation  `paradox_field:"opinion_merciful_qadi" paradox_type:"field" json:"opinion_merciful_qadi,omitempty"`
-	OpinionOffended                               *CommonRelation  `paradox_field:"opinion_offended" paradox_type:"field" json:"opinion_offended,omitempty"`
-	OpinionRenownedChicken                        *CommonRelation  `paradox_field:"opinion_renowned_chicken" paradox_type:"field" json:"opinion_renowned_chicken,omitempty"`
-	OpinionSavedMeAndChild                        *CommonRelation  `paradox_field:"opinion_saved_me_and_child" paradox_type:"field" json:"opinion_saved_me_and_child,omitempty"`
-	OpinionSeducedAttracted                       *CommonRelation  `paradox_field:"opinion_seduced_attracted" paradox_type:"field" json:"opinion_seduced_attracted,omitempty"`
-	OpinionSeducedRepelled                        *CommonRelation  `paradox_field:"opinion_seduced_repelled" paradox_type:"field" json:"opinion_seduced_repelled,omitempty"`
-	OpinionSlandered                              *CommonRelation  `paradox_field:"opinion_slandered" paradox_type:"field" json:"opinion_slandered,omitempty"`
-	OpinionSwayed0                                *CommonRelation  `paradox_field:"opinion_swayed_0" paradox_type:"field" json:"opinion_swayed_0,omitempty"`
-	OpinionTyrant                                 *CommonRelation  `paradox_field:"opinion_tyrant" paradox_type:"field" json:"opinion_tyrant,omitempty"`
-	OpinionUnfaithfulPrivate                      *CommonRelation  `paradox_field:"opinion_unfaithful_private" paradox_type:"field" json:"opinion_unfaithful_private,omitempty"`
-	OpinionUnfaithfulWife                         *CommonRelation  `paradox_field:"opinion_unfaithful_wife" paradox_type:"field" json:"opinion_unfaithful_wife,omitempty"`
-	OpinionUsurpedTitle                           *CommonRelation  `paradox_field:"opinion_usurped_title" paradox_type:"field" json:"opinion_usurped_title,omitempty"`
-	OpinionVassalTransfer                         *CommonRelation  `paradox_field:"opinion_vassal_transfer" paradox_type:"field" json:"opinion_vassal_transfer,omitempty"`
-	ParanoidPos                                   *CommonRelation  `paradox_field:"paranoid_pos" paradox_type:"field" json:"paranoid_pos,omitempty"`
-	ProudPos                                      *CommonRelation  `paradox_field:"proud_pos" paradox_type:"field" json:"proud_pos,omitempty"`
-	ShyPos                                        *CommonRelation  `paradox_field:"shy_pos" paradox_type:"field" json:"shy_pos,omitempty"`
-	SlutSeductress                                *CommonRelation  `paradox_field:"slut_seductress" paradox_type:"field" json:"slut_seductress,omitempty"`
-	StopBackingAmbition                           *CommonRelation  `paradox_field:"stop_backing_ambition" paradox_type:"field" json:"stop_backing_ambition,omitempty"`
-	SuspectedSodomiteRumour                       *CommonRelation  `paradox_field:"suspected_sodomite_rumour" paradox_type:"field" json:"suspected_sodomite_rumour,omitempty"`
-	TrustingPos                                   *CommonRelation  `paradox_field:"trusting_pos" paradox_type:"field" json:"trusting_pos,omitempty"`
-	ZealousPos                                    *CommonRelation  `paradox_field:"zealous_pos" paradox_type:"field" json:"zealous_pos,omitempty"`
-	CasusBelli                                    *CasusBelli      `paradox_field:"casus_belli" paradox_type:"field" json:"casus_belli,omitempty"`
-	CommonInterestsOpinion                        *CommonRelation  `paradox_field:"common_interests_opinion" paradox_type:"field" json:"common_interests_opinion,omitempty"`
-	InNonAggressionPact                           *CommonRelation  `paradox_field:"in_non_aggression_pact" paradox_type:"field" json:"in_non_aggression_pact,omitempty"`
-	NonAggressionPact                             pserialize.PBool `paradox_field:"non_aggression_pact" paradox_type:"field" json:"non_aggression_pact,omitempty"`
-	OpinionInherited                              *CommonRelation  `paradox_field:"opinion_inherited" paradox_type:"field" json:"opinion_inherited,omitempty"`
-	OpinionInheritedNegative                      *CommonRelation  `paradox_field:"opinion_inherited_negative" paradox_type:"field" json:"opinion_inherited_negative,omitempty"`
-	Tributary                                     *Tributary       `paradox_field:"tributary" paradox_type:"field" json:"tributary,omitempty"`
-	Truce                                         *Truce           `paradox_field:"truce" paradox_type:"field" json:"truce,omitempty"`
+	MarriageTie                                   *MarriageTie     `paradox_field:"marriage_tie" json:"marriage_tie,omitempty"`
+	RY                                            int              `paradox_field:"ry" json:"ry,omitempty"`
+	AbuseOfOffice                                 *CommonRelation  `paradox_field:"abuse_of_office" json:"abuse_of_office,omitempty"`
+	AcknowledgedBastard                           *CommonRelation  `paradox_field:"acknowledged_bastard" json:"acknowledged_bastard,omitempty"`
+	AcknowledgedChild                             *CommonRelation  `paradox_field:"acknowledged_child" json:"acknowledged_child,omitempty"`
+	Alliance                                      pserialize.PBool `paradox_field:"alliance" json:"alliance,omitempty"`
+	AmbitiousPos                                  *CommonRelation  `paradox_field:"ambitious_pos" json:"ambitious_pos,omitempty"`
+	ApprovesOfMyBehaviour                         *CommonRelation  `paradox_field:"approves_of_my_behaviour" json:"approves_of_my_behaviour,omitempty"`
+	AttemptedMurder                               *CommonRelation  `paradox_field:"attempted_murder" json:"attempted_murder,omitempty"`
+	AttemptedMurderOfChild                        *CommonRelation  `paradox_field:"attempted_murder_of_child" json:"attempted_murder_of_child,omitempty"`
+	AttemptedMurderOfSibling                      *CommonRelation  `paradox_field:"attempted_murder_of_sibling" json:"attempted_murder_of_sibling,omitempty"`
+	BadSuccLawChange                              *CommonRelation  `paradox_field:"bad_succ_law_change" json:"bad_succ_law_change,omitempty"`
+	BoughtIndulgences                             *CommonRelation  `paradox_field:"bought_indulgences" json:"bought_indulgences,omitempty"`
+	BravePos                                      *CommonRelation  `paradox_field:"brave_pos" json:"brave_pos,omitempty"`
+	BrokenNonAggressionPact                       *CommonRelation  `paradox_field:"broken_non_aggression_pact" json:"broken_non_aggression_pact,omitempty"`
+	CanCallToWar                                  pserialize.PBool `paradox_field:"can_call_to_war" json:"can_call_to_war,omitempty"`
+	ComfortedOpinion                              *CommonRelation  `paradox_field:"comforted_opinion" json:"comforted_opinion,omitempty"`
+	CravenPos                                     *CommonRelation  `paradox_field:"craven_pos" json:"craven_pos,omitempty"`
+	DeclaredWar                                   *CommonRelation  `paradox_field:"declared_war" json:"declared_war,omitempty"`
+	DemandReligiousConversionInteractionOnDecline *CommonRelation  `paradox_field:"DEMAND_RELIGIOUS_CONVERSION_INTERACTION_ON_DECLINE" json:"DEMAND_RELIGIOUS_CONVERSION_INTERACTION_ON_DECLINE,omitempty"`
+	DeniedCowardRumour                            *CommonRelation  `paradox_field:"denied_coward_rumour" json:"denied_coward_rumour,omitempty"`
+	DeniedOccultistRumour                         *CommonRelation  `paradox_field:"denied_occultist_rumour" json:"denied_occultist_rumour,omitempty"`
+	DeniedSodomiteRumour                          *CommonRelation  `paradox_field:"denied_sodomite_rumour" json:"denied_sodomite_rumour,omitempty"`
+	DenouncedChild                                *CommonRelation  `paradox_field:"denounced_child" json:"denounced_child,omitempty"`
+	DespiseDrunkard                               *CommonRelation  `paradox_field:"despise_drunkard" json:"despise_drunkard,omitempty"`
+	DiligentPos                                   *CommonRelation  `paradox_field:"diligent_pos" json:"diligent_pos,omitempty"`
+	DisableNonAggressionPacts                     pserialize.PBool `paradox_field:"disable_non_aggression_pacts" json:"disable_non_aggression_pacts,omitempty"`
+	DisrespectsDynasty                            *CommonRelation  `paradox_field:"disrespects_dynasty" json:"disrespects_dynasty,omitempty"`
+	EnviousNeg                                    *CommonRelation  `paradox_field:"envious_neg" json:"envious_neg,omitempty"`
+	EnviousPos                                    *CommonRelation  `paradox_field:"envious_pos" json:"envious_pos,omitempty"`
+	FirstFavorMonthStart                          int              `paradox_field:"first_favor_month_start" json:"first_favor_month_start,omitempty"`
+	FirstFavorStatus                              pserialize.PBool `paradox_field:"first_favor_status" json:"first_favor_status,omitempty"`
+	GoodSuccLawChange                             *CommonRelation  `paradox_field:"good_succ_law_change" json:"good_succ_law_change,omitempty"`
+	GregariousNeg                                 *CommonRelation  `paradox_field:"gregarious_neg" json:"gregarious_neg,omitempty"`
+	GrievouslyOffended                            *CommonRelation  `paradox_field:"grievously_offended" json:"grievously_offended,omitempty"`
+	IgnoresLocalSaints                            *CommonRelation  `paradox_field:"ignores_local_saints" json:"ignores_local_saints,omitempty"`
+	IsLooter                                      pserialize.PBool `paradox_field:"is_looter" json:"is_looter,omitempty"`
+	JoinedMyWar                                   *CommonRelation  `paradox_field:"joined_my_war" json:"joined_my_war,omitempty"`
+	LooterHostilityDays                           int              `paradox_field:"looter_hostility_days" json:"looter_hostility_days,omitempty"`
+	LostWar                                       *CommonRelation  `paradox_field:"lost_war" json:"lost_war,omitempty"`
+	MarshalOverruled                              *CommonRelation  `paradox_field:"marshal_overruled" json:"marshal_overruled,omitempty"`
+	NotARealMan                                   *CommonRelation  `paradox_field:"not_a_real_man" json:"not_a_real_man,omitempty"`
+	NotFeelingApreciated                          *CommonRelation  `paradox_field:"not_feeling_apreciated" json:"not_feeling_apreciated,omitempty"`
+	OpinionAbductedSpouse                         *CommonRelation  `paradox_field:"opinion_abducted_spouse" json:"opinion_abducted_spouse,omitempty"`
+	OpinionAbsorbedMyClan                         *CommonRelation  `paradox_field:"opinion_absorbed_my_clan" json:"opinion_absorbed_my_clan,omitempty"`
+	OpinionAccusedApostate                        *CommonRelation  `paradox_field:"opinion_accused_apostate" json:"opinion_accused_apostate,omitempty"`
+	OpinionAcquaintance                           *CommonRelation  `paradox_field:"opinion_acquaintance" json:"opinion_acquaintance,omitempty"`
+	OpinionAllowedMissionary                      *CommonRelation  `paradox_field:"opinion_allowed_missionary" json:"opinion_allowed_missionary,omitempty"`
+	OpinionAntagonized1                           *CommonRelation  `paradox_field:"opinion_antagonized_1" json:"opinion_antagonized_1,omitempty"`
+	OpinionAntagonized2                           *CommonRelation  `paradox_field:"opinion_antagonized_2" json:"opinion_antagonized_2,omitempty"`
+	OpinionAntagonized3                           *CommonRelation  `paradox_field:"opinion_antagonized_3" json:"opinion_antagonized_3,omitempty"`
+	OpinionArrestAttempt                          *CommonRelation  `paradox_field:"opinion_arrest_attempt" json:"opinion_arrest_attempt,omitempty"`
+	OpinionBanishedSameFaith                      *CommonRelation  `paradox_field:"opinion_banished_same_faith" json:"opinion_banished_same_faith,omitempty"`
+	OpinionBaptized                               *CommonRelation  `paradox_field:"opinion_baptized" json:"opinion_baptized,omitempty"`
+	OpinionBetrayed                               *CommonRelation  `paradox_field:"opinion_betrayed" json:"opinion_betrayed,omitempty"`
+	OpinionBetrothalBroken                        *CommonRelation  `paradox_field:"opinion_betrothal_broken" json:"opinion_betrothal_broken,omitempty"`
+	OpinionBoring                                 *CommonRelation  `paradox_field:"opinion_boring" json:"opinion_boring,omitempty"`
+	OpinionBuddingFriendship                      *CommonRelation  `paradox_field:"opinion_budding_friendship" json:"opinion_budding_friendship,omitempty"`
+	OpinionBuddingRomance                         *CommonRelation  `paradox_field:"opinion_budding_romance" json:"opinion_budding_romance,omitempty"`
+	OpinionCarousing                              *CommonRelation  `paradox_field:"opinion_carousing" json:"opinion_carousing,omitempty"`
+	OpinionCastratedMe                            *CommonRelation  `paradox_field:"opinion_castrated_me" json:"opinion_castrated_me,omitempty"`
+	OpinionCautious                               *CommonRelation  `paradox_field:"opinion_cautious" json:"opinion_cautious,omitempty"`
+	OpinionChargeDeviant                          *CommonRelation  `paradox_field:"opinion_charge_deviant" json:"opinion_charge_deviant,omitempty"`
+	OpinionChargeDw                               *CommonRelation  `paradox_field:"opinion_charge_dw" json:"opinion_charge_dw,omitempty"`
+	OpinionChargeInfidel                          *CommonRelation  `paradox_field:"opinion_charge_infidel" json:"opinion_charge_infidel,omitempty"`
+	OpinionChasingSpouse                          *CommonRelation  `paradox_field:"opinion_chasing_spouse" json:"opinion_chasing_spouse,omitempty"`
+	OpinionChastisedByLiege                       *CommonRelation  `paradox_field:"opinion_chastised_by_liege" json:"opinion_chastised_by_liege,omitempty"`
+	OpinionClaimantAdventureTarget                *CommonRelation  `paradox_field:"opinion_claimant_adventure_target" json:"opinion_claimant_adventure_target,omitempty"`
+	OpinionCloisteredMe                           *CommonRelation  `paradox_field:"opinion_cloistered_me" json:"opinion_cloistered_me,omitempty"`
+	OpinionCoercedIntoJoiningFaction              *CommonRelation  `paradox_field:"opinion_coerced_into_joining_faction" json:"opinion_coerced_into_joining_faction,omitempty"`
+	OpinionCoercedIntoLeavingFaction              *CommonRelation  `paradox_field:"opinion_coerced_into_leaving_faction" json:"opinion_coerced_into_leaving_faction,omitempty"`
+	OpinionComplaining                            *CommonRelation  `paradox_field:"opinion_complaining" json:"opinion_complaining,omitempty"`
+	OpinionConvertedProvince                      *CommonRelation  `paradox_field:"opinion_converted_province" json:"opinion_converted_province,omitempty"`
+	OpinionCoward                                 *CommonRelation  `paradox_field:"opinion_coward" json:"opinion_coward,omitempty"`
+	OpinionCravings                               *CommonRelation  `paradox_field:"opinion_cravings" json:"opinion_cravings,omitempty"`
+	OpinionCruel                                  *CommonRelation  `paradox_field:"opinion_cruel" json:"opinion_cruel,omitempty"`
+	OpinionDeclinedParty                          *CommonRelation  `paradox_field:"opinion_declined_party" json:"opinion_declined_party,omitempty"`
+	OpinionDefeatedRebels                         *CommonRelation  `paradox_field:"opinion_defeated_rebels" json:"opinion_defeated_rebels,omitempty"`
+	OpinionDelighted                              *CommonRelation  `paradox_field:"opinion_delighted" json:"opinion_delighted,omitempty"`
+	OpinionDeniedAdvice                           *CommonRelation  `paradox_field:"opinion_denied_advice" json:"opinion_denied_advice,omitempty"`
+	OpinionDeniedRequest                          *CommonRelation  `paradox_field:"opinion_denied_request" json:"opinion_denied_request,omitempty"`
+	OpinionDestroyedDjLiegeTitle                  *CommonRelation  `paradox_field:"opinion_destroyed_dj_liege_title" json:"opinion_destroyed_dj_liege_title,omitempty"`
+	OpinionDidNotTrustMe                          *CommonRelation  `paradox_field:"opinion_did_not_trust_me" json:"opinion_did_not_trust_me,omitempty"`
+	OpinionDishonorable                           *CommonRelation  `paradox_field:"opinion_dishonorable" json:"opinion_dishonorable,omitempty"`
+	OpinionDishonorableDuel                       *CommonRelation  `paradox_field:"opinion_dishonorable_duel" json:"opinion_dishonorable_duel,omitempty"`
+	OpinionDishonorableDuelMajor                  *CommonRelation  `paradox_field:"opinion_dishonorable_duel_major" json:"opinion_dishonorable_duel_major,omitempty"`
+	OpinionDishonorableDuelMinor                  *CommonRelation  `paradox_field:"opinion_dishonorable_duel_minor" json:"opinion_dishonorable_duel_minor,omitempty"`
+	OpinionDishonorableScum                       *CommonRelation  `paradox_field:"opinion_dishonorable_scum" json:"opinion_dishonorable_scum,omitempty"`
+	OpinionDislike                                *CommonRelation  `paradox_field:"opinion_dislike" json:"opinion_dislike,omitempty"`
+	OpinionDislikesNewObligationLaw               *CommonRelation  `paradox_field:"opinion_dislikes_new_obligation_law" json:"opinion_dislikes_new_obligation_law,omitempty"`
+	OpinionDisrespectfulSubject                   *CommonRelation  `paradox_field:"opinion_disrespectful_subject" json:"opinion_disrespectful_subject,omitempty"`
+	OpinionDisrespectingCulture                   *CommonRelation  `paradox_field:"opinion_disrespecting_culture" json:"opinion_disrespecting_culture,omitempty"`
+	OpinionDisrespectsMe                          *CommonRelation  `paradox_field:"opinion_disrespects_me" json:"opinion_disrespects_me,omitempty"`
+	OpinionElderFulfilledDemand                   *CommonRelation  `paradox_field:"opinion_elder_fulfilled_demand" json:"opinion_elder_fulfilled_demand,omitempty"`
+	OpinionElderTraitor                           *CommonRelation  `paradox_field:"opinion_elder_traitor" json:"opinion_elder_traitor,omitempty"`
+	OpinionEldersPleased                          *CommonRelation  `paradox_field:"opinion_elders_pleased" json:"opinion_elders_pleased,omitempty"`
+	OpinionEmbarrassed                            *CommonRelation  `paradox_field:"opinion_embarrassed" json:"opinion_embarrassed,omitempty"`
+	OpinionEvilTyrant                             *CommonRelation  `paradox_field:"opinion_evil_tyrant" json:"opinion_evil_tyrant,omitempty"`
+	OpinionFailedCorruption                       *CommonRelation  `paradox_field:"opinion_failed_corruption" json:"opinion_failed_corruption,omitempty"`
+	OpinionFavorite                               *CommonRelation  `paradox_field:"opinion_favorite" json:"opinion_favorite,omitempty"`
+	OpinionFineGift                               *CommonRelation  `paradox_field:"opinion_fine_gift" json:"opinion_fine_gift,omitempty"`
+	OpinionFledDuel                               *CommonRelation  `paradox_field:"opinion_fled_duel" json:"opinion_fled_duel,omitempty"`
+	OpinionForcedConsort                          *CommonRelation  `paradox_field:"opinion_forced_consort" json:"opinion_forced_consort,omitempty"`
+	OpinionForcedRelativeConsort                  *CommonRelation  `paradox_field:"opinion_forced_relative_consort" json:"opinion_forced_relative_consort,omitempty"`
+	OpinionForcedWifeConsort                      *CommonRelation  `paradox_field:"opinion_forced_wife_consort" json:"opinion_forced_wife_consort,omitempty"`
+	OpinionFormerLover                            *CommonRelation  `paradox_field:"opinion_former_lover" json:"opinion_former_lover,omitempty"`
+	OpinionFoughtDuel                             *CommonRelation  `paradox_field:"opinion_fought_duel" json:"opinion_fought_duel,omitempty"`
+	OpinionFoughtForClaimant                      *CommonRelation  `paradox_field:"opinion_fought_for_claimant" json:"opinion_fought_for_claimant,omitempty"`
+	OpinionFriend                                 *CommonRelation  `paradox_field:"opinion_friend" json:"opinion_friend,omitempty"`
+	OpinionGivenCouncilPosition2                  *CommonRelation  `paradox_field:"opinion_given_council_position_2" json:"opinion_given_council_position_2,omitempty"`
+	OpinionGodfather                              *CommonRelation  `paradox_field:"opinion_godfather" json:"opinion_godfather,omitempty"`
+	OpinionGoodWork                               *CommonRelation  `paradox_field:"opinion_good_work" json:"opinion_good_work,omitempty"`
+	OpinionGrantedBarony                          *CommonRelation  `paradox_field:"opinion_granted_barony" json:"opinion_granted_barony,omitempty"`
+	OpinionGrateful                               *CommonRelation  `paradox_field:"opinion_grateful" json:"opinion_grateful,omitempty"`
+	OpinionGreatLeader                            *CommonRelation  `paradox_field:"opinion_great_leader" json:"opinion_great_leader,omitempty"`
+	OpinionHate                                   *CommonRelation  `paradox_field:"opinion_hate" json:"opinion_hate,omitempty"`
+	OpinionHeldContest                            *CommonRelation  `paradox_field:"opinion_held_contest" json:"opinion_held_contest,omitempty"`
+	OpinionHumiliatedCloseKin                     *CommonRelation  `paradox_field:"opinion_humiliated_close_kin" json:"opinion_humiliated_close_kin,omitempty"`
+	OpinionHumiliatedFamily                       *CommonRelation  `paradox_field:"opinion_humiliated_family" json:"opinion_humiliated_family,omitempty"`
+	OpinionHumiliatedMe                           *CommonRelation  `paradox_field:"opinion_humiliated_me" json:"opinion_humiliated_me,omitempty"`
+	OpinionHypocritRuler                          *CommonRelation  `paradox_field:"opinion_hypocrit_ruler" json:"opinion_hypocrit_ruler,omitempty"`
+	OpinionIgnoredInfidel                         *CommonRelation  `paradox_field:"opinion_ignored_infidel" json:"opinion_ignored_infidel,omitempty"`
+	OpinionImpressed                              *CommonRelation  `paradox_field:"opinion_impressed" json:"opinion_impressed,omitempty"`
+	OpinionImpressedMeInBattle                    *CommonRelation  `paradox_field:"opinion_impressed_me_in_battle" json:"opinion_impressed_me_in_battle,omitempty"`
+	OpinionIncreasedCouncilPower                  *CommonRelation  `paradox_field:"opinion_increased_council_power" json:"opinion_increased_council_power,omitempty"`
+	OpinionInfatuated                             *CommonRelation  `paradox_field:"opinion_infatuated" json:"opinion_infatuated,omitempty"`
+	OpinionInjuredMeInBattle                      *CommonRelation  `paradox_field:"opinion_injured_me_in_battle" json:"opinion_injured_me_in_battle,omitempty"`
+	OpinionIrritated                              *CommonRelation  `paradox_field:"opinion_irritated" json:"opinion_irritated,omitempty"`
+	OpinionKilledCloseKin                         *CommonRelation  `paradox_field:"opinion_killed_close_kin" json:"opinion_killed_close_kin,omitempty"`
+	OpinionKind                                   *CommonRelation  `paradox_field:"opinion_kind" json:"opinion_kind,omitempty"`
+	OpinionKindWinner                             *CommonRelation  `paradox_field:"opinion_kind_winner" json:"opinion_kind_winner,omitempty"`
+	OpinionKnownCorrupter                         *CommonRelation  `paradox_field:"opinion_known_corrupter" json:"opinion_known_corrupter,omitempty"`
+	OpinionLikesNewObligationLaw                  *CommonRelation  `paradox_field:"opinion_likes_new_obligation_law" json:"opinion_likes_new_obligation_law,omitempty"`
+	OpinionLooted                                 *CommonRelation  `paradox_field:"opinion_looted" json:"opinion_looted,omitempty"`
+	OpinionLoser                                  *CommonRelation  `paradox_field:"opinion_loser" json:"opinion_loser,omitempty"`
+	OpinionLostRespect                            *CommonRelation  `paradox_field:"opinion_lost_respect" json:"opinion_lost_respect,omitempty"`
+	OpinionLousyTeacher                           *CommonRelation  `paradox_field:"opinion_lousy_teacher" json:"opinion_lousy_teacher,omitempty"`
+	OpinionLousyWinner                            *CommonRelation  `paradox_field:"opinion_lousy_winner" json:"opinion_lousy_winner,omitempty"`
+	OpinionLover                                  *CommonRelation  `paradox_field:"opinion_lover" json:"opinion_lover,omitempty"`
+	OpinionLoyalServant                           *CommonRelation  `paradox_field:"opinion_loyal_servant" json:"opinion_loyal_servant,omitempty"`
+	OpinionLyingAboutConfession                   *CommonRelation  `paradox_field:"opinion_lying_about_confession" json:"opinion_lying_about_confession,omitempty"`
+	OpinionMaritalLove                            *CommonRelation  `paradox_field:"opinion_marital_love" json:"opinion_marital_love,omitempty"`
+	OpinionMentor                                 *CommonRelation  `paradox_field:"opinion_mentor" json:"opinion_mentor,omitempty"`
+	OpinionMerciful                               *CommonRelation  `paradox_field:"opinion_merciful" json:"opinion_merciful,omitempty"`
+	OpinionMildlyDisappointed                     *CommonRelation  `paradox_field:"opinion_mildly_disappointed" json:"opinion_mildly_disappointed,omitempty"`
+	OpinionMocked                                 *CommonRelation  `paradox_field:"opinion_mocked" json:"opinion_mocked,omitempty"`
+	OpinionMotherlyLove                           *CommonRelation  `paradox_field:"opinion_motherly_love" json:"opinion_motherly_love,omitempty"`
+	OpinionMurderAttempt                          *CommonRelation  `paradox_field:"opinion_murder_attempt" json:"opinion_murder_attempt,omitempty"`
+	OpinionMutilatedMe                            *CommonRelation  `paradox_field:"opinion_mutilated_me" json:"opinion_mutilated_me,omitempty"`
+	OpinionMySaviour                              *CommonRelation  `paradox_field:"opinion_my_saviour" json:"opinion_my_saviour,omitempty"`
+	OpinionNomuslim                               *CommonRelation  `paradox_field:"opinion_nomuslim" json:"opinion_nomuslim,omitempty"`
+	OpinionPleased                                *CommonRelation  `paradox_field:"opinion_pleased" json:"opinion_pleased,omitempty"`
+	OpinionPoisonousWoman                         *CommonRelation  `paradox_field:"opinion_poisonous_woman" json:"opinion_poisonous_woman,omitempty"`
+	OpinionRebelTraitor                           *CommonRelation  `paradox_field:"opinion_rebel_traitor" json:"opinion_rebel_traitor,omitempty"`
+	OpinionRecentlyFired                          *CommonRelation  `paradox_field:"opinion_recently_fired" json:"opinion_recently_fired,omitempty"`
+	OpinionRefusedCouncil                         *CommonRelation  `paradox_field:"opinion_refused_council" json:"opinion_refused_council,omitempty"`
+	OpinionRegretsAccusation                      *CommonRelation  `paradox_field:"opinion_regrets_accusation" json:"opinion_regrets_accusation,omitempty"`
+	OpinionRejectedFriend                         *CommonRelation  `paradox_field:"opinion_rejected_friend" json:"opinion_rejected_friend,omitempty"`
+	OpinionRekindleLove                           *CommonRelation  `paradox_field:"opinion_rekindle_love" json:"opinion_rekindle_love,omitempty"`
+	OpinionReleasedPrisoner                       *CommonRelation  `paradox_field:"opinion_released_prisoner" json:"opinion_released_prisoner,omitempty"`
+	OpinionRelieved                               *CommonRelation  `paradox_field:"opinion_relieved" json:"opinion_relieved,omitempty"`
+	OpinionReligiousQuarrel                       *CommonRelation  `paradox_field:"opinion_religious_quarrel" json:"opinion_religious_quarrel,omitempty"`
+	OpinionResignedFromCouncil                    *CommonRelation  `paradox_field:"opinion_resigned_from_council" json:"opinion_resigned_from_council,omitempty"`
+	OpinionRevokedATitle                          *CommonRelation  `paradox_field:"opinion_revoked_a_title" json:"opinion_revoked_a_title,omitempty"`
+	OpinionRevokedMarshalTitle                    *CommonRelation  `paradox_field:"opinion_revoked_marshal_title" json:"opinion_revoked_marshal_title,omitempty"`
+	OpinionRevokedMyTitle                         *CommonRelation  `paradox_field:"opinion_revoked_my_title" json:"opinion_revoked_my_title,omitempty"`
+	OpinionRival                                  *CommonRelation  `paradox_field:"opinion_rival" json:"opinion_rival,omitempty"`
+	OpinionRulerDoNotTrustHim                     *CommonRelation  `paradox_field:"opinion_ruler_do_not_trust_him" json:"opinion_ruler_do_not_trust_him,omitempty"`
+	OpinionRuthless                               *CommonRelation  `paradox_field:"opinion_ruthless" json:"opinion_ruthless,omitempty"`
+	OpinionSad                                    *CommonRelation  `paradox_field:"opinion_sad" json:"opinion_sad,omitempty"`
+	OpinionSatisfied                              *CommonRelation  `paradox_field:"opinion_satisfied" json:"opinion_satisfied,omitempty"`
+	OpinionSeducedRefused                         *CommonRelation  `paradox_field:"opinion_seduced_refused" json:"opinion_seduced_refused,omitempty"`
+	OpinionSeducedYearning                        *CommonRelation  `paradox_field:"opinion_seduced_yearning" json:"opinion_seduced_yearning,omitempty"`
+	OpinionSeducing                               *CommonRelation  `paradox_field:"opinion_seducing" json:"opinion_seducing,omitempty"`
+	OpinionSentPreacher                           *CommonRelation  `paradox_field:"opinion_sent_preacher" json:"opinion_sent_preacher,omitempty"`
+	OpinionShieldmaiden                           *CommonRelation  `paradox_field:"opinion_shieldmaiden" json:"opinion_shieldmaiden,omitempty"`
+	OpinionShocked                                *CommonRelation  `paradox_field:"opinion_shocked" json:"opinion_shocked,omitempty"`
+	OpinionSpoiledIngrate                         *CommonRelation  `paradox_field:"opinion_spoiled_ingrate" json:"opinion_spoiled_ingrate,omitempty"`
+	OpinionSpouseSlayer                           *CommonRelation  `paradox_field:"opinion_spouse_slayer" json:"opinion_spouse_slayer,omitempty"`
+	OpinionSpurned                                *CommonRelation  `paradox_field:"opinion_spurned" json:"opinion_spurned,omitempty"`
+	OpinionSpyBlackmailed                         *CommonRelation  `paradox_field:"opinion_spy_blackmailed" json:"opinion_spy_blackmailed,omitempty"`
+	OpinionSpyingOn                               *CommonRelation  `paradox_field:"opinion_spying_on" json:"opinion_spying_on,omitempty"`
+	OpinionStraightenedUp                         *CommonRelation  `paradox_field:"opinion_straightened_up" json:"opinion_straightened_up,omitempty"`
+	OpinionStubbornRival                          *CommonRelation  `paradox_field:"opinion_stubborn_rival" json:"opinion_stubborn_rival,omitempty"`
+	OpinionSubjugated                             *CommonRelation  `paradox_field:"opinion_subjugated" json:"opinion_subjugated,omitempty"`
+	OpinionSuccessfulCorruption                   *CommonRelation  `paradox_field:"opinion_successful_corruption" json:"opinion_successful_corruption,omitempty"`
+	OpinionSuspectedAdultery                      *CommonRelation  `paradox_field:"opinion_suspected_adultery" json:"opinion_suspected_adultery,omitempty"`
+	OpinionSwayed1                                *CommonRelation  `paradox_field:"opinion_swayed_1" json:"opinion_swayed_1,omitempty"`
+	OpinionSwayed2                                *CommonRelation  `paradox_field:"opinion_swayed_2" json:"opinion_swayed_2,omitempty"`
+	OpinionTargetedByAdventurer                   *CommonRelation  `paradox_field:"opinion_targeted_by_adventurer" json:"opinion_targeted_by_adventurer,omitempty"`
+	OpinionTradePartner                           *CommonRelation  `paradox_field:"opinion_trade_partner" json:"opinion_trade_partner,omitempty"`
+	OpinionTraitor                                *CommonRelation  `paradox_field:"opinion_traitor" json:"opinion_traitor,omitempty"`
+	OpinionTriedToGetMeKilled                     *CommonRelation  `paradox_field:"opinion_tried_to_get_me_killed" json:"opinion_tried_to_get_me_killed,omitempty"`
+	OpinionTurnedABlindEye                        *CommonRelation  `paradox_field:"opinion_turned_a_blind_eye" json:"opinion_turned_a_blind_eye,omitempty"`
+	OpinionUnappreciated                          *CommonRelation  `paradox_field:"opinion_unappreciated" json:"opinion_unappreciated,omitempty"`
+	OpinionUnchristian                            *CommonRelation  `paradox_field:"opinion_unchristian" json:"opinion_unchristian,omitempty"`
+	OpinionUnfaithfulHusband                      *CommonRelation  `paradox_field:"opinion_unfaithful_husband" json:"opinion_unfaithful_husband,omitempty"`
+	OpinionUnhappy                                *CommonRelation  `paradox_field:"opinion_unhappy" json:"opinion_unhappy,omitempty"`
+	OpinionUpset                                  *CommonRelation  `paradox_field:"opinion_upset" json:"opinion_upset,omitempty"`
+	OpinionUpsetMother                            *CommonRelation  `paradox_field:"opinion_upset_mother" json:"opinion_upset_mother,omitempty"`
+	OpinionVeryDisappointed                       *CommonRelation  `paradox_field:"opinion_very_disappointed" json:"opinion_very_disappointed,omitempty"`
+	OpinionVeryGrateful                           *CommonRelation  `paradox_field:"opinion_very_grateful" json:"opinion_very_grateful,omitempty"`
+	OpinionWasPraised                             *CommonRelation  `paradox_field:"opinion_was_praised" json:"opinion_was_praised,omitempty"`
+	OpinionWasWildlyPraised                       *CommonRelation  `paradox_field:"opinion_was_wildly_praised" json:"opinion_was_wildly_praised,omitempty"`
+	OpinionWhipped                                *CommonRelation  `paradox_field:"opinion_whipped" json:"opinion_whipped,omitempty"`
+	PaidForCelebrationArtifact                    *CommonRelation  `paradox_field:"paid_for_celebration_artifact" json:"paid_for_celebration_artifact,omitempty"`
+	PerfectPunishment                             *CommonRelation  `paradox_field:"perfect_punishment" json:"perfect_punishment,omitempty"`
+	PopeHeathenRemovalApprove2                    *CommonRelation  `paradox_field:"pope_heathen_removal_approve_2" json:"pope_heathen_removal_approve_2,omitempty"`
+	ProudNeg                                      *CommonRelation  `paradox_field:"proud_neg" json:"proud_neg,omitempty"`
+	RaisedDays                                    int              `paradox_field:"raised_days" json:"raised_days,omitempty"`
+	RequestedLand                                 *CommonRelation  `paradox_field:"requested_land" json:"requested_land,omitempty"`
+	RevealedPlot                                  *CommonRelation  `paradox_field:"revealed_plot" json:"revealed_plot,omitempty"`
+	SchemingBastard                               *CommonRelation  `paradox_field:"scheming_bastard" json:"scheming_bastard,omitempty"`
+	SecondFavorMonthStart                         int              `paradox_field:"second_favor_month_start" json:"second_favor_month_start,omitempty"`
+	SecondFavorStatus                             pserialize.PBool `paradox_field:"second_favor_status" json:"second_favor_status,omitempty"`
+	SlothfulNeg                                   *CommonRelation  `paradox_field:"slothful_neg" json:"slothful_neg,omitempty"`
+	SpouseEncouraged                              *CommonRelation  `paradox_field:"spouse_encouraged" json:"spouse_encouraged,omitempty"`
+	SpouseIgnoresMe                               *CommonRelation  `paradox_field:"spouse_ignores_me" json:"spouse_ignores_me,omitempty"`
+	SuccLawChange                                 *CommonRelation  `paradox_field:"succ_law_change" json:"succ_law_change,omitempty"`
+	Succession                                    pserialize.PBool `paradox_field:"succession" json:"succession,omitempty"`
+	SuspectedCowardRumour                         *CommonRelation  `paradox_field:"suspected_coward_rumour" json:"suspected_coward_rumour,omitempty"`
+	SuspectedOccultistRumour                      *CommonRelation  `paradox_field:"suspected_occultist_rumour" json:"suspected_occultist_rumour,omitempty"`
+	TalentRecognized                              *CommonRelation  `paradox_field:"talent_recognized" json:"talent_recognized,omitempty"`
+	TeenageInfatuation                            *CommonRelation  `paradox_field:"teenage_infatuation" json:"teenage_infatuation,omitempty"`
+	CalledIntoWar                                 *CommonRelation  `paradox_field:"called_into_war" json:"called_into_war,omitempty"`
+	ContentNeg                                    *CommonRelation  `paradox_field:"content_neg" json:"content_neg,omitempty"`
+	CynicalNeg                                    *CommonRelation  `paradox_field:"cynical_neg" json:"cynical_neg,omitempty"`
+	DemandReligiousConversionInteractionOnAccept  *CommonRelation  `paradox_field:"DEMAND_RELIGIOUS_CONVERSION_INTERACTION_ON_ACCEPT" json:"DEMAND_RELIGIOUS_CONVERSION_INTERACTION_ON_ACCEPT,omitempty"`
+	GluttonousNeg                                 *CommonRelation  `paradox_field:"gluttonous_neg" json:"gluttonous_neg,omitempty"`
+	GreedyNeg                                     *CommonRelation  `paradox_field:"greedy_neg" json:"greedy_neg,omitempty"`
+	HonoredAlliance                               *CommonRelation  `paradox_field:"honored_alliance" json:"honored_alliance,omitempty"`
+	Insulted                                      *CommonRelation  `paradox_field:"insulted" json:"insulted,omitempty"`
+	JustPos                                       *CommonRelation  `paradox_field:"just_pos" json:"just_pos,omitempty"`
+	OfferMarrigeInteractionOnAccept               *CommonRelation  `paradox_field:"OFFER_MARRIGE_INTERACTION_ON_ACCEPT" json:"OFFER_MARRIGE_INTERACTION_ON_ACCEPT,omitempty"`
+	OpinionAmbitionFulfilled                      *CommonRelation  `paradox_field:"opinion_ambition_fulfilled" json:"opinion_ambition_fulfilled,omitempty"`
+	OpinionAngry                                  *CommonRelation  `paradox_field:"opinion_angry" json:"opinion_angry,omitempty"`
+	OpinionChargeSlanderer                        *CommonRelation  `paradox_field:"opinion_charge_slanderer" json:"opinion_charge_slanderer,omitempty"`
+	OpinionChasingFriend                          *CommonRelation  `paradox_field:"opinion_chasing_friend" json:"opinion_chasing_friend,omitempty"`
+	OpinionCuckolded                              *CommonRelation  `paradox_field:"opinion_cuckolded" json:"opinion_cuckolded,omitempty"`
+	OpinionCuckoldedPrivate                       *CommonRelation  `paradox_field:"opinion_cuckolded_private" json:"opinion_cuckolded_private,omitempty"`
+	OpinionDemandedConversion                     *CommonRelation  `paradox_field:"opinion_demanded_conversion" json:"opinion_demanded_conversion,omitempty"`
+	OpinionDisappointed                           *CommonRelation  `paradox_field:"opinion_disappointed" json:"opinion_disappointed,omitempty"`
+	OpinionDiscoveredPlotting                     *CommonRelation  `paradox_field:"opinion_discovered_plotting" json:"opinion_discovered_plotting,omitempty"`
+	OpinionEntrustedWard                          *CommonRelation  `paradox_field:"opinion_entrusted_ward" json:"opinion_entrusted_ward,omitempty"`
+	OpinionFailedPlot                             *CommonRelation  `paradox_field:"opinion_failed_plot" json:"opinion_failed_plot,omitempty"`
+	OpinionFamilyLove                             *CommonRelation  `paradox_field:"opinion_family_love" json:"opinion_family_love,omitempty"`
+	OpinionFiredFromCouncil                       *CommonRelation  `paradox_field:"opinion_fired_from_council" json:"opinion_fired_from_council,omitempty"`
+	OpinionFlattered                              *CommonRelation  `paradox_field:"opinion_flattered" json:"opinion_flattered,omitempty"`
+	OpinionFulfilledMarriageWish                  *CommonRelation  `paradox_field:"opinion_fulfilled_marriage_wish" json:"opinion_fulfilled_marriage_wish,omitempty"`
+	OpinionFurious                                *CommonRelation  `paradox_field:"opinion_furious" json:"opinion_furious,omitempty"`
+	OpinionGlad                                   *CommonRelation  `paradox_field:"opinion_glad" json:"opinion_glad,omitempty"`
+	OpinionGrantedCounty                          *CommonRelation  `paradox_field:"opinion_granted_county" json:"opinion_granted_county,omitempty"`
+	OpinionGrantedDuchy                           *CommonRelation  `paradox_field:"opinion_granted_duchy" json:"opinion_granted_duchy,omitempty"`
+	OpinionHappy                                  *CommonRelation  `paradox_field:"opinion_happy" json:"opinion_happy,omitempty"`
+	OpinionImprisonedMissionary                   *CommonRelation  `paradox_field:"opinion_imprisoned_missionary" json:"opinion_imprisoned_missionary,omitempty"`
+	OpinionImprovedRelations                      *CommonRelation  `paradox_field:"opinion_improved_relations" json:"opinion_improved_relations,omitempty"`
+	OpinionIncreasedTribalOrganization            *CommonRelation  `paradox_field:"opinion_increased_tribal_organization" json:"opinion_increased_tribal_organization,omitempty"`
+	OpinionInsulted                               *CommonRelation  `paradox_field:"opinion_insulted" json:"opinion_insulted,omitempty"`
+	OpinionMercifulQadi                           *CommonRelation  `paradox_field:"opinion_merciful_qadi" json:"opinion_merciful_qadi,omitempty"`
+	OpinionOffended                               *CommonRelation  `paradox_field:"opinion_offended" json:"opinion_offended,omitempty"`
+	OpinionRenownedChicken                        *CommonRelation  `paradox_field:"opinion_renowned_chicken" json:"opinion_renowned_chicken,omitempty"`
+	OpinionSavedMeAndChild                        *CommonRelation  `paradox_field:"opinion_saved_me_and_child" json:"opinion_saved_me_and_child,omitempty"`
+	OpinionSeducedAttracted                       *CommonRelation  `paradox_field:"opinion_seduced_attracted" json:"opinion_seduced_attracted,omitempty"`
+	OpinionSeducedRepelled                        *CommonRelation  `paradox_field:"opinion_seduced_repelled" json:"opinion_seduced_repelled,omitempty"`
+	OpinionSlandered                              *CommonRelation  `paradox_field:"opinion_slandered" json:"opinion_slandered,omitempty"`
+	OpinionSwayed0                                *CommonRelation  `paradox_field:"opinion_swayed_0" json:"opinion_swayed_0,omitempty"`
+	OpinionTyrant                                 *CommonRelation  `paradox_field:"opinion_tyrant" json:"opinion_tyrant,omitempty"`
+	OpinionUnfaithfulPrivate                      *CommonRelation  `paradox_field:"opinion_unfaithful_private" json:"opinion_unfaithful_private,omitempty"`
+	OpinionUnfaithfulWife                         *CommonRelation  `paradox_field:"opinion_unfaithful_wife" json:"opinion_unfaithful_wife,omitempty"`
+	OpinionUsurpedTitle                           *CommonRelation  `paradox_field:"opinion_usurped_title" json:"opinion_usurped_title,omitempty"`
+	OpinionVassalTransfer                         *CommonRelation  `paradox_field:"opinion_vassal_transfer" json:"opinion_vassal_transfer,omitempty"`
+	ParanoidPos                                   *CommonRelation  `paradox_field:"paranoid_pos" json:"paranoid_pos,omitempty"`
+	ProudPos                                      *CommonRelation  `paradox_field:"proud_pos" json:"proud_pos,omitempty"`
+	ShyPos                                        *CommonRelation  `paradox_field:"shy_pos" json:"shy_pos,omitempty"`
+	SlutSeductress                                *CommonRelation  `paradox_field:"slut_seductress" json:"slut_seductress,omitempty"`
+	StopBackingAmbition                           *CommonRelation  `paradox_field:"stop_backing_ambition" json:"stop_backing_ambition,omitempty"`
+	SuspectedSodomiteRumour                       *CommonRelation  `paradox_field:"suspected_sodomite_rumour" json:"suspected_sodomite_rumour,omitempty"`
+	TrustingPos                                   *CommonRelation  `paradox_field:"trusting_pos" json:"trusting_pos,omitempty"`
+	ZealousPos                                    *CommonRelation  `paradox_field:"zealous_pos" json:"zealous_pos,omitempty"`
+	CasusBelli                                    *CasusBelli      `paradox_field:"casus_belli" json:"casus_belli,omitempty"`
+	CommonInterestsOpinion                        *CommonRelation  `paradox_field:"common_interests_opinion" json:"common_interests_opinion,omitempty"`
+	InNonAggressionPact                           *CommonRelation  `paradox_field:"in_non_aggression_pact" json:"in_non_aggression_pact,omitempty"`
+	NonAggressionPact                             pserialize.PBool `paradox_field:"non_aggression_pact" json:"non_aggression_pact,omitempty"`
+	OpinionInherited                              *CommonRelation  `paradox_field:"opinion_inherited" json:"opinion_inherited,omitempty"`
+	OpinionInheritedNegative                      *CommonRelation  `paradox_field:"opinion_inherited_negative" json:"opinion_inherited_negative,omitempty"`
+	Tributary                                     *Tributary       `paradox_field:"tributary" json:"tributary,omitempty"`
+	Truce                                         *Truce           `paradox_field:"truce" json:"truce,omitempty"`
 }

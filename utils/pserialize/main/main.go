@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+
 	jcontent := "{\"version\":\"3.3.5.1\",\"dyn_title\":[{\"title\":\"k_dyn_146214\"},{\"title\":\"e_dyn_74012\"}],\"dynasties\":{\"1\":{\"coat_of_arms\":{\"data\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0],\"religion\":\"buddhism\"}}}}"
 
 	jsaveFile, ok := utils.UnmarshalJSON[save.SaveFile](jcontent)
@@ -22,8 +23,8 @@ func main() {
 	saveFile, ok := pserialize.UnmarshalP[save.SaveFile](content)
 
 	if ok {
-		fmt.Println("paradox", utils.MarshalJSON(saveFile.Religions["norse_pagan"]))
-		fmt.Println("paradox", len(saveFile.Religions))
+		fmt.Println("paradox", utils.MarshalJSON(saveFile.Combat.LandCombat[0]))
+		fmt.Println("paradox", len(saveFile.Combat.LandCombat))
 	}
 
 }

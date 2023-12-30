@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 	"reflect"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -1169,15 +1170,19 @@ type field struct {
 	nameNonEsc  string // `"` + name + `":`
 	nameEscHTML string // `"` + HTMLEscape(name) + `":`
 
-	tag       bool
-	index     []int
-	typ       reflect.Type
-	omitEmpty bool
-	quoted    bool
-	list      bool
-	fieldList bool
-	mapValue  bool
-	mapName   string
+	tag              bool
+	index            []int
+	typ              reflect.Type
+	omitEmpty        bool
+	quoted           bool
+	list             bool
+	fieldList        bool
+	mapValue         bool
+	isMap            bool
+	isEntity         bool
+	mapName          string
+	defaultField     string
+	mapKeyPatternReg *regexp.Regexp
 
 	encoder encoderFunc
 }
@@ -1194,8 +1199,28 @@ func (f field) IsMapValue() bool {
 	return f.mapValue
 }
 
+func (f field) IsMap() bool {
+	return f.isMap
+}
+
+func (f field) IsEntity() bool {
+	return f.isEntity
+}
+
 func (f field) MapName() string {
 	return f.mapName
+}
+
+func (f field) IsMatch(name []byte) bool {
+	if f.mapKeyPatternReg == nil {
+		return false
+	}
+
+	return f.mapKeyPatternReg.Match(name)
+}
+
+func (f field) DefaultField() string {
+	return f.defaultField
 }
 
 // byIndex sorts field by index sequence.
@@ -1303,19 +1328,28 @@ func typeFields(t reflect.Type) structFields {
 						name = sf.Name
 					}
 					field := field{
-						name:      name,
-						tag:       tagged,
-						index:     index,
-						typ:       ft,
-						omitEmpty: opts.Contains("omitempty"),
-						quoted:    quoted,
-						list:      sf.Tag.Get("paradox_type") == "list",
-						fieldList: sf.Tag.Get("paradox_type") == "field_list",
-						mapValue:  sf.Tag.Get("paradox_type") == "map_value",
-						mapName:   sf.Tag.Get("paradox_map_name"),
+						name:         name,
+						tag:          tagged,
+						index:        index,
+						typ:          ft,
+						omitEmpty:    opts.Contains("omitempty"),
+						quoted:       quoted,
+						list:         sf.Tag.Get("paradox_type") == "list",
+						fieldList:    sf.Tag.Get("paradox_type") == "field_list",
+						mapValue:     sf.Tag.Get("paradox_type") == "map_value",
+						isMap:        sf.Tag.Get("paradox_type") == "map",
+						isEntity:     sf.Tag.Get("paradox_type") == "entity",
+						mapName:      sf.Tag.Get("paradox_map_name"),
+						defaultField: sf.Tag.Get("paradox_default_field"),
 					}
 					field.nameBytes = []byte(field.name)
 					field.equalFold = foldFunc(field.nameBytes)
+
+					mapKeyPattern := sf.Tag.Get("paradox_map_key_pattern")
+
+					if mapKeyPattern != "" {
+						field.mapKeyPatternReg = regexp.MustCompile(mapKeyPattern)
+					}
 
 					// Build nameEscHTML and nameNonEsc ahead of time.
 					nameEscBuf.Reset()
