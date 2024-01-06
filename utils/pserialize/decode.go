@@ -251,7 +251,7 @@ func (d *decodeState) unmarshal(v any) error {
 	d.scanWhile(scanSkipSpace)
 	// We decode rv not rv.Elem because the Unmarshaler interface
 	// test must be applied at the top level of the value.
-	err := d.value(rv)
+	err := d.value(rv, nil)
 	if err != nil {
 		return d.addErrorContext(err)
 	}
@@ -434,7 +434,7 @@ Switch:
 	d.off = i + 1
 }
 
-func (d *decodeState) MapValue(v reflect.Value, keyName string) error {
+func (d *decodeState) MapValue(v reflect.Value, keyName string, f *field) error {
 	if v.IsValid() {
 		// Check for unmarshaler.
 		u, ut, pv := indirect(v, false)
@@ -463,7 +463,7 @@ func (d *decodeState) MapValue(v reflect.Value, keyName string) error {
 			mapElem.Set(reflect.Zero(elemType))
 		}
 
-		if err := d.value(mapElem); err != nil {
+		if err := d.value(mapElem, f); err != nil {
 			return err
 		}
 
@@ -537,7 +537,7 @@ func (d *decodeState) mapValueValue(v reflect.Value, f *field) error {
 		}
 
 		if c == '{' {
-			if err := d.value(v); err != nil {
+			if err := d.value(v, f); err != nil {
 				return err
 			}
 		} else {
@@ -591,7 +591,7 @@ func findFieldMapValue(value any, path string) (reflect.Value, bool) {
 	return reflect.Value{}, false
 }
 
-func (d *decodeState) fieldListValue(v reflect.Value) error {
+func (d *decodeState) fieldListValue(v reflect.Value, f *field) error {
 
 	if v.IsValid() {
 		// Check for unmarshaler.
@@ -621,7 +621,7 @@ func (d *decodeState) fieldListValue(v reflect.Value) error {
 			start := d.readIndex()
 			d.rescanLiteral()
 
-			if err := d.literalStore(d.data[start:d.readIndex()], v.Index(v.Len()-1), false); err != nil {
+			if err := d.literalStore(d.data[start:d.readIndex()], v.Index(v.Len()-1), false, f); err != nil {
 				return err
 			}
 		} else {
@@ -633,8 +633,6 @@ func (d *decodeState) fieldListValue(v reflect.Value) error {
 				if d.opcode == scanEndObject {
 					break
 				}
-
-				d.opcode = scanBeginArray
 
 				if v.IsNil() {
 					v.Set(reflect.MakeSlice(v.Type(), 1, 4))
@@ -650,10 +648,7 @@ func (d *decodeState) fieldListValue(v reflect.Value) error {
 
 				}
 
-				start := d.readIndex()
-				d.rescanLiteral()
-
-				if err := d.literalStore(d.data[start:d.readIndex()], v.Index(v.Len()-1), false); err != nil {
+				if err := d.value(v.Index(v.Len()-1), f); err != nil {
 					return err
 				}
 
@@ -673,7 +668,7 @@ func (d *decodeState) fieldListValue(v reflect.Value) error {
 	return nil
 }
 
-func (d *decodeState) listValue(v reflect.Value) error {
+func (d *decodeState) listValue(v reflect.Value, f *field) error {
 	if v.IsValid() {
 		// Check for unmarshaler.
 		u, ut, pv := indirect(v, false)
@@ -703,7 +698,7 @@ func (d *decodeState) listValue(v reflect.Value) error {
 
 		}
 
-		if err := d.value(v.Index(v.Len() - 1)); err != nil {
+		if err := d.value(v.Index(v.Len()-1), f); err != nil {
 			return err
 		}
 
@@ -805,7 +800,7 @@ func (d *decodeState) Entity(v reflect.Value, fff *field) error {
 	d.rescanLiteral()
 
 	if v.IsValid() {
-		if err := d.literalStore(d.data[start:d.readIndex()], subv, false); err != nil {
+		if err := d.literalStore(d.data[start:d.readIndex()], subv, false, f); err != nil {
 			return err
 		}
 	}
@@ -816,14 +811,14 @@ func (d *decodeState) Entity(v reflect.Value, fff *field) error {
 // value consumes a JSON value from d.data[d.off-1:], decoding into v, and
 // reads the following byte ahead. If v is invalid, the value is discarded.
 // The first byte of the value has been read already.
-func (d *decodeState) value(v reflect.Value) error {
+func (d *decodeState) value(v reflect.Value, f *field) error {
 	switch d.opcode {
 	default:
 		panic(phasePanicMsg)
 
 	case scanBeginArray:
 		if v.IsValid() {
-			if err := d.array(v); err != nil {
+			if err := d.array(v, f); err != nil {
 				return err
 			}
 		} else {
@@ -847,7 +842,7 @@ func (d *decodeState) value(v reflect.Value) error {
 		d.rescanLiteral()
 
 		if v.IsValid() {
-			if err := d.literalStore(d.data[start:d.readIndex()], v, false); err != nil {
+			if err := d.literalStore(d.data[start:d.readIndex()], v, false, f); err != nil {
 				return err
 			}
 		}
@@ -960,7 +955,7 @@ func indirect(v reflect.Value, decodingNull bool) (Unmarshaler, encoding.TextUnm
 
 // array consumes an array from d.data[d.off-1:], decoding into v.
 // The first byte of the array ('[') has been read already.
-func (d *decodeState) array(v reflect.Value) error {
+func (d *decodeState) array(v reflect.Value, f *field) error {
 	// Check for unmarshaler.
 	u, ut, pv := indirect(v, false)
 	if u != nil {
@@ -1021,12 +1016,12 @@ func (d *decodeState) array(v reflect.Value) error {
 
 		if i < v.Len() {
 			// Decode into element.
-			if err := d.value(v.Index(i)); err != nil {
+			if err := d.value(v.Index(i), f); err != nil {
 				return err
 			}
 		} else {
 			// Ran out of fixed list: skip.
-			if err := d.value(reflect.Value{}); err != nil {
+			if err := d.value(reflect.Value{}, f); err != nil {
 				return err
 			}
 		}
@@ -1230,11 +1225,11 @@ func (d *decodeState) object(v reflect.Value) error {
 		if destring {
 			switch qv := d.valueQuoted().(type) {
 			case nil:
-				if err := d.literalStore(nullLiteral, subv, false); err != nil {
+				if err := d.literalStore(nullLiteral, subv, false, f); err != nil {
 					return err
 				}
 			case string:
-				if err := d.literalStore([]byte(qv), subv, true); err != nil {
+				if err := d.literalStore([]byte(qv), subv, true, f); err != nil {
 					return err
 				}
 			default:
@@ -1246,7 +1241,7 @@ func (d *decodeState) object(v reflect.Value) error {
 					return err
 				}
 			} else if f != nil && f.IsMap() {
-				if err := d.MapValue(subv, keyName); err != nil {
+				if err := d.MapValue(subv, keyName, f); err != nil {
 					return err
 				}
 			} else if f != nil && f.IsMapValue() {
@@ -1254,15 +1249,15 @@ func (d *decodeState) object(v reflect.Value) error {
 					return err
 				}
 			} else if f != nil && f.IsFieldList() {
-				if err := d.fieldListValue(subv); err != nil {
+				if err := d.fieldListValue(subv, f); err != nil {
 					return err
 				}
 			} else if f != nil && f.IsList() {
-				if err := d.listValue(subv); err != nil {
+				if err := d.listValue(subv, f); err != nil {
 					return err
 				}
 			} else {
-				if err := d.value(subv); err != nil {
+				if err := d.value(subv, f); err != nil {
 					return err
 				}
 			}
@@ -1276,7 +1271,7 @@ func (d *decodeState) object(v reflect.Value) error {
 			switch {
 			case reflect.PointerTo(kt).Implements(textUnmarshalerType):
 				kv = reflect.New(kt)
-				if err := d.literalStore(item, kv, true); err != nil {
+				if err := d.literalStore(item, kv, true, f); err != nil {
 					return err
 				}
 				kv = kv.Elem()
@@ -1352,7 +1347,7 @@ var numberType = reflect.TypeOf(Number(""))
 // fromQuoted indicates whether this literal came from unwrapping a
 // string from the ",string" struct tag option. this is used only to
 // produce more helpful error messages.
-func (d *decodeState) literalStore(item []byte, v reflect.Value, fromQuoted bool) error {
+func (d *decodeState) literalStore(item []byte, v reflect.Value, fromQuoted bool, f *field) error {
 	// Check for unmarshaler.
 	if len(item) == 0 {
 		//Empty string given
@@ -1421,7 +1416,12 @@ func (d *decodeState) literalStore(item []byte, v reflect.Value, fromQuoted bool
 			if v.Type() == numberType && !isValidNumber(string(s)) {
 				return fmt.Errorf("json: invalid number literal, trying to unmarshal %q into Number", item)
 			}
-			v.SetString(string(s))
+			if f.isEscapedText {
+				text, _ := utils.DecodeEscapedText(s)
+				v.SetString(text)
+			} else {
+				v.SetString(string(s))
+			}
 		case reflect.Interface:
 			if v.NumMethod() == 0 {
 				v.Set(reflect.ValueOf(string(s)))

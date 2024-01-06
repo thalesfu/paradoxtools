@@ -4,7 +4,7 @@ import "github.com/thalesfu/paradoxtools/utils/pserialize"
 
 type Character struct {
 	ID                  int                  `paradox_type:"map_key" json:"id,omitempty"`
-	Name                string               `paradox_field:"bn" json:"bn,omitempty"`
+	Name                string               `paradox_field:"bn" paradox_text:"escaped" json:"bn,omitempty"`
 	Hist                pserialize.PBool     `paradox_field:"hist" json:"hist,omitempty"`
 	Pi                  pserialize.PBool     `paradox_field:"pi" json:"pi,omitempty"`
 	Birthday            pserialize.Year      `paradox_field:"b_d" json:"b_d,omitempty"`

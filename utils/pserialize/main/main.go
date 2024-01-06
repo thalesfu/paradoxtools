@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/thalesfu/paradoxtools/CK2/save"
 	"github.com/thalesfu/paradoxtools/utils"
 	"github.com/thalesfu/paradoxtools/utils/pserialize"
 	"regexp"
@@ -10,22 +9,25 @@ import (
 
 func main() {
 
-	jcontent := "{\"version\":\"3.3.5.1\",\"dyn_title\":[{\"title\":\"k_dyn_146214\"},{\"title\":\"e_dyn_74012\"}],\"dynasties\":{\"1\":{\"coat_of_arms\":{\"data\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0],\"religion\":\"buddhism\"}}}}"
+	//content, ok := utils.LoadContent("T:\\OneDrive\\fu.thales@live.com\\OneDrive\\MyDocument\\Paradox Interactive\\Crusader Kings II\\save games\\酒泉771_02_14.ck2")
+	//
+	//saveFile, ok := pserialize.UnmarshalP[save.SaveFile](content)
+	//
+	//if ok {
+	//	fmt.Println(utils.MarshalJSON(saveFile.Dynasties[1000103347]))
+	//}
 
-	jsaveFile, ok := utils.UnmarshalJSON[save.SaveFile](jcontent)
-
-	if ok {
-		fmt.Println("json", jsaveFile)
-	}
-
-	content, ok := utils.LoadContent("T:\\OneDrive\\fu.thales@live.com\\OneDrive\\MyDocument\\Paradox Interactive\\Crusader Kings II\\save games\\酒泉771_02_14.ck2")
-
-	saveFile, ok := pserialize.UnmarshalP[save.SaveFile](content)
+	content, ok := utils.LoadContent("R:\\Thales\\Game\\SteamLibrary\\steamapps\\common\\Crusader Kings II\\common\\traits\\00_traits.txt")
 
 	if ok {
-		fmt.Println("paradox", utils.MarshalJSON(saveFile.Combat.LandCombat[0]))
-		fmt.Println("paradox", len(saveFile.Combat.LandCombat))
+		fmt.Println(content)
 	}
+
+	//saveFile, ok := pserialize.UnmarshalP[save.SaveFile](content)
+	//
+	//if ok {
+	//	fmt.Println(utils.MarshalJSON(saveFile.Dynasties[1000103347]))
+	//}
 
 }
 

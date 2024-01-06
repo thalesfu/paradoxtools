@@ -1182,9 +1182,14 @@ type field struct {
 	isEntity         bool
 	mapName          string
 	defaultField     string
+	isEscapedText    bool
 	mapKeyPatternReg *regexp.Regexp
 
 	encoder encoderFunc
+}
+
+func (f field) IsEscapedText() bool {
+	return f.isEscapedText
 }
 
 func (f field) IsList() bool {
@@ -1328,19 +1333,20 @@ func typeFields(t reflect.Type) structFields {
 						name = sf.Name
 					}
 					field := field{
-						name:         name,
-						tag:          tagged,
-						index:        index,
-						typ:          ft,
-						omitEmpty:    opts.Contains("omitempty"),
-						quoted:       quoted,
-						list:         sf.Tag.Get("paradox_type") == "list",
-						fieldList:    sf.Tag.Get("paradox_type") == "field_list",
-						mapValue:     sf.Tag.Get("paradox_type") == "map_value",
-						isMap:        sf.Tag.Get("paradox_type") == "map",
-						isEntity:     sf.Tag.Get("paradox_type") == "entity",
-						mapName:      sf.Tag.Get("paradox_map_name"),
-						defaultField: sf.Tag.Get("paradox_default_field"),
+						name:          name,
+						tag:           tagged,
+						index:         index,
+						typ:           ft,
+						omitEmpty:     opts.Contains("omitempty"),
+						quoted:        quoted,
+						list:          sf.Tag.Get("paradox_type") == "list",
+						fieldList:     sf.Tag.Get("paradox_type") == "field_list",
+						mapValue:      sf.Tag.Get("paradox_type") == "map_value",
+						isMap:         sf.Tag.Get("paradox_type") == "map",
+						isEntity:      sf.Tag.Get("paradox_type") == "entity",
+						isEscapedText: sf.Tag.Get("paradox_text") == "escaped",
+						mapName:       sf.Tag.Get("paradox_map_name"),
+						defaultField:  sf.Tag.Get("paradox_default_field"),
 					}
 					field.nameBytes = []byte(field.name)
 					field.equalFold = foldFunc(field.nameBytes)

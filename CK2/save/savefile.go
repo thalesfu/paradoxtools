@@ -9,7 +9,7 @@ type SaveFile struct {
 	Date            pserialize.Year                       `paradox_field:"date" json:"date,omitempty"`
 	Player          *Player                               `paradox_field:"player" json:"player,omitempty"`
 	PlayerRealm     string                                `paradox_field:"player_realm" json:"player_realm,omitempty"`
-	PlayerName      string                                `paradox_field:"player_name" json:"player_name,omitempty"`
+	PlayerName      string                                `paradox_field:"player_name" paradox_text:"escaped" json:"player_name,omitempty"`
 	PlayerAge       int                                   `paradox_field:"player_age" json:"player_age,omitempty"`
 	PlayerPortrait  *PlayerPortrait                       `paradox_field:"player_portrait" json:"player_portrait,omitempty"`
 	IsZeusSave      pserialize.PBool                      `paradox_field:"is_zeus_save" json:"is_zeus_save,omitempty"`
@@ -44,52 +44,6 @@ type IDEntity struct {
 	Type int `paradox_field:"type" json:"type,omitempty"`
 }
 
-type ChronicleEntry struct {
-	Text            string `paradox_field:"text" json:"text,omitempty"`
-	Picture         string `paradox_field:"picture" json:"picture,omitempty"`
-	Portrait        int    `paradox_field:"portrait" json:"portrait,omitempty"`
-	PortraitCulture string `paradox_field:"portrait_culture" json:"portrait_culture,omitempty"`
-	Type            string `paradox_field:"type" json:"type,omitempty"`
-}
-
-type ChronicleChapter struct {
-	Chronicles []*ChronicleEntry `paradox_field:"chronicle_entry" paradox_type:"list" json:"chronicle_entry,omitempty"`
-	Year       int               `paradox_field:"year" json:"year,omitempty"`
-}
-
-type Chronicle struct {
-	ChronicleChapters []*ChronicleChapter `paradox_field:"chronicle_chapter" paradox_type:"list" json:"chronicle_chapter,omitempty"`
-	Character         int                 `paradox_field:"character" json:"character,omitempty"`
-}
-
-type ChronicleCollection struct {
-	Chronicle         *Chronicle       `paradox_field:"chronicle" json:"chronicle,omitempty"`
-	ChroniclePosition int              `paradox_field:"chronicle_position" json:"chronicle_position,omitempty"`
-	ChapterPosition   int              `paradox_field:"chapter_position" json:"chapter_position,omitempty"`
-	EntryPosition     int              `paradox_field:"entry_position" json:"entry_position,omitempty"`
-	ChronicleIconLit  pserialize.PBool `paradox_field:"chronicle_icon_lit" json:"chronicle_icon_lit,omitempty"`
-}
-
-type CharacterPlayerData struct {
-	ChronicleCollection         *ChronicleCollection `paradox_field:"chronicle_collection" json:"chronicle_collection,omitempty"`
-	SocietyShowInterestCooldown pserialize.Year      `paradox_field:"society_show_interest_cooldown" json:"society_show_interest_cooldown,omitempty"`
-	JoinSocietyCooldown         pserialize.Year      `paradox_field:"join_society_cooldown" json:"join_society_cooldown,omitempty"`
-	Telws                       int                  `paradox_field:"telws" json:"telws,omitempty"`
-	Telbc                       int                  `paradox_field:"telbc" json:"telbc,omitempty"`
-	Telde                       int                  `paradox_field:"telde" json:"telde,omitempty"`
-	Telld                       pserialize.PBool     `paradox_field:"telld" json:"telld,omitempty"`
-	Telsc                       pserialize.PBool     `paradox_field:"telsc" json:"telsc,omitempty"`
-}
-
-type DMN struct {
-	Capital                 string      `paradox_field:"capital" json:"capital,omitempty"`
-	Primary                 *Title      `paradox_field:"primary" paradox_type:"map_value" paradox_map_name:"title" json:"primary,omitempty"`
-	LiegeTroops             *ArmyDetail `paradox_field:"liege_troops" json:"liege_troops,omitempty"`
-	RaisedLiegeTroops       []int       `paradox_field:"raised_liege_troops" paradox_type:"field_list" json:"raised_liege_troops,omitempty"`
-	MyLiegelevyContribution int         `paradox_field:"my_liegelevy_contribution" json:"my_liegelevy_contribution,omitempty"`
-	PeaceMonths             int         `paradox_field:"peace_months" json:"peace_months,omitempty"`
-}
-
 type Lgr struct {
 	LastMonthIncomeTable  []float32 `paradox_field:"lastmonthincometable" paradox_type:"field_list" json:"lastmonthincometable,omitempty"`
 	LastMonthExpenseTable []float32 `paradox_field:"lastmonthexpensetable" paradox_type:"field_list" json:"lastmonthexpensetable,omitempty"`
@@ -110,7 +64,7 @@ type Modifier struct {
 
 type Dynasty struct {
 	ID            int              `paradox_type:"map_key" json:"id,omitempty"`
-	Name          string           `paradox_field:"name" json:"name,omitempty"`
+	Name          string           `paradox_field:"name" paradox_text:"escaped" json:"name,omitempty"`
 	Culture       string           `paradox_field:"culture" json:"culture,omitempty"`
 	Religion      string           `paradox_field:"religion" json:"religion,omitempty"`
 	CoatOfArms    *CoatOfArms      `paradox_field:"coat_of_arms" json:"coat_of_arms,omitempty"`

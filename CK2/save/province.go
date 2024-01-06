@@ -4,7 +4,7 @@ import "github.com/thalesfu/paradoxtools/utils/pserialize"
 
 type Province struct {
 	ID                     int                        `paradox_type:"map_key" json:"id,omitempty"`
-	Name                   string                     `paradox_field:"name" json:"name,omitempty"`
+	Name                   string                     `paradox_field:"name" paradox_text:"escaped" json:"name,omitempty"`
 	MaxSettlements         int                        `paradox_field:"max_settlements" json:"max_settlements,omitempty"`
 	Winter                 int                        `paradox_field:"winter" json:"winter,omitempty"`
 	Religion               *Religion                  `paradox_field:"religion" paradox_type:"map_value" paradox_map_name:"religion" json:"religion,omitempty"`
