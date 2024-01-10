@@ -16,16 +16,16 @@ type CultureGroup struct {
 
 type Culture struct {
 	Name                  string           `paradox_type:"map_key" json:"name,omitempty"`
+	FromDynastyPrefix     string           `paradox_field:"from_dynasty_prefix" json:"from_dynasty_prefix,omitempty"`
+	MalePatronym          string           `paradox_field:"male_patronym" json:"male_patronym,omitempty"`
+	FemalePatronym        string           `paradox_field:"female_patronym" json:"female_patronym,omitempty"`
 	DynastyTitleNames     pserialize.PBool `paradox_field:"dynasty_title_names" json:"dynasty_title_names,omitempty"`
 	FounderNamedDynasties pserialize.PBool `paradox_field:"founder_named_dynasties" json:"founder_named_dynasties,omitempty"`
 	Castes                pserialize.PBool `paradox_field:"castes" json:"castes,omitempty"`
 	DynastyNameFirst      pserialize.PBool `paradox_field:"dynasty_name_first" json:"dynasty_name_first,omitempty"`
-	FromDynastyPrefix     string           `paradox_field:"from_dynasty_prefix" json:"from_dynasty_prefix,omitempty"`
-	MalePatronym          string           `paradox_field:"male_patronym" json:"male_patronym,omitempty"`
-	FemalePatronym        string           `paradox_field:"female_patronym" json:"female_patronym,omitempty"`
 	DukesCalledKings      pserialize.PBool `paradox_field:"dukes_called_kings" json:"dukes_called_kings,omitempty"`
-	BaronTitlesHidden     pserialize.PBool `paradox_field:"baron_titles_hidden" json:"baron_titles_hidden,omitempty"`
 	CountTitlesHidden     pserialize.PBool `paradox_field:"count_titles_hidden" json:"count_titles_hidden,omitempty"`
+	BaronTitlesHidden     pserialize.PBool `paradox_field:"baron_titles_hidden" json:"baron_titles_hidden,omitempty"`
 	AllowLooting          pserialize.PBool `paradox_field:"allow_looting" json:"allow_looting,omitempty"`
 }
 
