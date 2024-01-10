@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/thalesfu/paradoxtools/CK2/trait"
 	"github.com/thalesfu/paradoxtools/utils"
 	"github.com/thalesfu/paradoxtools/utils/pserialize"
 	"regexp"
@@ -17,17 +18,13 @@ func main() {
 	//	fmt.Println(utils.MarshalJSON(saveFile.Dynasties[1000103347]))
 	//}
 
-	content, ok := utils.LoadContent("R:\\Thales\\Game\\SteamLibrary\\steamapps\\common\\Crusader Kings II\\common\\traits\\00_traits.txt")
+	traitContent, ok := utils.LoadContent("R:\\Thales\\Game\\SteamLibrary\\steamapps\\common\\Crusader Kings II\\common\\traits\\00_traits.txt")
+
+	t, ok := pserialize.UnmarshalP[map[string]*trait.Trait](traitContent)
 
 	if ok {
-		fmt.Println(content)
+		fmt.Println(utils.MarshalJSON(t))
 	}
-
-	//saveFile, ok := pserialize.UnmarshalP[save.SaveFile](content)
-	//
-	//if ok {
-	//	fmt.Println(utils.MarshalJSON(saveFile.Dynasties[1000103347]))
-	//}
 
 }
 

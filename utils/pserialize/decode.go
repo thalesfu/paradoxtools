@@ -21,6 +21,8 @@ func UnmarshalP[T any](content string) (t *T, ok bool) {
 
 		last := strings.LastIndex(content, "}")
 		content = "{\n" + content[:last+1]
+	} else {
+		content = "{\n" + content + "\n}"
 	}
 
 	logPosition := 0
@@ -248,7 +250,7 @@ func (d *decodeState) unmarshal(v any) error {
 	}
 
 	d.scan.reset()
-	d.scanWhile(scanSkipSpace)
+	d.scanWhile(scanSkipSpace, scanSkipComment)
 	// We decode rv not rv.Elem because the Unmarshaler interface
 	// test must be applied at the top level of the value.
 	err := d.value(rv, nil)
@@ -377,12 +379,16 @@ func (d *decodeState) scanNext() {
 
 // scanWhile processes bytes in d.data[d.off:] until it
 // receives a scan code not equal to op.
-func (d *decodeState) scanWhile(op int) {
+func (d *decodeState) scanWhile(ops ...int) {
+	opMap := make(map[int]bool)
+	for _, op := range ops {
+		opMap[op] = true
+	}
 	s, data, i := &d.scan, d.data, d.off
 	for i < len(data) {
 		newOp := s.step(s, data[i])
 		i++
-		if newOp != op {
+		if !opMap[newOp] {
 			d.opcode = newOp
 			d.off = i
 			return
@@ -499,7 +505,11 @@ func (d *decodeState) MapValue(v reflect.Value, keyName string, f *field) error 
 				for i := 0; i < subvv.NumField(); i++ {
 					if subvv.Type().Field(i).Tag.Get("paradox_type") == "map_key" {
 						subvv.Field(i).Set(kv)
-						break
+						continue
+					}
+					if subvv.Type().Field(i).Tag.Get("paradox_type") == "map_index" {
+						subvv.Field(i).Set(reflect.ValueOf(v.Len()))
+						continue
 					}
 				}
 			}
@@ -532,7 +542,7 @@ func (d *decodeState) mapValueValue(v reflect.Value, f *field) error {
 		c := d.data[d.off-1]
 
 		if isSpace(c) {
-			d.scanWhile(scanSkipSpace)
+			d.scanWhile(scanSkipSpace, scanSkipComment)
 			c = d.data[d.off]
 		}
 
@@ -611,7 +621,7 @@ func (d *decodeState) fieldListValue(v reflect.Value, f *field) error {
 		c := d.data[d.off-1]
 
 		if isSpace(c) {
-			d.scanWhile(scanSkipSpace)
+			d.scanWhile(scanSkipSpace, scanSkipComment)
 			c = d.data[d.off]
 		}
 
@@ -629,7 +639,7 @@ func (d *decodeState) fieldListValue(v reflect.Value, f *field) error {
 			i := 0
 			for {
 				// Look ahead for ] - can only happen on first iteration.
-				d.scanWhile(scanSkipSpace)
+				d.scanWhile(scanSkipSpace, scanSkipComment)
 				if d.opcode == scanEndObject {
 					break
 				}
@@ -992,7 +1002,7 @@ func (d *decodeState) array(v reflect.Value, f *field) error {
 	i := 0
 	for {
 		// Look ahead for ] - can only happen on first iteration.
-		d.scanWhile(scanSkipSpace)
+		d.scanWhile(scanSkipSpace, scanSkipComment)
 		if d.opcode == scanEndArray {
 			break
 		}
@@ -1029,7 +1039,7 @@ func (d *decodeState) array(v reflect.Value, f *field) error {
 
 		// Next token must be , or ].
 		if d.opcode == scanSkipSpace {
-			d.scanWhile(scanSkipSpace)
+			d.scanWhile(scanSkipSpace, scanSkipComment)
 		}
 		if d.opcode == scanEndArray {
 			break
@@ -1125,7 +1135,7 @@ func (d *decodeState) object(v reflect.Value) error {
 
 	for {
 		// Read opening " of string key or closing }.
-		d.scanWhile(scanSkipSpace)
+		d.scanWhile(scanSkipSpace, scanSkipComment)
 		if d.opcode == scanEndObject {
 			// closing } - can only happen on first iteration.
 			break
@@ -1215,12 +1225,12 @@ func (d *decodeState) object(v reflect.Value) error {
 
 		// Read : before value.
 		if d.opcode == scanSkipSpace {
-			d.scanWhile(scanSkipSpace)
+			d.scanWhile(scanSkipSpace, scanSkipComment)
 		}
 		if d.opcode != scanObjectKey {
 			panic(phasePanicMsg)
 		}
-		d.scanWhile(scanSkipSpace)
+		d.scanWhile(scanSkipSpace, scanSkipComment)
 
 		if destring {
 			switch qv := d.valueQuoted().(type) {
@@ -1306,7 +1316,11 @@ func (d *decodeState) object(v reflect.Value) error {
 					for i := 0; i < subvv.NumField(); i++ {
 						if subvv.Type().Field(i).Tag.Get("paradox_type") == "map_key" {
 							subvv.Field(i).Set(kv)
-							break
+							continue
+						}
+						if subvv.Type().Field(i).Tag.Get("paradox_type") == "map_index" {
+							subvv.Field(i).Set(reflect.ValueOf(v.Len()))
+							continue
 						}
 					}
 				}
@@ -1524,7 +1538,7 @@ func (d *decodeState) arrayInterface() []any {
 	var v = make([]any, 0)
 	for {
 		// Look ahead for ] - can only happen on first iteration.
-		d.scanWhile(scanSkipSpace)
+		d.scanWhile(scanSkipSpace, scanSkipComment)
 		if d.opcode == scanEndArray {
 			break
 		}
@@ -1533,7 +1547,7 @@ func (d *decodeState) arrayInterface() []any {
 
 		// Next token must be , or ].
 		if d.opcode == scanSkipSpace {
-			d.scanWhile(scanSkipSpace)
+			d.scanWhile(scanSkipSpace, scanSkipComment)
 		}
 		if d.opcode == scanEndArray {
 			break
@@ -1550,7 +1564,7 @@ func (d *decodeState) objectInterface() map[string]any {
 	m := make(map[string]any)
 	for {
 		// Read opening " of string key or closing }.
-		d.scanWhile(scanSkipSpace)
+		d.scanWhile(scanSkipSpace, scanSkipComment)
 		if d.opcode == scanEndObject {
 			// closing } - can only happen on first iteration.
 			break
@@ -1570,19 +1584,19 @@ func (d *decodeState) objectInterface() map[string]any {
 
 		// Read : before value.
 		if d.opcode == scanSkipSpace {
-			d.scanWhile(scanSkipSpace)
+			d.scanWhile(scanSkipSpace, scanSkipComment)
 		}
 		if d.opcode != scanObjectKey {
 			panic(phasePanicMsg)
 		}
-		d.scanWhile(scanSkipSpace)
+		d.scanWhile(scanSkipSpace, scanSkipComment)
 
 		// Read value.
 		m[key] = d.valueInterface()
 
 		// Next token must be , or }.
 		if d.opcode == scanSkipSpace {
-			d.scanWhile(scanSkipSpace)
+			d.scanWhile(scanSkipSpace, scanSkipComment)
 		}
 		if d.opcode == scanEndObject {
 			break

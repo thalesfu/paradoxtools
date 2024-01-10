@@ -59,7 +59,6 @@ func checkValid(data []byte, scan *scanner) error {
 					log.Fatal(err)
 				}
 			}
-
 			return errors.New(errMessage)
 		}
 	}
@@ -163,6 +162,7 @@ const (
 	// Stop.
 	scanEnd   // top-level value ended *before* this byte; known to be first "stop" result
 	scanError // hit an error, scanner.err.
+	scanSkipComment
 )
 
 // These values are stored in the parseState stack.
@@ -275,10 +275,20 @@ func stateBeginValue(s *scanner, c byte) int {
 		return scanBeginLiteral
 	}
 
-	if 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || c == '_' {
+	if 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || c == '_' || c == '\'' || 130 <= c && c <= 255 {
 		s.step = stateInExpression
 		return scanBeginLiteral
 	}
+
+	if c == '#' {
+		s.step = stateInComment
+		return scanSkipComment
+	}
+
+	if c == '=' || c == '<' || c == '>' {
+		return scanObjectKey
+	}
+
 	return s.error(c, "looking for beginning of value")
 }
 
@@ -300,7 +310,7 @@ func stateBeginStringOrEmpty(s *scanner, c byte) int {
 		s.step = state1
 		return scanBeginLiteral
 	}
-	if 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || c == '_' {
+	if 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || c == '_' || c == '\'' || 130 <= c && c <= 255 {
 		s.step = stateInExpression
 		return scanBeginLiteral
 	}
@@ -316,6 +326,11 @@ func stateBeginString(s *scanner, c byte) int {
 		s.step = stateInString
 		return scanBeginLiteral
 	}
+	if c == '#' {
+		s.step = stateInComment
+		return scanSkipComment
+	}
+
 	return s.error(c, "looking for beginning of object key string")
 }
 
@@ -640,12 +655,21 @@ func stateE0(s *scanner, c byte) int {
 
 // stateNul is the state after reading `nul`.
 func stateInExpression(s *scanner, c byte) int {
-	if '0' <= c && c <= '9' || 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || c == '_' || c == '.' || c == '-' {
+	if '0' <= c && c <= '9' || 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || c == '_' || c == '.' || c == '-' || c == '\'' || 130 <= c && c <= 255 {
 		return scanContinue
 	}
 
 	s.step = stateEndValue
 	return stateEndValue(s, c)
+}
+
+func stateInComment(s *scanner, c byte) int {
+	if c == '\n' || c == '\r' {
+		s.step = stateBeginValue
+		return scanSkipSpace
+	}
+
+	return scanSkipComment
 }
 
 // stateError is the state after reaching a syntax error,
