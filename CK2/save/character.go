@@ -45,4 +45,5 @@ type Character struct {
 	OffMapCurrencies    map[int]float32      `paradox_field:"offmap_currencies" json:"offmap_currencies,omitempty"`
 	DMN                 *DMN                 `paradox_field:"dmn" json:"dmn,omitempty"`
 	CharacterPlayerData *CharacterPlayerData `paradox_field:"character_player_data" json:"character_player_data,omitempty"`
+	Job                 string               `paradox_field:"job" json:"job,omitempty"`
 }
