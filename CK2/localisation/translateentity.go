@@ -1,7 +1,6 @@
 package localisation
 
 import (
-	"fmt"
 	"github.com/thalesfu/paradoxtools/utils"
 	"os"
 	"path/filepath"
@@ -13,43 +12,61 @@ type TranslateEntity struct {
 	Original    string ` json:"original,omitempty"`
 	Translation string ` json:"translation,omitempty"`
 	Stage       int    ` json:"stage,omitempty"`
+	File        string `json:"file,omitempty"`
 }
 
 func LoadAllTranslations(path string) map[string]string {
-	// 读取目录中的所有文件和子目录
-	files, err := os.ReadDir(path)
-	if err != nil {
-		fmt.Println("Error reading directory:", err)
-		return nil
-	}
-
 	result := make(map[string]string)
 
-	for _, file := range files {
-		if file.IsDir() {
-			continue // 跳过目录
+	translations, _ := LoadAllTranslationsDetail(path)
+
+	for _, t := range translations {
+		result[t.Key] = t.Translation
+	}
+
+	return result
+}
+
+func LoadAllTranslationsDetail(path string) (map[string]*TranslateEntity, map[string][]*TranslateEntity) {
+	result := make(map[string]*TranslateEntity)
+	repeated := make(map[string][]*TranslateEntity)
+
+	filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+		if info.IsDir() {
+			return nil
 		}
 
 		// 获取文件名
-		filename := file.Name()
+		filename := info.Name()
 
 		// 检查文件后缀是否为.csv或.json
 		if strings.HasSuffix(filename, ".csv.json") {
-			filepath := filepath.Join(path, filename)
-
-			content, ok := utils.LoadContent(filepath)
+			content, ok := utils.LoadContent(path)
 
 			if ok {
 				ts, o := utils.UnmarshalJSON[[]*TranslateEntity](content)
 
 				if o {
 					for _, t := range *ts {
-						result[t.Key] = t.Translation
+						t.File = path
+						if existed, ok := result[t.Key]; ok {
+							if existed.Translation != t.Translation {
+								if existedRepeated, ok := repeated[t.Key]; ok {
+									repeated[t.Key] = append(existedRepeated, t)
+								} else {
+									repeated[t.Key] = []*TranslateEntity{existed, t}
+								}
+							}
+						}
+
+						result[t.Key] = t
 					}
 				}
 			}
 		}
-	}
 
-	return result
+		return nil
+	})
+
+	return result, repeated
 }

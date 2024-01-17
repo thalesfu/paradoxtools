@@ -10,12 +10,12 @@ import (
 )
 
 type ReligionGroup struct {
-	Name      string               `paradox_type:"map_key" json:"name,omitempty"`
+	Code      string               `paradox_type:"map_key" json:"code,omitempty"`
 	Religions map[string]*Religion `paradox_type:"map" paradox_map_key_pattern:"(aztec|aztec_reformed|baltic_pagan|baltic_pagan_reformed|bogomilist|bon|bon_reformed|buddhist|cathar|catholic|druze|finnish_pagan|finnish_pagan_reformed|fraticelli|hellenic_pagan|hellenic_pagan_reformed|hindu|hurufi|ibadi|iconoclast|jain|jewish|karaite|kharijite|khurmazta|lollard|manichean|mazdaki|messalian|miaphysite|monophysite|monothelite|nestorian|norse_pagan|norse_pagan_reformed|orthodox|paulician|qarmatian|samaritan|shiite|slavic_pagan|slavic_pagan_reformed|sunni|taoist|waldensian|west_african_pagan|west_african_pagan_reformed|yazidi|zikri|zoroastrian|zun_pagan|zun_pagan_reformed)" json:"religions,omitempty"`
 }
 
 type Religion struct {
-	Name string `paradox_type:"map_key" json:"name,omitempty"`
+	Code string `paradox_type:"map_key" json:"code,omitempty"`
 }
 
 func LoadAllReligions(path string) map[string]*ReligionGroup {

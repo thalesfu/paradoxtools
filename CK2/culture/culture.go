@@ -2,6 +2,7 @@ package culture
 
 import (
 	"fmt"
+	"github.com/thalesfu/paradoxtools/CK2/localisation"
 	"github.com/thalesfu/paradoxtools/utils"
 	"github.com/thalesfu/paradoxtools/utils/pserialize"
 	"os"
@@ -10,12 +11,14 @@ import (
 )
 
 type CultureGroup struct {
-	Name     string              `paradox_type:"map_key" json:"name,omitempty"`
+	Code     string              `paradox_type:"map_key" json:"code,omitempty"`
+	Name     string              `json:"name,omitempty"`
 	Cultures map[string]*Culture `paradox_type:"map" paradox_map_key_pattern:"(norse|swedish|norwegian|danish|german|lombard|old_frankish|suebi|english|saxon|old_saxon|frisian|dutch|frankish|norman|italian|occitan|roman|dalmatian|sardinian|basque|castillan|catalan|portuguese|visigothic|arberian|armenian|greek|alan|georgian|assyrian|crimean_gothic|irish|scottish|pictish|welsh|breton|finnish|lappish|ugricbaltic|komi|khanty|mordvin|meshchera|lettigallish|lithuanian|prussian|karluk|kirghiz|uyghur|mongol|khitan|jurchen|levantine_arabic|egyptian_arabic|andalusian_arabic|russian|ilmenian|severian|volhynian|pommeranian|bohemian|polish|slovieni|croatian|serbian|romanian|bulgarian|bosnian|carantanian|hungarian|persian|sogdian|tocharian|kurdish|saka|ethiopian|somali|nubian|daju|kanuri|hausa|zaghawa|manden|soninke|songhay|nahuatl|ashkenazi|sephardi|nepali|tangut|han|horse|cat|bear|hedgehog_culture|duck_culture|dog_culture|elephant_culture|dragon_culture|red_panda)" json:"cultures,omitempty"`
 }
 
 type Culture struct {
-	Name                  string           `paradox_type:"map_key" json:"name,omitempty"`
+	Code                  string           `paradox_type:"map_key" json:"code,omitempty"`
+	Name                  string           `json:"name,omitempty"`
 	FromDynastyPrefix     string           `paradox_field:"from_dynasty_prefix" json:"from_dynasty_prefix,omitempty"`
 	MalePatronym          string           `paradox_field:"male_patronym" json:"male_patronym,omitempty"`
 	FemalePatronym        string           `paradox_field:"female_patronym" json:"female_patronym,omitempty"`
@@ -30,8 +33,10 @@ type Culture struct {
 }
 
 func LoadAllCultures(path string) map[string]*CultureGroup {
-	// 读取目录中的所有文件和子目录
-	files, err := os.ReadDir(path)
+
+	translations := localisation.LoadAllTranslations(path)
+	culturePath := filepath.Join(path, "common", "cultures")
+	files, err := os.ReadDir(culturePath)
 	if err != nil {
 		fmt.Println("Error reading directory:", err)
 		return nil
@@ -44,12 +49,12 @@ func LoadAllCultures(path string) map[string]*CultureGroup {
 			continue // 跳过目录
 		}
 
-		// 获取文件名
+		// 获取文件名E
 		filename := file.Name()
 
 		// 检查文件后缀是否为.csv或.json
 		if strings.HasSuffix(filename, ".txt") {
-			filepath := filepath.Join(path, filename)
+			filepath := filepath.Join(culturePath, filename)
 
 			content, ok := utils.LoadContent(filepath)
 
@@ -62,6 +67,13 @@ func LoadAllCultures(path string) map[string]*CultureGroup {
 					}
 				}
 			}
+		}
+	}
+
+	for _, cg := range result {
+		cg.Name = translations[cg.Code]
+		for _, c := range cg.Cultures {
+			c.Name = translations[c.Code]
 		}
 	}
 
