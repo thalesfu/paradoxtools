@@ -2,6 +2,7 @@ package religion
 
 import (
 	"fmt"
+	"github.com/thalesfu/paradoxtools/CK2/localisation"
 	"github.com/thalesfu/paradoxtools/utils"
 	"github.com/thalesfu/paradoxtools/utils/pserialize"
 	"os"
@@ -11,16 +12,20 @@ import (
 
 type ReligionGroup struct {
 	Code      string               `paradox_type:"map_key" json:"code,omitempty"`
+	Name      string               `json:"name,omitempty"`
 	Religions map[string]*Religion `paradox_type:"map" paradox_map_key_pattern:"(aztec|aztec_reformed|baltic_pagan|baltic_pagan_reformed|bogomilist|bon|bon_reformed|buddhist|cathar|catholic|druze|finnish_pagan|finnish_pagan_reformed|fraticelli|hellenic_pagan|hellenic_pagan_reformed|hindu|hurufi|ibadi|iconoclast|jain|jewish|karaite|kharijite|khurmazta|lollard|manichean|mazdaki|messalian|miaphysite|monophysite|monothelite|nestorian|norse_pagan|norse_pagan_reformed|orthodox|paulician|qarmatian|samaritan|shiite|slavic_pagan|slavic_pagan_reformed|sunni|taoist|waldensian|west_african_pagan|west_african_pagan_reformed|yazidi|zikri|zoroastrian|zun_pagan|zun_pagan_reformed)" json:"religions,omitempty"`
 }
 
 type Religion struct {
 	Code string `paradox_type:"map_key" json:"code,omitempty"`
+	Name string `json:"name,omitempty"`
 }
 
 func LoadAllReligions(path string) map[string]*ReligionGroup {
-	// 读取目录中的所有文件和子目录
-	files, err := os.ReadDir(path)
+
+	translations := localisation.LoadAllTranslations(path)
+	religionPath := filepath.Join(path, "common", "religions")
+	files, err := os.ReadDir(religionPath)
 	if err != nil {
 		fmt.Println("Error reading directory:", err)
 		return nil
@@ -38,7 +43,7 @@ func LoadAllReligions(path string) map[string]*ReligionGroup {
 
 		// 检查文件后缀是否为.csv或.json
 		if strings.HasSuffix(filename, ".txt") {
-			filepath := filepath.Join(path, filename)
+			filepath := filepath.Join(religionPath, filename)
 
 			content, ok := utils.LoadContent(filepath)
 
@@ -51,6 +56,13 @@ func LoadAllReligions(path string) map[string]*ReligionGroup {
 					}
 				}
 			}
+		}
+	}
+
+	for _, rg := range result {
+		rg.Name = translations[rg.Code]
+		for _, r := range rg.Religions {
+			r.Name = translations[r.Code]
 		}
 	}
 
