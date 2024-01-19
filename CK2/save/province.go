@@ -14,8 +14,8 @@ type Province struct {
 	PrimarySettlement      string                     `paradox_field:"primary_settlement" json:"primary_settlement,omitempty"`
 	Barons                 map[string]*Baron          `paradox_type:"map" paradox_map_key_pattern:"^b_" json:"barons,omitempty"`
 	Disease                *Disease                   `paradox_field:"disease" json:"disease,omitempty"`
-	Flags                  map[string]pserialize.Year `paradox_field:"flags" paradox_type:"map_key"  json:"flags,omitempty"`
-	Vars                   map[string]float32         `paradox_field:"vars" paradox_type:"map_key"  json:"vars,omitempty"`
+	Flags                  map[string]pserialize.Year `paradox_field:"flags" json:"flags,omitempty"`
+	Vars                   map[string]float32         `paradox_field:"vars" json:"vars,omitempty"`
 	Fort                   *Fort                      `paradox_field:"fort" json:"fort,omitempty"`
 	TradePost              *TradePost                 `paradox_field:"trade_post" json:"trade_post,omitempty"`
 	SettlementConstruction *SettlementConstruction    `paradox_field:"settlement_construction" json:"settlement_construction,omitempty"`

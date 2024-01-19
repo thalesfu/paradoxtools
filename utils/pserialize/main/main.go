@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/thalesfu/paradoxtools/CK2/trait"
+	"github.com/thalesfu/paradoxtools/CK2/save"
 	"github.com/thalesfu/paradoxtools/utils"
 	"github.com/thalesfu/paradoxtools/utils/pserialize"
 	"regexp"
@@ -10,21 +10,21 @@ import (
 
 func main() {
 
-	//content, ok := utils.LoadContent("T:\\OneDrive\\fu.thales@live.com\\OneDrive\\MyDocument\\Paradox Interactive\\Crusader Kings II\\save games\\酒泉771_02_14.ck2")
-	//
-	//saveFile, ok := pserialize.UnmarshalP[save.SaveFile](content)
-	//
-	//if ok {
-	//	fmt.Println(utils.MarshalJSON(saveFile.Dynasties[1000103347]))
-	//}
+	content, ok := utils.LoadContent("T:\\OneDrive\\fu.thales@live.com\\OneDrive\\MyDocument\\Paradox Interactive\\Crusader Kings II\\save games\\酒泉771_02_14dd.ck2")
 
-	traitContent, ok := utils.LoadContent("R:\\Thales\\Game\\SteamLibrary\\steamapps\\common\\Crusader Kings II\\common\\traits\\00_traits.txt")
-
-	t, ok := pserialize.UnmarshalP[map[string]*trait.Trait](traitContent)
+	saveFile, ok := pserialize.UnmarshalP[save.SaveFile](content)
 
 	if ok {
-		fmt.Println(utils.MarshalJSON(t))
+		fmt.Println(utils.MarshalJSON(saveFile.Titles["k_dyn_reb_91490"]))
 	}
+
+	//traitContent, ok := utils.LoadContent("R:\\Thales\\Game\\SteamLibrary\\steamapps\\common\\Crusader Kings II\\common\\traits\\00_traits.txt")
+	//
+	//t, ok := pserialize.UnmarshalP[map[string]*trait.Trait](traitContent)
+	//
+	//if ok {
+	//	fmt.Println(utils.MarshalJSON(t))
+	//}
 
 }
 

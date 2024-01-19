@@ -1,6 +1,11 @@
 package save
 
-import "github.com/thalesfu/paradoxtools/utils/pserialize"
+import (
+	"github.com/thalesfu/paradoxtools/CK2/localisation"
+	"github.com/thalesfu/paradoxtools/utils"
+	"github.com/thalesfu/paradoxtools/utils/pserialize"
+	"time"
+)
 
 type Title struct {
 	ID                            string                     `paradox_field:"id" paradox_type:"map_key" json:"id,omitempty"`
@@ -77,6 +82,8 @@ type Title struct {
 	UsurpDate                     pserialize.Year            `paradox_field:"usurp_date" json:"usurp_date,omitempty"`
 	ViceRoyalty                   pserialize.PBool           `paradox_field:"vice_royalty" json:"vice_royalty,omitempty"`
 	ViceRoyaltyRevokation         pserialize.PBool           `paradox_field:"vice_royalty_revokation" json:"vice_royalty_revokation,omitempty"`
+	PlayID                        int                        `description:"game play id" json:"play_id,omitempty"`
+	PlayDate                      time.Time                  `description:"game play date" json:"play_date,omitempty"`
 }
 
 type TitleHistory struct {
@@ -86,4 +93,36 @@ type TitleHistory struct {
 type TitleHistoryHolder struct {
 	Who  string `paradox_field:"who" json:"who,omitempty"`
 	Type string `paradox_field:"type" json:"type,omitempty"`
+}
+
+func LoadTitles(path string, savePath string) (map[string]*Title, bool) {
+
+	content, ok := utils.LoadContent(savePath)
+
+	if !ok {
+		return nil, false
+	}
+
+	saveFile, ok := pserialize.UnmarshalP[SaveFile](content)
+
+	if !ok {
+		return nil, false
+	}
+
+	translations := localisation.LoadAllTranslations(path)
+
+	for _, title := range saveFile.Titles {
+		title.PlayID = saveFile.PlayThroughID
+		title.PlayDate = time.Time(saveFile.Date)
+
+		if title.Name == "" {
+			title.Name = translations[title.ID]
+		}
+
+		if title.Name == "" {
+			title.Name = translations[title.ID+"_adj"]
+		}
+	}
+
+	return saveFile.Titles, true
 }

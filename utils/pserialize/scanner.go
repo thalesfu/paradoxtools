@@ -310,6 +310,10 @@ func stateBeginStringOrEmpty(s *scanner, c byte) int {
 		s.step = state1
 		return scanBeginLiteral
 	}
+	if c == '-' {
+		s.step = stateNeg
+		return scanBeginLiteral
+	}
 	if 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || c == '_' || c == '\'' || 130 <= c && c <= 255 {
 		s.step = stateInExpression
 		return scanBeginLiteral
