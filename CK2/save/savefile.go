@@ -1,6 +1,8 @@
 package save
 
 import (
+	"github.com/thalesfu/paradoxtools/CK2/localisation"
+	"github.com/thalesfu/paradoxtools/utils"
 	"github.com/thalesfu/paradoxtools/utils/pserialize"
 )
 
@@ -37,6 +39,25 @@ type SaveFile struct {
 	Nomads          map[string]*Nomad                     `paradox_field:"nomad" json:"nomad,omitempty"`
 	Combat          *Combat                               `paradox_field:"combat" json:"combat,omitempty"`
 	War             *War                                  `paradox_field:"war" json:"war,omitempty"`
+}
+
+func LoadSave(path string, savePath string) (*SaveFile, bool) {
+
+	content, ok := utils.LoadContent(savePath)
+
+	if !ok {
+		return nil, false
+	}
+
+	saveFile, ok := pserialize.UnmarshalP[SaveFile](content)
+
+	if !ok {
+		return nil, false
+	}
+
+	processTitles(saveFile, localisation.LoadAllTranslations(path))
+
+	return saveFile, true
 }
 
 type IDEntity struct {

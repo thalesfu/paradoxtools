@@ -109,8 +109,12 @@ func LoadTitles(path string, savePath string) (map[string]*Title, bool) {
 		return nil, false
 	}
 
-	translations := localisation.LoadAllTranslations(path)
+	processTitles(saveFile, localisation.LoadAllTranslations(path))
 
+	return saveFile.Titles, true
+}
+
+func processTitles(saveFile *SaveFile, translations map[string]string) {
 	for _, title := range saveFile.Titles {
 		title.PlayID = saveFile.PlayThroughID
 		title.PlayDate = time.Time(saveFile.Date)
@@ -123,6 +127,4 @@ func LoadTitles(path string, savePath string) (map[string]*Title, bool) {
 			title.Name = translations[title.ID+"_adj"]
 		}
 	}
-
-	return saveFile.Titles, true
 }
