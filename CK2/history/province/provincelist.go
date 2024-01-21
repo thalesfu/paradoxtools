@@ -10,10 +10,12 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
-var ProvinceList = map[string]Province{}
+var ProvinceCodeList = make(map[string]Province)
+var ProvinceIdList = make(map[int]Province)
 
 func init() {
 	err := filepath.Walk(config.CK2ProvinceFold, func(p string, fi os.FileInfo, err error) error {
@@ -32,10 +34,15 @@ func init() {
 		id, titleCode, ok := getIDAndTitle(p, segments.LoadSegments(p))
 
 		if ok {
-			ProvinceList[titleCode] = &BaseProvince{
+			p := &BaseProvince{
 				ID:        id,
 				Title:     translations.GetFeudName(titleCode),
 				TitleCode: titleCode,
+			}
+			ProvinceCodeList[titleCode] = p
+			i, err := strconv.Atoi(id)
+			if err == nil {
+				ProvinceIdList[i] = p
 			}
 		}
 

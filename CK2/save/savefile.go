@@ -55,7 +55,10 @@ func LoadSave(path string, savePath string) (*SaveFile, bool) {
 		return nil, false
 	}
 
-	processTitles(saveFile, localisation.LoadAllTranslations(path))
+	translations := localisation.LoadAllTranslations(path)
+
+	processTitles(saveFile, translations)
+	processProvinces(saveFile, translations)
 
 	return saveFile, true
 }

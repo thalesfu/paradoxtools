@@ -98,7 +98,7 @@ func generateCounty(d *feud.BaseDuke, segment *segments.Segment) feud.County {
 	county.Title = ck2utils.GetFeudName(segment.Name)
 	county.TitleName = translations.GetFeudName(county.TitleCode)
 	county.Parent = d
-	if p, ok := province.ProvinceList[county.TitleCode]; ok {
+	if p, ok := province.ProvinceCodeList[county.TitleCode]; ok {
 		if p.GetID() == "" {
 			fmt.Println("Province ID is empty:", county.TitleCode)
 		}
