@@ -59,6 +59,7 @@ func LoadSave(path string, savePath string) (*SaveFile, bool) {
 
 	processTitles(saveFile, translations)
 	processProvinces(saveFile, translations)
+	processDynasties(saveFile, translations)
 
 	return saveFile, true
 }

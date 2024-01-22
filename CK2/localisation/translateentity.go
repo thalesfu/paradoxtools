@@ -40,7 +40,7 @@ func LoadAllTranslationsDetail(path string) (map[string]*TranslateEntity, map[st
 		filename := info.Name()
 
 		// 检查文件后缀是否为.csv或.json
-		if strings.HasSuffix(filename, ".csv.json") {
+		if strings.HasSuffix(filename, ".csv.json") || strings.HasSuffix(filename, ".txt.json") {
 			content, ok := utils.LoadContent(path)
 
 			if ok {
