@@ -54,5 +54,18 @@ func processProvinces(saveFile *SaveFile, translations map[string]string) {
 		if p.Name == "" {
 			p.Name = translations[p.Code+"_adj"]
 		}
+
+		for _, b := range p.Barons {
+			b.PlayID = saveFile.PlayThroughID
+			b.PlayDate = time.Time(saveFile.Date)
+
+			if b.Name == "" {
+				b.Name = translations[b.Code]
+			}
+
+			if b.Name == "" {
+				b.Name = translations[b.Code+"_adj"]
+			}
+		}
 	}
 }
