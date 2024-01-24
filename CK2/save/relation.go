@@ -1,6 +1,8 @@
 package save
 
-import "github.com/thalesfu/paradoxtools/utils/pserialize"
+import (
+	"github.com/thalesfu/paradoxtools/utils/pserialize"
+)
 
 type CasusBelli struct {
 	CasusBelli  string          `paradox_field:"casus_belli" json:"casus_belli,omitempty"`
@@ -41,12 +43,26 @@ type Truce struct {
 
 type PersonRelation struct {
 	ID                                            string           `paradox_type:"map_key" json:"id,omitempty"`
-	MarriageTie                                   *MarriageTie     `paradox_field:"marriage_tie" json:"marriage_tie,omitempty"`
 	RY                                            int              `paradox_field:"ry" json:"ry,omitempty"`
+	FirstFavorMonthStart                          int              `paradox_field:"first_favor_month_start" json:"first_favor_month_start,omitempty"`
+	SecondFavorMonthStart                         int              `paradox_field:"second_favor_month_start" json:"second_favor_month_start,omitempty"`
+	LooterHostilityDays                           int              `paradox_field:"looter_hostility_days" json:"looter_hostility_days,omitempty"`
+	RaisedDays                                    int              `paradox_field:"raised_days" json:"raised_days,omitempty"`
+	FirstFavorStatus                              pserialize.PBool `paradox_field:"first_favor_status" json:"first_favor_status,omitempty"`
+	SecondFavorStatus                             pserialize.PBool `paradox_field:"second_favor_status" json:"second_favor_status,omitempty"`
+	Alliance                                      pserialize.PBool `paradox_field:"alliance" json:"alliance,omitempty"`
+	CanCallToWar                                  pserialize.PBool `paradox_field:"can_call_to_war" json:"can_call_to_war,omitempty"`
+	DisableNonAggressionPacts                     pserialize.PBool `paradox_field:"disable_non_aggression_pacts" json:"disable_non_aggression_pacts,omitempty"`
+	IsLooter                                      pserialize.PBool `paradox_field:"is_looter" json:"is_looter,omitempty"`
+	Succession                                    pserialize.PBool `paradox_field:"succession" json:"succession,omitempty"`
+	NonAggressionPact                             pserialize.PBool `paradox_field:"non_aggression_pact" json:"non_aggression_pact,omitempty"`
+	CasusBelli                                    *CasusBelli      `paradox_field:"casus_belli" json:"casus_belli,omitempty"`
+	Truce                                         *Truce           `paradox_field:"truce" json:"truce,omitempty"`
+	Tributary                                     *Tributary       `paradox_field:"tributary" json:"tributary,omitempty"`
+	MarriageTie                                   *MarriageTie     `paradox_field:"marriage_tie" json:"marriage_tie,omitempty"`
 	AbuseOfOffice                                 *CommonRelation  `paradox_field:"abuse_of_office" json:"abuse_of_office,omitempty"`
 	AcknowledgedBastard                           *CommonRelation  `paradox_field:"acknowledged_bastard" json:"acknowledged_bastard,omitempty"`
 	AcknowledgedChild                             *CommonRelation  `paradox_field:"acknowledged_child" json:"acknowledged_child,omitempty"`
-	Alliance                                      pserialize.PBool `paradox_field:"alliance" json:"alliance,omitempty"`
 	AmbitiousPos                                  *CommonRelation  `paradox_field:"ambitious_pos" json:"ambitious_pos,omitempty"`
 	ApprovesOfMyBehaviour                         *CommonRelation  `paradox_field:"approves_of_my_behaviour" json:"approves_of_my_behaviour,omitempty"`
 	AttemptedMurder                               *CommonRelation  `paradox_field:"attempted_murder" json:"attempted_murder,omitempty"`
@@ -56,7 +72,6 @@ type PersonRelation struct {
 	BoughtIndulgences                             *CommonRelation  `paradox_field:"bought_indulgences" json:"bought_indulgences,omitempty"`
 	BravePos                                      *CommonRelation  `paradox_field:"brave_pos" json:"brave_pos,omitempty"`
 	BrokenNonAggressionPact                       *CommonRelation  `paradox_field:"broken_non_aggression_pact" json:"broken_non_aggression_pact,omitempty"`
-	CanCallToWar                                  pserialize.PBool `paradox_field:"can_call_to_war" json:"can_call_to_war,omitempty"`
 	ComfortedOpinion                              *CommonRelation  `paradox_field:"comforted_opinion" json:"comforted_opinion,omitempty"`
 	CravenPos                                     *CommonRelation  `paradox_field:"craven_pos" json:"craven_pos,omitempty"`
 	DeclaredWar                                   *CommonRelation  `paradox_field:"declared_war" json:"declared_war,omitempty"`
@@ -67,19 +82,14 @@ type PersonRelation struct {
 	DenouncedChild                                *CommonRelation  `paradox_field:"denounced_child" json:"denounced_child,omitempty"`
 	DespiseDrunkard                               *CommonRelation  `paradox_field:"despise_drunkard" json:"despise_drunkard,omitempty"`
 	DiligentPos                                   *CommonRelation  `paradox_field:"diligent_pos" json:"diligent_pos,omitempty"`
-	DisableNonAggressionPacts                     pserialize.PBool `paradox_field:"disable_non_aggression_pacts" json:"disable_non_aggression_pacts,omitempty"`
 	DisrespectsDynasty                            *CommonRelation  `paradox_field:"disrespects_dynasty" json:"disrespects_dynasty,omitempty"`
 	EnviousNeg                                    *CommonRelation  `paradox_field:"envious_neg" json:"envious_neg,omitempty"`
 	EnviousPos                                    *CommonRelation  `paradox_field:"envious_pos" json:"envious_pos,omitempty"`
-	FirstFavorMonthStart                          int              `paradox_field:"first_favor_month_start" json:"first_favor_month_start,omitempty"`
-	FirstFavorStatus                              pserialize.PBool `paradox_field:"first_favor_status" json:"first_favor_status,omitempty"`
 	GoodSuccLawChange                             *CommonRelation  `paradox_field:"good_succ_law_change" json:"good_succ_law_change,omitempty"`
 	GregariousNeg                                 *CommonRelation  `paradox_field:"gregarious_neg" json:"gregarious_neg,omitempty"`
 	GrievouslyOffended                            *CommonRelation  `paradox_field:"grievously_offended" json:"grievously_offended,omitempty"`
 	IgnoresLocalSaints                            *CommonRelation  `paradox_field:"ignores_local_saints" json:"ignores_local_saints,omitempty"`
-	IsLooter                                      pserialize.PBool `paradox_field:"is_looter" json:"is_looter,omitempty"`
 	JoinedMyWar                                   *CommonRelation  `paradox_field:"joined_my_war" json:"joined_my_war,omitempty"`
-	LooterHostilityDays                           int              `paradox_field:"looter_hostility_days" json:"looter_hostility_days,omitempty"`
 	LostWar                                       *CommonRelation  `paradox_field:"lost_war" json:"lost_war,omitempty"`
 	MarshalOverruled                              *CommonRelation  `paradox_field:"marshal_overruled" json:"marshal_overruled,omitempty"`
 	NotARealMan                                   *CommonRelation  `paradox_field:"not_a_real_man" json:"not_a_real_man,omitempty"`
@@ -250,17 +260,13 @@ type PersonRelation struct {
 	PerfectPunishment                             *CommonRelation  `paradox_field:"perfect_punishment" json:"perfect_punishment,omitempty"`
 	PopeHeathenRemovalApprove2                    *CommonRelation  `paradox_field:"pope_heathen_removal_approve_2" json:"pope_heathen_removal_approve_2,omitempty"`
 	ProudNeg                                      *CommonRelation  `paradox_field:"proud_neg" json:"proud_neg,omitempty"`
-	RaisedDays                                    int              `paradox_field:"raised_days" json:"raised_days,omitempty"`
 	RequestedLand                                 *CommonRelation  `paradox_field:"requested_land" json:"requested_land,omitempty"`
 	RevealedPlot                                  *CommonRelation  `paradox_field:"revealed_plot" json:"revealed_plot,omitempty"`
 	SchemingBastard                               *CommonRelation  `paradox_field:"scheming_bastard" json:"scheming_bastard,omitempty"`
-	SecondFavorMonthStart                         int              `paradox_field:"second_favor_month_start" json:"second_favor_month_start,omitempty"`
-	SecondFavorStatus                             pserialize.PBool `paradox_field:"second_favor_status" json:"second_favor_status,omitempty"`
 	SlothfulNeg                                   *CommonRelation  `paradox_field:"slothful_neg" json:"slothful_neg,omitempty"`
 	SpouseEncouraged                              *CommonRelation  `paradox_field:"spouse_encouraged" json:"spouse_encouraged,omitempty"`
 	SpouseIgnoresMe                               *CommonRelation  `paradox_field:"spouse_ignores_me" json:"spouse_ignores_me,omitempty"`
 	SuccLawChange                                 *CommonRelation  `paradox_field:"succ_law_change" json:"succ_law_change,omitempty"`
-	Succession                                    pserialize.PBool `paradox_field:"succession" json:"succession,omitempty"`
 	SuspectedCowardRumour                         *CommonRelation  `paradox_field:"suspected_coward_rumour" json:"suspected_coward_rumour,omitempty"`
 	SuspectedOccultistRumour                      *CommonRelation  `paradox_field:"suspected_occultist_rumour" json:"suspected_occultist_rumour,omitempty"`
 	TalentRecognized                              *CommonRelation  `paradox_field:"talent_recognized" json:"talent_recognized,omitempty"`
@@ -320,12 +326,8 @@ type PersonRelation struct {
 	SuspectedSodomiteRumour                       *CommonRelation  `paradox_field:"suspected_sodomite_rumour" json:"suspected_sodomite_rumour,omitempty"`
 	TrustingPos                                   *CommonRelation  `paradox_field:"trusting_pos" json:"trusting_pos,omitempty"`
 	ZealousPos                                    *CommonRelation  `paradox_field:"zealous_pos" json:"zealous_pos,omitempty"`
-	CasusBelli                                    *CasusBelli      `paradox_field:"casus_belli" json:"casus_belli,omitempty"`
 	CommonInterestsOpinion                        *CommonRelation  `paradox_field:"common_interests_opinion" json:"common_interests_opinion,omitempty"`
 	InNonAggressionPact                           *CommonRelation  `paradox_field:"in_non_aggression_pact" json:"in_non_aggression_pact,omitempty"`
-	NonAggressionPact                             pserialize.PBool `paradox_field:"non_aggression_pact" json:"non_aggression_pact,omitempty"`
 	OpinionInherited                              *CommonRelation  `paradox_field:"opinion_inherited" json:"opinion_inherited,omitempty"`
 	OpinionInheritedNegative                      *CommonRelation  `paradox_field:"opinion_inherited_negative" json:"opinion_inherited_negative,omitempty"`
-	Tributary                                     *Tributary       `paradox_field:"tributary" json:"tributary,omitempty"`
-	Truce                                         *Truce           `paradox_field:"truce" json:"truce,omitempty"`
 }

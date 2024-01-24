@@ -13,7 +13,7 @@ import (
 
 func main() {
 	// 指定要扫描的目录
-	dir := "R:\\Thales\\Game\\SteamLibrary\\steamapps\\common\\Crusader Kings II\\localisation"
+	dir := "R:\\Thales\\Game\\SteamLibrary\\steamaps\\common\\Crusader Kings II\\localisation"
 
 	// 读取目录中的所有文件和子目录
 	files, err := os.ReadDir(dir)

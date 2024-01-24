@@ -1,6 +1,15 @@
 package trait
 
-import "github.com/thalesfu/paradoxtools/utils/pserialize"
+import (
+	"fmt"
+	"github.com/thalesfu/paradoxtools/CK2/localisation"
+	"github.com/thalesfu/paradoxtools/utils"
+	"github.com/thalesfu/paradoxtools/utils/pserialize"
+	"os"
+	"path/filepath"
+	"sort"
+	"strings"
+)
 
 type CommandModifier struct {
 	Terrain        string  `paradox_field:"terrain" json:"terrain,omitempty"`
@@ -28,8 +37,10 @@ type CommandModifier struct {
 }
 
 type Trait struct {
-	Name                            string           `paradox_type:"map_key" json:"name,omitempty"`
-	Index                           int              `paradox_type:"map_index" json:"index,omitempty"`
+	Code                            string           `paradox_type:"map_key" json:"code,omitempty"`
+	ID                              int              `paradox_type:"map_index" json:"id,omitempty"`
+	Name                            string           `json:"name,omitempty"`
+	Description                     string           `json:"description,omitempty"`
 	Education                       pserialize.PBool `paradox_field:"education" json:"education,omitempty"`
 	IsHealth                        pserialize.PBool `paradox_field:"is_health" json:"is_health,omitempty"`
 	IsIllness                       pserialize.PBool `paradox_field:"is_illness" json:"is_illness,omitempty"`
@@ -170,4 +181,55 @@ type Trait struct {
 	TownOpinion                     int              `paradox_field:"town_opinion" json:"town_opinion,omitempty"`
 	Opposites                       []string         `paradox_field:"opposites" paradox_type:"field_list" json:"opposites,omitempty"`
 	CommandModifier                 *CommandModifier `paradox_field:"command_modifier" json:"command_modifier,omitempty"`
+}
+
+func LoadAllTraits(path string) map[string]*Trait {
+
+	translations := localisation.LoadAllTranslations(path)
+	religionPath := filepath.Join(path, "common", "traits")
+	files, err := os.ReadDir(religionPath)
+	sort.Slice(files, func(i, j int) bool { return files[i].Name() < files[j].Name() })
+	if err != nil {
+		fmt.Println("Error reading directory:", err)
+		return nil
+	}
+
+	result := make(map[string]*Trait)
+
+	traitCount := 0
+
+	for _, file := range files {
+		if file.IsDir() {
+			continue // 跳过目录
+		}
+
+		// 获取文件名
+		filename := file.Name()
+
+		// 检查文件后缀是否为.csv或.json
+		if strings.HasSuffix(filename, ".txt") {
+			filepath := filepath.Join(religionPath, filename)
+
+			content, ok := utils.LoadContent(filepath)
+
+			if ok {
+				ts, o := pserialize.UnmarshalP[map[string]*Trait](content)
+
+				if o {
+					for k, v := range *ts {
+						v.ID = traitCount + v.ID
+						result[k] = v
+					}
+					traitCount += len(*ts)
+				}
+			}
+		}
+	}
+
+	for _, m := range result {
+		m.Name = translations[m.Code]
+		m.Description = translations[m.Code+"_desc"]
+	}
+
+	return result
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/thalesfu/paradoxtools/CK2/trait"
 	"github.com/thalesfu/paradoxtools/utils"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -12,7 +13,13 @@ import (
 )
 
 func main() {
-	buildCommandModifierField("R:\\Thales\\Game\\SteamLibrary\\steamapps\\common\\Crusader Kings II\\common\\traits")
+	//buildCommandModifierField("R:\\Thales\\Game\\SteamLibrary\\steamapps\\common\\Crusader Kings II\\common\\traits")
+
+	all := trait.LoadAllTraits("R:\\Thales\\Game\\SteamLibrary\\steamapps\\common\\Crusader Kings II")
+
+	for _, v := range all {
+		fmt.Println(utils.MarshalJSON(v))
+	}
 }
 
 func buildCommonField(dir string) {

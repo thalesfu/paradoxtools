@@ -60,6 +60,7 @@ func LoadSave(path string, savePath string) (*SaveFile, bool) {
 	processTitles(saveFile, translations)
 	processProvinces(saveFile, translations)
 	processDynasties(saveFile, translations)
+	processCharacters(saveFile, translations)
 
 	return saveFile, true
 }
@@ -79,6 +80,7 @@ type Lgr struct {
 type Claim struct {
 	Title   *Title           `paradox_field:"title" paradox_type:"map_value" paradox_map_name:"title" json:"title,omitempty"`
 	Pressed pserialize.PBool `paradox_field:"pressed" json:"pressed,omitempty"`
+	Weak    pserialize.PBool `paradox_field:"weak" json:"weak,omitempty"`
 }
 
 type Modifier struct {
