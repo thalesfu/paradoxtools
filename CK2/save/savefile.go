@@ -1,9 +1,14 @@
 package save
 
 import (
+	"errors"
+	"fmt"
 	"github.com/thalesfu/paradoxtools/CK2/localisation"
 	"github.com/thalesfu/paradoxtools/utils"
 	"github.com/thalesfu/paradoxtools/utils/pserialize"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
 type SaveFile struct {
@@ -41,18 +46,58 @@ type SaveFile struct {
 	War             *War                                  `paradox_field:"war" json:"war,omitempty"`
 }
 
-func LoadSave(path string, savePath string) (*SaveFile, bool) {
+func LoadSave(path string, savePath string) (*SaveFile, bool, error) {
+	var f string
 
-	content, ok := utils.LoadContent(savePath)
+	if utils.IsCompressedFile(savePath) {
+		dir := filepath.Join("temps", "ck2", "unzipsavefile", strings.TrimSuffix(filepath.Base(savePath), filepath.Ext(savePath)))
+
+		err := utils.Unzip(savePath, dir)
+
+		if err != nil {
+			return nil, false, err
+		}
+
+		defer func() {
+			err := os.RemoveAll(dir)
+			if err != nil {
+				fmt.Println(err)
+			}
+		}()
+
+		files, err := os.ReadDir(dir)
+		if err != nil {
+			return nil, false, err
+		}
+
+		for _, file := range files {
+			if file.IsDir() {
+				continue
+			}
+
+			if strings.HasSuffix(file.Name(), ".ck2") {
+				f = filepath.Join(dir, file.Name())
+				break
+			}
+		}
+
+		if f == "" {
+			return nil, false, errors.New(fmt.Sprintf("cannot find ck2 file in unzip file %s from %s", savePath, dir))
+		}
+	} else {
+		f = savePath
+	}
+
+	content, ok := utils.LoadContent(f)
 
 	if !ok {
-		return nil, false
+		return nil, false, errors.New("cannot load save file")
 	}
 
 	saveFile, ok := pserialize.UnmarshalP[SaveFile](content)
 
 	if !ok {
-		return nil, false
+		return nil, false, errors.New("cannot unmarshal save file")
 	}
 
 	translations := localisation.LoadAllTranslations(path)
@@ -62,7 +107,7 @@ func LoadSave(path string, savePath string) (*SaveFile, bool) {
 	processDynasties(saveFile, translations)
 	processCharacters(saveFile, translations)
 
-	return saveFile, true
+	return saveFile, true, nil
 }
 
 type IDEntity struct {

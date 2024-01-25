@@ -5,47 +5,17 @@ import (
 	"github.com/thalesfu/paradoxtools/utils"
 )
 
-func printHex(str string) {
-	for _, c := range []byte(str) {
-		fmt.Printf("%02x ", c)
-	}
-	fmt.Println()
-}
-
-func printHexW(wideText []uint16) {
-	for _, w := range wideText {
-		fmt.Printf("%04x ", w)
-	}
-	fmt.Println()
-}
-
 func main() {
-	content, ok := utils.LoadContent("T:\\codes\\github.com\\thalesfu\\cplusplus\\name2.txt")
+	ok := utils.IsCompressedFile("T:\\OneDrive\\fu.thales@live.com\\OneDrive\\MyDocument\\Paradox Interactive\\Crusader Kings II\\save games\\酒泉796_12_01.ck2")
 
-	if ok {
-		fmt.Println("paradox", []byte(content))
-	}
+	fmt.Println("Is compressed file:", ok)
 
-	fileText, err := utils.DecodeEscapedText([]byte(content))
+	ok = utils.IsCompressedFile("T:\\OneDrive\\fu.thales@live.com\\OneDrive\\MyDocument\\Paradox Interactive\\Crusader Kings II\\save games\\酒泉771_02_14dd.ck2")
 
-	fmt.Println("来自文件：", fileText)
+	fmt.Println("Is compressed file:", ok)
 
-	utf8Str := "斯来"
-	fmt.Print("Original string in hex: ")
-	printHex(utf8Str)
-	wideStr, err := utils.MultiByteToWideChar(utf8Str)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-
-	fmt.Print("Go UTF-16 hex: ")
-	printHexW(wideStr)
-
-	text, err := utils.ConvertWideTextToEscapedText(wideStr)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-	fmt.Println("Wide String:", text)
+	//err := utils.Unzip("T:\\OneDrive\\fu.thales@live.com\\OneDrive\\MyDocument\\Paradox Interactive\\Crusader Kings II\\save games\\酒泉796_12_01.ck2", "logs/ck2/save/unzip")
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 }

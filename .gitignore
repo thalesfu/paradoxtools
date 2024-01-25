@@ -16,4 +16,5 @@
 
 /.idea/
 logs/
+temps/
 go.sum
