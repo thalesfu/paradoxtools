@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 type SaveFile struct {
@@ -44,6 +45,9 @@ type SaveFile struct {
 	Nomads          map[string]*Nomad                     `paradox_field:"nomad" json:"nomad,omitempty"`
 	Combat          *Combat                               `paradox_field:"combat" json:"combat,omitempty"`
 	War             *War                                  `paradox_field:"war" json:"war,omitempty"`
+	FilePath        string                                `json:"file_name,omitempty"`
+	FileHash        string                                `json:"file_hash,omitempty"`
+	FileUpdateTime  time.Time                             `json:"file_update_time,omitempty"`
 }
 
 func LoadSave(path string, savePath string) (*SaveFile, bool, error) {
@@ -99,6 +103,18 @@ func LoadSave(path string, savePath string) (*SaveFile, bool, error) {
 	if !ok {
 		return nil, false, errors.New("cannot unmarshal save file")
 	}
+
+	saveFile.FilePath = strings.ReplaceAll(savePath, "\\", "/")
+	hash, err := utils.GetFileHash(savePath)
+	if err != nil {
+		return nil, false, err
+	}
+	saveFile.FileHash = hash
+	info, err := os.Stat(savePath)
+	if err != nil {
+		return nil, false, err
+	}
+	saveFile.FileUpdateTime = info.ModTime()
 
 	translations := localisation.LoadAllTranslations(path)
 

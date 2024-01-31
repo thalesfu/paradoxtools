@@ -78,6 +78,5 @@ func GetFeudName(name string) string {
 		return utils.ReplaceSpecialChars(u.Translation)
 	}
 
-	fmt.Println("No translation for", name)
 	return name
 }
