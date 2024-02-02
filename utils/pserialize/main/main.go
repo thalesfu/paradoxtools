@@ -10,12 +10,12 @@ import (
 
 func main() {
 
-	content, ok := utils.LoadContent("T:\\OneDrive\\fu.thales@live.com\\OneDrive\\MyDocument\\Paradox Interactive\\Crusader Kings II\\save games\\酒泉771_02_14dd.ck2")
+	content, ok := utils.LoadContent("T:\\OneDrive\\fu.thales@live.com\\OneDrive\\MyDocument\\Paradox Interactive\\Crusader Kings II\\save games\\test\\疏勒779_09_042.ck2")
 
 	saveFile, ok := pserialize.UnmarshalP[save.SaveFile](content)
 
 	if ok {
-		fmt.Println(utils.MarshalJSON(saveFile.Provinces[1513]))
+		fmt.Println(utils.MarshalJSON(saveFile.Relations["diplo_2604916"]))
 	}
 
 	//traitContent, ok := utils.LoadContent("R:\\Thales\\Game\\SteamLibrary\\steamapps\\common\\Crusader Kings II\\common\\traits\\00_traits.txt")

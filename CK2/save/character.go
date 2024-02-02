@@ -87,6 +87,7 @@ type Character struct {
 	SavedEventTarget    *SavedEventTarget          `paradox_field:"saved_event_target" json:"saved_event_target,omitempty"`
 	DMN                 *DMN                       `paradox_field:"dmn" json:"dmn,omitempty"`
 	CharacterPlayerData *CharacterPlayerData       `paradox_field:"character_player_data" json:"character_player_data,omitempty"`
+	Unborn              []*Unborn                  `paradox_field:"unborn" paradox_type:"field_list" json:"unborn,omitempty"`
 	PlayID              int                        `description:"game play id" json:"play_id,omitempty"`
 	PlayDate            time.Time                  `description:"game play date" json:"play_date,omitempty"`
 }
