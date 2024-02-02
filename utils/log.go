@@ -15,7 +15,7 @@ func CreateLogWriter(logType string) (*bufio.Writer, func()) {
 	// 格式化日期和时间
 	dateStr := now.Format("2006-01-02")
 	timeStr := now.Format("15_04_05_000")
-	filePath := filepath.Join("logs", logType, dateStr, timeStr+".log")
+	filePath := filepath.Join(os.TempDir(), "logs", logType, dateStr, timeStr+".log")
 
 	if err := os.MkdirAll(filepath.Dir(filePath), 0755); err != nil {
 		log.Fatalf("创建目录失败：%s\nerror:%v", filePath, err)

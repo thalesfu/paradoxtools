@@ -54,7 +54,7 @@ func LoadSave(path string, savePath string) (*SaveFile, bool, error) {
 	var f string
 
 	if utils.IsCompressedFile(savePath) {
-		dir := filepath.Join("temps", "ck2", "unzipsavefile", strings.TrimSuffix(filepath.Base(savePath), filepath.Ext(savePath)))
+		dir := filepath.Join(os.TempDir(), "ck2", "unzipsavefile", strings.TrimSuffix(filepath.Base(savePath), filepath.Ext(savePath)))
 
 		err := utils.Unzip(savePath, dir)
 

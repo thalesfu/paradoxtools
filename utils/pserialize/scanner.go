@@ -22,7 +22,7 @@ func Valid(data []byte) bool {
 func checkValid(data []byte, scan *scanner) error {
 	scan.reset()
 	line := 1
-	writeLog := true
+	writeLog := false
 	var writer *bufio.Writer
 	if writeLog {
 		logWriter, deferFunc := utils.CreateLogWriter("scanerror")
