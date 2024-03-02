@@ -15,7 +15,7 @@ func main() {
 	saveFile, ok := pserialize.UnmarshalP[save.SaveFile](content)
 
 	if ok {
-		fmt.Println(utils.MarshalJSON(saveFile.Relations["diplo_2604916"]))
+		fmt.Println(utils.MarshalJSON(saveFile.Characters[2609830]))
 	}
 
 	//traitContent, ok := utils.LoadContent("R:\\Thales\\Game\\SteamLibrary\\steamapps\\common\\Crusader Kings II\\common\\traits\\00_traits.txt")

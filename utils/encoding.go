@@ -1,55 +1,12 @@
 package utils
 
-/*
-#include <windows.h>
-
-int callMultiByteToWideChar(const char *lpMultiByteStr, int cbMultiByte, wchar_t *lpWideCharStr, int cchWideChar) {
-    return MultiByteToWideChar(CP_UTF8, 0, lpMultiByteStr, cbMultiByte, lpWideCharStr, cchWideChar);
-}
-
-int callWideCharToMultiByte(const wchar_t *lpWideCharStr, int cchWideChar, char *lpMultiByteStr, int cbMultiByte) {
-    return WideCharToMultiByte(CP_UTF8, 0, lpWideCharStr, cchWideChar, lpMultiByteStr, cbMultiByte, NULL, NULL);
-}
-
-*/
-import "C"
 import (
 	"fmt"
+	"golang.org/x/text/encoding/unicode"
+	"golang.org/x/text/transform"
 	"strings"
-	"unsafe"
+	"unicode/utf16"
 )
-
-// MultiByteToWideChar converts a string from UTF-8 to UTF-16 (Windows Wide Character format).
-func MultiByteToWideChar(utf8Str string) ([]uint16, error) {
-	// First, call MultiByteToWideChar to get required buffer size
-	charCount := C.callMultiByteToWideChar(C.CString(utf8Str), -1, nil, 0)
-	if charCount == 0 {
-		return nil, fmt.Errorf("failed to get buffer size")
-	}
-
-	// Allocate buffer for wide characters
-	wcharBuffer := make([]uint16, charCount)
-	_ = C.callMultiByteToWideChar(C.CString(utf8Str), -1, (*C.wchar_t)(unsafe.Pointer(&wcharBuffer[0])), charCount)
-
-	// Convert wcharBuffer to Go string
-	return wcharBuffer, nil
-}
-
-// WideCharToMultiByte converts a string from UTF-16 (Windows Wide Character format) to UTF-8.
-func WideCharToMultiByte(wideStr []uint16) (string, error) {
-	// Call WideCharToMultiByte with null destination to get the required size
-	charCount := C.callWideCharToMultiByte((*C.wchar_t)(unsafe.Pointer(&wideStr[0])), C.int(len(wideStr)), nil, 0)
-	if charCount == 0 {
-		return "", fmt.Errorf("failed to get buffer size for UTF-8 string")
-	}
-
-	// Allocate buffer for UTF-8 characters
-	byteBuffer := make([]byte, charCount)
-	_ = C.callWideCharToMultiByte((*C.wchar_t)(unsafe.Pointer(&wideStr[0])), C.int(len(wideStr)), (*C.char)(unsafe.Pointer(&byteBuffer[0])), charCount)
-
-	// Convert byteBuffer to Go string
-	return string(byteBuffer), nil
-}
 
 func UCS2ToCP1252(cp uint16) uint16 {
 	cp1252Map := map[uint16]uint16{
@@ -232,4 +189,30 @@ func EncodeEscapedText(text string) ([]byte, error) {
 	}
 
 	return escapedTextBytes, nil
+}
+
+// MultiByteToWideChar converts a string from UTF-8 to UTF-16.
+func MultiByteToWideChar(utf8Str string) ([]uint16, error) {
+	encoder := unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewEncoder()
+	utf16Bytes, _, err := transform.Bytes(encoder, []byte(utf8Str))
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode UTF-8 to UTF-16: %v", err)
+	}
+
+	// Convert byte slice to uint16 slice
+	utf16Ints := make([]uint16, 0, len(utf16Bytes)/2)
+	for i := 0; i < len(utf16Bytes); i += 2 {
+		utf16Ints = append(utf16Ints, uint16(utf16Bytes[i])+(uint16(utf16Bytes[i+1])<<8))
+	}
+
+	return utf16Ints, nil
+}
+
+// WideCharToMultiByte converts a string from UTF-16 to UTF-8.
+func WideCharToMultiByte(wideStr []uint16) (string, error) {
+	// Decode UTF-16 to UTF-8
+	runes := utf16.Decode(wideStr)
+	utf8Str := string(runes)
+
+	return utf8Str, nil
 }

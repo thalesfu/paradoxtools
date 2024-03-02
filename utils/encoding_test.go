@@ -11,7 +11,7 @@ func TestCK2EscapedText(t *testing.T) {
 	Convey("Ck2 Escaped", t, func() {
 
 		Convey("编码测试", func() {
-			data, err := EncodeEscapedText("武毕楼储殷张袁林")
+			data, err := EncodeEscapedText("傅可生雇佣军")
 
 			if err != nil {
 				fmt.Println(err)
@@ -23,7 +23,8 @@ func TestCK2EscapedText(t *testing.T) {
 		})
 
 		Convey("解码测试", func() {
-			data, err := EncodeEscapedText("可生")
+			//data, err := EncodeEscapedText("可生")
+			data := []byte{16, 133, 80, 16, 239, 83, 16, 31, 117, 16, 199, 150, 16, 99, 79, 16, 155, 81}
 			s, err := DecodeEscapedText(data)
 
 			if err != nil {
