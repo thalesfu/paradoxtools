@@ -13,9 +13,9 @@ import (
 )
 
 func main() {
-	//buildBuildingField("R:\\Thales\\Game\\SteamLibrary\\steamapps\\common\\Crusader Kings II")
+	//buildBuildingField("/Volumes/[C] Windows 11.hidden/Program Files (x86)/Steam/steamapps/common/Crusader Kings II")
 
-	all := building.LoadAllBuildings("R:\\Thales\\Game\\SteamLibrary\\steamapps\\common\\Crusader Kings II")
+	all := building.LoadAllBuildings("/Volumes/[C] Windows 11.hidden/Program Files (x86)/Steam/steamapps/common/Crusader Kings II")
 
 	for _, v := range all {
 		fmt.Println(v.Code, v.Name, v.Description)

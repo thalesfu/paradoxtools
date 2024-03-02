@@ -6,15 +6,15 @@ import (
 )
 
 func main() {
-	ok := utils.IsCompressedFile("T:\\OneDrive\\fu.thales@live.com\\OneDrive\\MyDocument\\Paradox Interactive\\Crusader Kings II\\save games\\酒泉796_12_01.ck2")
+	ok := utils.IsCompressedFile("/Users/thalesfu/Documents/Paradox Interactive/Crusader Kings II/save games/酒泉796_12_01.ck2")
 
 	fmt.Println("Is compressed file:", ok)
 
-	ok = utils.IsCompressedFile("T:\\OneDrive\\fu.thales@live.com\\OneDrive\\MyDocument\\Paradox Interactive\\Crusader Kings II\\save games\\酒泉771_02_14dd.ck2")
+	ok = utils.IsCompressedFile("/Users/thalesfu/Documents/Paradox Interactive/Crusader Kings II/save games/酒泉771_02_14dd.ck2")
 
 	fmt.Println("Is compressed file:", ok)
 
-	//err := utils.Unzip("T:\\OneDrive\\fu.thales@live.com\\OneDrive\\MyDocument\\Paradox Interactive\\Crusader Kings II\\save games\\酒泉796_12_01.ck2", "logs/ck2/save/unzip")
+	//err := utils.Unzip("/Users/thalesfu/Documents/Paradox Interactive/Crusader Kings II/save games/酒泉796_12_01.ck2", "logs/ck2/save/unzip")
 	//if err != nil {
 	//	log.Fatal(err)
 	//}

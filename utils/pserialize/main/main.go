@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	content, ok := utils.LoadContent("T:\\OneDrive\\fu.thales@live.com\\OneDrive\\MyDocument\\Paradox Interactive\\Crusader Kings II\\save games\\test\\疏勒779_09_042.ck2")
+	content, ok := utils.LoadContent("/Users/thalesfu/Documents/Paradox Interactive/Crusader Kings II/save games/test/疏勒779_09_042.ck2")
 
 	saveFile, ok := pserialize.UnmarshalP[save.SaveFile](content)
 
@@ -18,7 +18,7 @@ func main() {
 		fmt.Println(utils.MarshalJSON(saveFile.Characters[2609830]))
 	}
 
-	//traitContent, ok := utils.LoadContent("R:\\Thales\\Game\\SteamLibrary\\steamapps\\common\\Crusader Kings II\\common\\traits\\00_traits.txt")
+	//traitContent, ok := utils.LoadContent("/Volumes/[C] Windows 11.hidden/Program Files (x86)/Steam/steamapps/common/Crusader Kings II/common/traits/00_traits.txt")
 	//
 	//t, ok := pserialize.UnmarshalP[map[string]*trait.Trait](traitContent)
 	//

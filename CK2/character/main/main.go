@@ -16,7 +16,7 @@ import (
 func main() {
 	//buildCharacterField("T:\\codes\\github.com\\thalesfu\\paradoxtools")
 
-	content, ok := utils.LoadContent("T:\\OneDrive\\fu.thales@live.com\\OneDrive\\MyDocument\\Paradox Interactive\\Crusader Kings II\\save games\\酒泉771_02_14dd.ck2")
+	content, ok := utils.LoadContent("/Users/thalesfu/Documents/Paradox Interactive/Crusader Kings II/save games/酒泉771_02_14dd.ck2")
 
 	saveFile, ok := pserialize.UnmarshalP[save.SaveFile](content)
 

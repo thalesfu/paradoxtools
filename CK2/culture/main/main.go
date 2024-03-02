@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	cultureGroups := culture.LoadAllCultures("R:\\Thales\\Game\\SteamLibrary\\steamapps\\common\\Crusader Kings II")
+	cultureGroups := culture.LoadAllCultures("/Volumes/[C] Windows 11.hidden/Program Files (x86)/Steam/steamapps/common/Crusader Kings II")
 
 	fmt.Println(utils.MarshalJSON(cultureGroups))
 }

@@ -7,7 +7,7 @@ import (
 
 func main() {
 
-	translations, repeated := localisation.LoadAllTranslationsDetail("R:\\Thales\\Game\\SteamLibrary\\steamapps\\common\\Crusader Kings II")
+	translations, repeated := localisation.LoadAllTranslationsDetail("/Volumes/[C] Windows 11.hidden/Program Files (x86)/Steam/steamapps/common/Crusader Kings II")
 
 	fmt.Println(len(translations))
 
@@ -20,7 +20,7 @@ func main() {
 
 	fmt.Println(len(repeated))
 
-	ts := localisation.LoadAllTranslations("R:\\Thales\\Game\\SteamLibrary\\steamapps\\common\\Crusader Kings II")
+	ts := localisation.LoadAllTranslations("/Volumes/[C] Windows 11.hidden/Program Files (x86)/Steam/steamapps/common/Crusader Kings II")
 
 	fmt.Println(len(ts))
 }
