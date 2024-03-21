@@ -13,9 +13,9 @@ import (
 )
 
 func main() {
-	//buildCommandModifierField("/Volumes/[C] Windows 11.hidden/Program Files (x86)/Steam/steamapps/common/Crusader Kings II/common/traits")
+	//buildCommandModifierField("/Users/thalesfu/Windows/steam/steamapps/common/Crusader Kings II/common/traits")
 
-	all := trait.LoadAllTraits("/Volumes/[C] Windows 11.hidden/Program Files (x86)/Steam/steamapps/common/Crusader Kings II")
+	all := trait.LoadAllTraits("/Users/thalesfu/Windows/steam/steamapps/common/Crusader Kings II")
 
 	for _, v := range all {
 		fmt.Println(utils.MarshalJSON(v))

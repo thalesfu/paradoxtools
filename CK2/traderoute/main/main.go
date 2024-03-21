@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	all := traderoute.LoadAllTradeRoutes("/Volumes/[C] Windows 11.hidden/Program Files (x86)/Steam/steamapps/common/Crusader Kings II")
+	all := traderoute.LoadAllTradeRoutes("/Users/thalesfu/Windows/steam/steamapps/common/Crusader Kings II")
 
 	for _, v := range all {
 		fmt.Println(utils.MarshalJSON(v))

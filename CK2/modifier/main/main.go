@@ -13,9 +13,9 @@ import (
 )
 
 func main() {
-	buildModifiesField("/Volumes/[C] Windows 11.hidden/Program Files (x86)/Steam/steamapps/common/Crusader Kings II")
+	buildModifiesField("/Users/thalesfu/Windows/steam/steamapps/common/Crusader Kings II")
 
-	allModifier := modifier.LoadAllModifier("/Volumes/[C] Windows 11.hidden/Program Files (x86)/Steam/steamapps/common/Crusader Kings II")
+	allModifier := modifier.LoadAllModifier("/Users/thalesfu/Windows/steam/steamapps/common/Crusader Kings II")
 
 	for _, v := range allModifier {
 		fmt.Println(utils.MarshalJSON(v))

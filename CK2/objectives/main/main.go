@@ -13,9 +13,9 @@ import (
 )
 
 func main() {
-	//buildObjectiveField("/Volumes/[C] Windows 11.hidden/Program Files (x86)/Steam/steamapps/common/Crusader Kings II")
+	//buildObjectiveField("/Users/thalesfu/Windows/steam/steamapps/common/Crusader Kings II")
 
-	allObjectives := objectives.LoadAllObjective("/Volumes/[C] Windows 11.hidden/Program Files (x86)/Steam/steamapps/common/Crusader Kings II")
+	allObjectives := objectives.LoadAllObjective("/Users/thalesfu/Windows/steam/steamapps/common/Crusader Kings II")
 
 	for _, v := range allObjectives {
 		fmt.Println(utils.MarshalJSON(v))
