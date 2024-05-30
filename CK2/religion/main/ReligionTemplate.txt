@@ -1,0 +1,16 @@
+package culture
+
+import "github.com/thalesfu/ck2nebula"
+var (
+{{- range $k, $v := .}}
+    {{- with .Religions}}
+        {{- range $sk, $sv := .}}
+    Religion_{{RP $v.Name}}_{{RP $sv.Name}}_{{$sv.Code}} = &ck2nebula.Religion{
+        VID:                   "culture.{{$sv.Code}}",
+        Name:                  "{{$sv.Name}}",
+        Code:                  "{{$sv.Code}}",
+    }
+        {{- end}}
+    {{- end}}
+{{- end}}
+)
