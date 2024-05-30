@@ -1,0 +1,27 @@
+package culture
+
+import "github.com/thalesfu/ck2nebula"
+var (
+{{- range $k, $v := .}}
+    {{- with .Cultures}}
+        {{- range $sk, $sv := .}}
+    Culture_{{RP $v.Name}}_{{RP $sv.Name}} = &ck2nebula.Culture{
+        VID:                   "culture.{{$sv.Code}}",
+        Name:                  "{{$sv.Name}}",
+        Code:                  "{{$sv.Code}}",
+        FromDynastyPrefix:     "{{ES $sv.FromDynastyPrefix}}",
+        MaleParonym:           "{{ES $sv.MalePatronym}}",
+        FemaleParonym:         "{{ES $sv.FemalePatronym}}",
+        DynastyTitleNames:     {{$sv.DynastyTitleNames}},
+        FounderNamedDynasties: {{$sv.FounderNamedDynasties}},
+        Caste:                 {{$sv.Castes}},
+        DynastyNameFirst:      {{$sv.DynastyNameFirst}},
+        DukesCalledKings:      {{$sv.DukesCalledKings}},
+        CountTitlesHidden:     {{$sv.CountTitlesHidden}},
+        BaronTitlesHidden:     {{$sv.BaronTitlesHidden}},
+        AllowLooting:          {{$sv.AllowLooting}},
+    }
+        {{- end}}
+    {{- end}}
+{{- end}}
+)
