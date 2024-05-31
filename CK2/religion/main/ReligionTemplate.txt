@@ -1,4 +1,4 @@
-package culture
+package religion
 
 import "github.com/thalesfu/ck2nebula"
 var (
