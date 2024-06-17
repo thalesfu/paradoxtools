@@ -5,7 +5,7 @@ var (
 {{- range $k, $v := .}}
     {{- with .Cultures}}
         {{- range $sk, $sv := .}}
-    Culture_{{RP $v.Name}}_{{RP $sv.Name}} = &ck2nebula.Culture{
+    Culture_{{RP $v.Name}}_{{RP $sv.Name}}_{{$v.Code}}_{{$sv.Code}} = &ck2nebula.Culture{
         VID:                   "culture.{{$sv.Code}}",
         Name:                  "{{$sv.Name}}",
         Code:                  "{{$sv.Code}}",

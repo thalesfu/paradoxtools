@@ -11,7 +11,7 @@ func TestCK2EscapedText(t *testing.T) {
 	Convey("Ck2 Escaped", t, func() {
 
 		Convey("编码测试", func() {
-			data, err := EncodeEscapedText("彦伟")
+			data, err := EncodeEscapedText("铜雀台")
 
 			if err != nil {
 				fmt.Println(err)
@@ -33,7 +33,7 @@ func TestCK2EscapedText(t *testing.T) {
 
 			fmt.Println(data, s)
 
-			content, ok := LoadContent("temps/escapedtext.txt")
+			content, ok := LoadContent("temps/escapedtext2.txt")
 
 			if ok {
 
