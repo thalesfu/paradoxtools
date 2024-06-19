@@ -1,0 +1,272 @@
+package trait
+
+import (
+	"github.com/thalesfu/CK2Commands/property"
+	"github.com/thalesfu/ck2nebula"
+)
+
+var (
+{{- range $k, $v := .}}
+    Trait_{{$v.ID}}_{{$v.Code}}_{{RP $v.Name}} = &ck2nebula.Trait{
+        VID:                            "trait.{{$v.ID}}",
+        Code:                           "{{$v.Code}}",
+        ID:                             {{$v.ID}},
+        Name:                           "{{$v.Name}}",
+        Description:                    "{{$v.Description}}",
+        Education:                      {{$v.Education}},
+        IsHealth:                       {{$v.IsHealth}},
+        IsIllness:                      {{$v.IsIllness}},
+        Customizer:                     {{$v.Customizer}},
+        SuccessionGfx:                  {{$v.SuccessionGfx}},
+        Incapacitating:                 {{$v.Incapacitating}},
+        IsEpidemic:                     {{$v.IsEpidemic}},
+        Religious:                      {{$v.Religious}},
+        Random:                         {{$v.Random}},
+        Inbred:                         {{$v.Inbred}},
+        Lifestyle:                      {{$v.Lifestyle}},
+        Personality:                    {{$v.Personality}},
+        Vice:                           {{$v.Vice}},
+        Virtue:	                        {{$v.Virtue}},
+        Leader:	                        {{$v.Leader}},
+        Cached:	                        {{$v.Cached}},
+        Pilgrimage:             		{{$v.Pilgrimage}},
+        Agnatic:                    	{{$v.Agnatic}},
+        CannotMarry:                	{{$v.CannotMarry}},
+        CannotInherit:            	    {{$v.CannotInherit}},
+        Blinding:                	    {{$v.Blinding}},
+        RebelInherited:            	    {{$v.RebelInherited}},
+        ToleratesChristian:	            {{$v.ToleratesChristian}},
+        ToleratesMuslim:	            {{$v.ToleratesMuslim}},
+        ToleratesPaganGroup:	        {{$v.ToleratesPaganGroup}},
+        ToleratesZoroastrianGroup:	    {{$v.ToleratesZoroastrianGroup}},
+        ToleratesJewishGroup:	        {{$v.ToleratesJewishGroup}},
+        ToleratesIndianGroup:    	    {{$v.ToleratesIndianGroup}},
+        InHiding:                	    {{$v.InHiding}},
+        Childhood:	                    {{$v.Childhood}},
+        CanHoldTitles:                 	{{$v.CanHoldTitles}},
+        IsSymptom:                    	{{$v.IsSymptom}},
+        Immortal:                     	{{$v.Immortal}},
+        Hidden:	                        {{$v.Hidden}},
+        HiddenFromOthers:            	{{$v.HiddenFromOthers}},
+        Attribute:				    	"{{$v.Attribute}}",
+        IsTribal:				    	"{{$v.IsTribal}}",
+        ReligionGroup:			    	"{{$v.ReligionGroup}}",
+        Terrain:					    "{{$v.Terrain}}",
+        Religion:				    	"{{$v.Religion}}",
+        HasBloodlineFlag:		    	"{{$v.HasBloodlineFlag}}",
+        IsRuler:				    	"{{$v.IsRuler}}",
+        IsFemale:				    	"{{$v.IsFemale}}",
+        IsTheocracy:					"{{$v.IsTheocracy}}",
+        ControlsReligion:		    	"{{$v.ControlsReligion}}",
+        ReligiousBranch:				"{{$v.ReligiousBranch}}",
+        Prisoner:				    	"{{$v.Prisoner}}",
+        Race:					        "{{$v.Race}}",
+        HasReligionFeature:		    	"{{$v.HasReligionFeature}}",
+        Character:				    	"{{$v.Character}}",
+        SocietyMemberOf:				"{{$v.SocietyMemberOf}}",
+        IsCloseRelative:				"{{$v.IsCloseRelative}}",
+        Trait:					        "{{$v.Trait}}",
+        Ai:		        			    "{{$v.Ai}}",
+        IsNomadic:				    	"{{$v.IsNomadic}}",
+        HasDharmicReligionTrigger:	    "{{$v.HasDharmicReligionTrigger}}",
+        Culture:				    	"{{$v.Culture}}",
+        HasCharacterFlag:			    "{{$v.HasCharacterFlag}}",
+        GraphicalCulture:		    	"{{$v.GraphicalCulture}}",
+        MonthlyCharacterPiety:	    	{{$v.MonthlyCharacterPiety}},
+        GlobalTaxModifier:		    	{{$v.GlobalTaxModifier}},
+        MonthlyCharacterPrestige:   	{{$v.MonthlyCharacterPrestige}},
+        MonthlyCharacterWealth:	    	{{$v.MonthlyCharacterWealth}},
+        WonderBuildCostModifier:		{{$v.WonderBuildCostModifier}},
+        WonderBuildTimeModifier:		{{$v.WonderBuildTimeModifier}},
+        GlobalLevySize:			    	{{$v.GlobalLevySize}},
+        MaxManpowerMult:				{{$v.MaxManpowerMult}},
+        GlobalRevoltRisk:		        {{$v.GlobalRevoltRisk}},
+        Attrition:				    	{{$v.Attrition}},
+        Diplomacy:				    	{{$v.Diplomacy}},
+        Martial:			    		{{$v.Martial}},
+        Stewardship:					{{$v.Stewardship}},
+        Intrigue:				    	{{$v.Intrigue}},
+        Learning:				    	{{$v.Learning}},
+        Fertility:				    	{{$v.Fertility}},
+        Health:					        {{$v.Health}},
+        SexAppealOpinion:		    	{{$v.SexAppealOpinion}},
+        CombatRating:			    	{{$v.CombatRating}},
+        DiplomacyPenalty:		    	{{$v.DiplomacyPenalty}},
+        MartialPenalty:			    	{{$v.MartialPenalty}},
+        StewardshipPenalty:		    	{{$v.StewardshipPenalty}},
+        IntriguePenalty:				{{$v.IntriguePenalty}},
+        LearningPenalty:				{{$v.LearningPenalty}},
+        FertilityPenalty:		    	{{$v.FertilityPenalty}},
+        HealthPenalty:			    	{{$v.HealthPenalty}},
+        LeadershipTraits:	         	{{$v.LeadershipTraits}},
+        AiZeal:				         	{{$v.AiZeal}},
+        VassalOpinion:			    	{{$v.VassalOpinion}},
+        SameOpinion:					{{$v.SameOpinion}},
+        AiRationality:			    	{{$v.AiRationality}},
+        InheritChance:			    	{{$v.InheritChance}},
+        GeneralOpinion:			    	{{$v.GeneralOpinion}},
+        ChurchOpinion:			    	{{$v.ChurchOpinion}},
+        SameOpinionIfSameReligion:	    {{$v.SameOpinionIfSameReligion}},
+        TwinOpinion:			   		{{$v.TwinOpinion}},
+        SpouseOpinion:				    {{$v.SpouseOpinion}},
+        SameReligionOpinion:			{{$v.SameReligionOpinion}},
+        DynastyOpinion:				    {{$v.DynastyOpinion}},
+        RulerDesignerCost:			    {{$v.RulerDesignerCost}},
+        Birth:					        {{$v.Birth}},
+        BothParentHasTraitInheritChance:{{$v.BothParentHasTraitInheritChance}},
+        TribalOpinion:				    {{$v.TribalOpinion}},
+        ChristianChurchOpinion:		    {{$v.ChristianChurchOpinion}},
+        OppositeOpinion:				{{$v.OppositeOpinion}},
+        AiHonor:				    	{{$v.AiHonor}},
+        AiGreed:					    {{$v.AiGreed}},
+        AiAmbition:					    {{$v.AiAmbition}},
+        LiegeOpinion:				    {{$v.LiegeOpinion}},
+        AmbitionOpinion:				{{$v.AmbitionOpinion}},
+        InfidelOpinion:			    	{{$v.InfidelOpinion}},
+        MuslimOpinion:			    	{{$v.MuslimOpinion}},
+        ZoroastrianOpinion:			    {{$v.ZoroastrianOpinion}},
+        NorsePaganOpinion:			    {{$v.NorsePaganOpinion}},
+        NorsePaganReformedOpinion:	    {{$v.NorsePaganReformedOpinion}},
+        CasteTier:					    {{$v.CasteTier}},
+        PaganGroupOpinion:			    {{$v.PaganGroupOpinion}},
+        TaoistOpinion:				    {{$v.TaoistOpinion}},
+        DaysOfSupply:			    	{{$v.DaysOfSupply}},
+        MonthlyGrace:				    {{$v.MonthlyGrace}},
+        ChristianOpinion:			    {{$v.ChristianOpinion}},
+        TraitEffectCaptureCommanders:   {{$v.TraitEffectCaptureCommanders}},
+        IndianGroupOpinion:			    {{$v.IndianGroupOpinion}},
+        JewishGroupOpinion:		        {{$v.JewishGroupOpinion}},
+        ZoroastrianGroupOpinion:		{{$v.ZoroastrianGroupOpinion}},
+        CastleOpinion:				    {{$v.CastleOpinion}},
+        TownOpinion:					{{$v.TownOpinion}},
+    }
+{{- end}}
+)
+
+var IllTraitMap map[string]*ck2nebula.Trait
+var CommonGoodTraits map[string]*ck2nebula.Trait
+var LifeStyleTraitsByPropertyType map[property.PropertyType][]*ck2nebula.Trait
+var GoodTraitsByPropertyType map[property.PropertyType][]*ck2nebula.Trait
+var LeaderTraits map[string]*ck2nebula.Trait
+var VirtueTraits map[string]*ck2nebula.Trait
+var ChildhoodTraits map[string]*ck2nebula.Trait
+var EducationsTrait map[string]property.PropertyType
+
+func init() {
+    IllTraitMap = make(map[string]*ck2nebula.Trait)
+{{- range $k, $v := .}}
+    {{- if eq $v.Code "pregnancy_finishing"}}
+        {{- continue}}
+    {{- else if or $v.IsIllness $v.IsHealth $v.Blinding}}
+    IllTraitMap["{{$v.Code}}"] = Trait_{{$v.ID}}_{{$v.Code}}_{{RP $v.Name}}
+    {{- end}}
+{{- end}}
+{{range $k, $v := .}}
+    {{- if or (eq $v.Code "fair") (eq $v.Code "groomed") (eq $v.Code "shrewd") (eq $v.Code "robust") (eq $v.Code "strong")}}
+    CommonGoodTraits["{{$v.Code}}"] = Trait_{{$v.ID}}_{{$v.Code}}_{{RP $v.Name}}
+    {{- end}}
+{{- end}}
+
+    LifeStyleTraitsByPropertyType = map[property.PropertyType][]*ck2nebula.Trait{}
+{{range $k, $v := .}}
+    {{- if or (eq $v.Code "socializer") (eq $v.Code "hedonist") (eq $v.Code "gamer") (eq $v.Code "seducer") (eq $v.Code "seductress")}}
+    LifeStyleTraitsByPropertyType[property.PropertyTypeDiplomacy] = append(LifeStyleTraitsByPropertyType[property.PropertyTypeDiplomacy], Trait_{{$v.ID}}_{{$v.Code}}_{{RP $v.Name}})
+    {{- end}}
+{{- end}}
+{{range $k, $v := .}}
+    {{- if or (eq $v.Code "duelist") (eq $v.Code "hunter") (eq $v.Code "strategist") (eq $v.Code "gamer") (eq $v.Code "architect")}}
+    LifeStyleTraitsByPropertyType[property.PropertyTypeMartial] = append(LifeStyleTraitsByPropertyType[property.PropertyTypeMartial], Trait_{{$v.ID}}_{{$v.Code}}_{{RP $v.Name}})
+    {{- end}}
+{{- end}}
+{{range $k, $v := .}}
+    {{- if or (eq $v.Code "administrator") (eq $v.Code "architect") (eq $v.Code "gardener") (eq $v.Code "strategist") (eq $v.Code "mystic")}}
+    LifeStyleTraitsByPropertyType[property.PropertyTypeStewardship] = append(LifeStyleTraitsByPropertyType[property.PropertyTypeStewardship], Trait_{{$v.ID}}_{{$v.Code}}_{{RP $v.Name}})
+    {{- end}}
+{{- end}}
+{{range $k, $v := .}}
+    {{- if or (eq $v.Code "schemer") (eq $v.Code "seducer") (eq $v.Code "seductress") (eq $v.Code "impaler") (eq $v.Code "hedonist") (eq $v.Code "theologian")}}
+    LifeStyleTraitsByPropertyType[property.PropertyTypeIntrigue] = append(LifeStyleTraitsByPropertyType[property.PropertyTypeIntrigue], Trait_{{$v.ID}}_{{$v.Code}}_{{RP $v.Name}})
+    {{- end}}
+{{- end}}
+{{range $k, $v := .}}
+    {{- if or (eq $v.Code "scholar") (eq $v.Code "mystic") (eq $v.Code "theologian") (eq $v.Code "gardener") (eq $v.Code "impaler")}}
+    LifeStyleTraitsByPropertyType[property.PropertyTypeLearning] = append(LifeStyleTraitsByPropertyType[property.PropertyTypeLearning], Trait_{{$v.ID}}_{{$v.Code}}_{{RP $v.Name}})
+    {{- end}}
+{{- end}}
+
+    GoodTraitsByPropertyType = map[property.PropertyType][]*ck2nebula.Trait{}
+{{range $k, $v := .}}
+    {{- if or (eq $v.Code "honest") (eq $v.Code "shrewd") (eq $v.Code "ambitious") (eq $v.Code "gregarious") (eq $v.Code "robust") (eq $v.Code "strong") (eq $v.Code "physician") (eq $v.Code "falconer") (eq $v.Code "poet") (eq $v.Code "trusting")}}
+    GoodTraitsByPropertyType[property.PropertyTypeDiplomacy] = append(GoodTraitsByPropertyType[property.PropertyTypeDiplomacy], Trait_{{$v.ID}}_{{$v.Code}}_{{RP $v.Name}})
+    {{- end}}
+{{- end}}
+{{range $k, $v := .}}
+    {{- if or (eq $v.Code "berserker") (eq $v.Code "adventurer") (eq $v.Code "shrewd") (eq $v.Code "ambitious") (eq $v.Code "robust") (eq $v.Code "strong") (eq $v.Code "zealous") (eq $v.Code "brave")}}
+    GoodTraitsByPropertyType[property.PropertyTypeMartial] = append(GoodTraitsByPropertyType[property.PropertyTypeMartial], Trait_{{$v.ID}}_{{$v.Code}}_{{RP $v.Name}})
+    {{- end}}
+{{- end}}
+{{range $k, $v := .}}
+    {{- if or (eq $v.Code "shrewd") (eq $v.Code "ambitious") (eq $v.Code "just") (eq $v.Code "stubborn")}}
+    GoodTraitsByPropertyType[property.PropertyTypeStewardship] = append(GoodTraitsByPropertyType[property.PropertyTypeStewardship], Trait_{{$v.ID}}_{{$v.Code}}_{{RP $v.Name}})
+    {{- end}}
+{{- end}}
+{{range $k, $v := .}}
+    {{- if or (eq $v.Code "shrewd") (eq $v.Code "deceitful") (eq $v.Code "ambitious") (eq $v.Code "paranoid") (eq $v.Code "cynical") (eq $v.Code "cruel") (eq $v.Code "arbitrary")}}
+    GoodTraitsByPropertyType[property.PropertyTypeIntrigue] = append(GoodTraitsByPropertyType[property.PropertyTypeIntrigue], Trait_{{$v.ID}}_{{$v.Code}}_{{RP $v.Name}})
+    {{- end}}
+{{- end}}
+{{range $k, $v := .}}
+    {{- if or (eq $v.Code "shrewd") (eq $v.Code "ambitious") (eq $v.Code "physician") (eq $v.Code "erudite") (eq $v.Code "just")}}
+    GoodTraitsByPropertyType[property.PropertyTypeLearning] = append(GoodTraitsByPropertyType[property.PropertyTypeLearning], Trait_{{$v.ID}}_{{$v.Code}}_{{RP $v.Name}})
+    {{- end}}
+{{- end}}
+
+    LeaderTraits = make(map[string]*ck2nebula.Trait)
+{{- range $k, $v := .}}
+    {{- if or $v.Leader}}
+    LeaderTraits["{{$v.Code}}"] = Trait_{{$v.ID}}_{{$v.Code}}_{{RP $v.Name}}
+    {{- end}}
+{{- end}}
+
+    VirtueTraits = make(map[string]*ck2nebula.Trait)
+{{- range $k, $v := .}}
+    {{- if or $v.Virtue}}
+    VirtueTraits["{{$v.Code}}"] = Trait_{{$v.ID}}_{{$v.Code}}_{{RP $v.Name}}
+    {{- end}}
+{{- end}}
+
+    ChildhoodTraits = make(map[string]*ck2nebula.Trait)
+{{- range $k, $v := .}}
+    {{- if or $v.Childhood}}
+    ChildhoodTraits["{{$v.Code}}"] = Trait_{{$v.ID}}_{{$v.Code}}_{{RP $v.Name}}
+    {{- end}}
+{{- end}}
+
+    EducationsTrait = map[string]property.PropertyType{}
+{{range $k, $v := .}}
+    {{- if or (eq $v.Code "grey_eminence") (eq $v.Code "charismatic_negotiator") (eq $v.Code "underhanded_rogue") (eq $v.Code "naive_appeaser")}}
+    EducationsTrait["{{$v.Code}}"] = property.PropertyTypeDiplomacy
+    {{- end}}
+{{- end}}
+{{range $k, $v := .}}
+    {{- if or (eq $v.Code "brilliant_strategist") (eq $v.Code "skilled_tactician") (eq $v.Code "tough_soldier") (eq $v.Code "misguided_warrior")}}
+    EducationsTrait["{{$v.Code}}"] = property.PropertyTypeMartial
+    {{- end}}
+{{- end}}
+{{range $k, $v := .}}
+    {{- if or (eq $v.Code "fortune_builder") (eq $v.Code "thrifty_clerk") (eq $v.Code "indulgent_wastrel") (eq $v.Code "midas_touched")}}
+    EducationsTrait["{{$v.Code}}"] = property.PropertyTypeStewardship
+    {{- end}}
+{{- end}}
+{{range $k, $v := .}}
+    {{- if or (eq $v.Code "elusive_shadow") (eq $v.Code "intricate_webweaver") (eq $v.Code "flamboyant_schemer") (eq $v.Code "amateurish_plotter")}}
+    EducationsTrait["{{$v.Code}}"] = property.PropertyTypeIntrigue
+    {{- end}}
+{{- end}}
+{{range $k, $v := .}}
+    {{- if or (eq $v.Code "mastermind_theologian") (eq $v.Code "scholarly_theologian") (eq $v.Code "martial_cleric") (eq $v.Code "detached_priest")}}
+    EducationsTrait["{{$v.Code}}"] = property.PropertyTypeLearning
+    {{- end}}
+{{- end}}
+}
+
