@@ -6,11 +6,15 @@ import (
 	"github.com/thalesfu/paradoxtools/utils"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
+	"html/template"
 	"os"
+	"path"
 	"path/filepath"
 	"regexp"
 	"strings"
 )
+
+var traitPath = "../CK2Commands/trait"
 
 func main() {
 	//buildCommandModifierField("/Users/thalesfu/Windows/steam/steamapps/common/Crusader Kings II/common/traits")
@@ -19,6 +23,33 @@ func main() {
 
 	for _, v := range all {
 		fmt.Println(utils.MarshalJSON(v))
+	}
+
+	buildTraitFile(all)
+}
+
+func buildTraitFile(traits map[string]*trait.Trait) {
+	if _, err := os.Stat(traitPath); os.IsNotExist(err) {
+		err = os.Mkdir(traitPath, 0755)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	traitTemplate, err := template.New("TraitTemplate.txt").Funcs(template.FuncMap{"RP": utils.ReplaceTemplateSpecialWords, "ES": utils.EscapeTemplateSpecialWords}).ParseFiles("Ck2/trait/main/TraitTemplate.txt")
+	if err != nil {
+		panic(err)
+	}
+
+	f, err := os.OpenFile(path.Join(traitPath, "traits.go"), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0755)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	err = traitTemplate.Execute(f, traits)
+	if err != nil {
+		panic(err)
 	}
 }
 

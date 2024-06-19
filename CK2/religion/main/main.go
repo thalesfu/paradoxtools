@@ -7,7 +7,6 @@ import (
 	"html/template"
 	"os"
 	"path"
-	"strings"
 )
 
 var religionPath = "../CK2Commands/religion"
@@ -28,7 +27,7 @@ func buildReligionFile(religionGroups map[string]*religion.ReligionGroup) {
 		}
 	}
 
-	religionTemplate, err := template.New("ReligionTemplate.txt").Funcs(template.FuncMap{"RP": replaceSpecialWords, "ES": escapeSpecialWords}).ParseFiles("Ck2/religion/main/ReligionTemplate.txt")
+	religionTemplate, err := template.New("ReligionTemplate.txt").Funcs(template.FuncMap{"RP": utils.ReplaceTemplateSpecialWords, "ES": utils.EscapeTemplateSpecialWords}).ParseFiles("Ck2/religion/main/ReligionTemplate.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -43,37 +42,4 @@ func buildReligionFile(religionGroups map[string]*religion.ReligionGroup) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func replaceSpecialWords(s string) string {
-	s = strings.ReplaceAll(s, " ", "_")
-	s = strings.ReplaceAll(s, "-", "_")
-	s = strings.ReplaceAll(s, "－", "_")
-	s = strings.ReplaceAll(s, "(", "")
-	s = strings.ReplaceAll(s, ")", "")
-	s = strings.ReplaceAll(s, "'", "")
-	s = strings.ReplaceAll(s, "’", "")
-	s = strings.ReplaceAll(s, ":", "")
-	s = strings.ReplaceAll(s, ".", "")
-	s = strings.ReplaceAll(s, ",", "")
-	s = strings.ReplaceAll(s, "!", "")
-	s = strings.ReplaceAll(s, "?", "")
-	s = strings.ReplaceAll(s, "“", "")
-	s = strings.ReplaceAll(s, "”", "")
-	s = strings.ReplaceAll(s, "‘", "")
-	s = strings.ReplaceAll(s, "’", "")
-	return s
-}
-
-func escapeSpecialWords(s string) string {
-	if s == "" {
-		return s
-	}
-
-	text, err := utils.DecodeEscapedText([]byte(s))
-	if err != nil {
-		fmt.Println(err)
-		return s
-	}
-	return text
 }

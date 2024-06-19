@@ -7,7 +7,6 @@ import (
 	"html/template"
 	"os"
 	"path"
-	"strings"
 )
 
 var culturePath = "../CK2Commands/culture"
@@ -29,7 +28,7 @@ func buildCultureFile(cultureGroups map[string]*culture.CultureGroup) {
 		}
 	}
 
-	cultureTemplate, err := template.New("CultureTemplate.txt").Funcs(template.FuncMap{"RP": replaceSpecialWords, "ES": escapeSpecialWords}).ParseFiles("Ck2/culture/main/CultureTemplate.txt")
+	cultureTemplate, err := template.New("CultureTemplate.txt").Funcs(template.FuncMap{"RP": utils.ReplaceTemplateSpecialWords, "ES": utils.EscapeTemplateSpecialWords}).ParseFiles("Ck2/culture/main/CultureTemplate.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -44,37 +43,4 @@ func buildCultureFile(cultureGroups map[string]*culture.CultureGroup) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func replaceSpecialWords(s string) string {
-	s = strings.ReplaceAll(s, " ", "_")
-	s = strings.ReplaceAll(s, "-", "_")
-	s = strings.ReplaceAll(s, "－", "_")
-	s = strings.ReplaceAll(s, "(", "")
-	s = strings.ReplaceAll(s, ")", "")
-	s = strings.ReplaceAll(s, "'", "")
-	s = strings.ReplaceAll(s, "’", "")
-	s = strings.ReplaceAll(s, ":", "")
-	s = strings.ReplaceAll(s, ".", "")
-	s = strings.ReplaceAll(s, ",", "")
-	s = strings.ReplaceAll(s, "!", "")
-	s = strings.ReplaceAll(s, "?", "")
-	s = strings.ReplaceAll(s, "“", "")
-	s = strings.ReplaceAll(s, "”", "")
-	s = strings.ReplaceAll(s, "‘", "")
-	s = strings.ReplaceAll(s, "’", "")
-	return s
-}
-
-func escapeSpecialWords(s string) string {
-	if s == "" {
-		return s
-	}
-
-	text, err := utils.DecodeEscapedText([]byte(s))
-	if err != nil {
-		fmt.Println(err)
-		return s
-	}
-	return text
 }
