@@ -1,0 +1,18 @@
+package historydynasty
+
+import "github.com/thalesfu/ck2nebula"
+var (
+{{- range $k, $v := .}}
+	Dynasty_{{$v.ID}} = &ck2nebula.Dynasty{
+		ID:       {{$v.ID}},
+		Culture:  "{{$v.Culture}}",
+		Religion: "{{$v.Religion}}",
+	}
+{{- end}}
+)
+
+var HistoryDynastyMap = map[int]*ck2nebula.Dynasty{
+{{- range $k, $v := .}}
+    {{$v.ID}}: Dynasty_{{$v.ID}},
+{{- end}}
+}
