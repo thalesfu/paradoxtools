@@ -25,3 +25,13 @@ var (
     {{- end}}
 {{- end}}
 )
+
+var CultureMap = map[string]*ck2nebula.Culture{
+{{- range $k, $v := .}}
+    {{- with .Cultures}}
+        {{- range $sk, $sv := .}}
+    "{{$sv.Code}}": Culture_{{RP $v.Name}}_{{RP $sv.Name}}_{{$v.Code}}_{{$sv.Code}},
+        {{- end}}
+    {{- end}}
+{{- end}}
+}

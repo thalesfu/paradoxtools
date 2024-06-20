@@ -14,3 +14,13 @@ var (
     {{- end}}
 {{- end}}
 )
+
+var ReligionMap = map[string]*ck2nebula.Religion{
+{{- range $k, $v := .}}
+    {{- with .Religions}}
+        {{- range $sk, $sv := .}}
+    "{{$sv.Code}}": Religion_{{RP $v.Name}}_{{RP $sv.Name}}_{{$sv.Code}},
+        {{- end}}
+    {{- end}}
+{{- end}}
+}

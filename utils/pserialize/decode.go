@@ -187,10 +187,10 @@ func Unmarshal(data []byte, v any) error {
 	// Avoids filling out half a data structure
 	// before discovering a JSON syntax error.
 	var d decodeState
-	err := checkValid(data, &d.scan)
-	if err != nil {
-		return err
-	}
+	//err := checkValid(data, &d.scan)
+	//if err != nil {
+	//	return err
+	//}
 
 	d.init(data)
 	return d.unmarshal(v)
@@ -409,29 +409,41 @@ func (d *decodeState) scanWhile(ops ...int) {
 // and scan a literal's bytes much more quickly.
 func (d *decodeState) rescanLiteral() {
 	data, i := d.data, d.off
-Switch:
-	switch data[i-1] {
-	case '"': // string
+
+	if data[i-1] == '"' { // string
+	Outer:
 		for ; i < len(data); i++ {
 			switch data[i] {
 			case '\\':
 				i++ // escaped char
 			case '"':
 				i++ // tokenize the closing quote too
-				break Switch
+				break Outer
 			}
 		}
-	case 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-		'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-':
+	} else if (data[i-1] >= 'a' && data[i-1] <= 'z') ||
+		(data[i-1] >= 'A' && data[i-1] <= 'Z') ||
+		(data[i-1] >= '0' && data[i-1] <= '9') ||
+		(130 < data[i-1] && data[i-1] <= 255) ||
+		data[i-1] == '-' {
+	Outer2:
 		for ; i < len(data); i++ {
 			c := data[i]
-			if '0' <= c && c <= '9' || 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || c == '_' || c == '.' || c == '-' {
+			if ('0' <= c && c <= '9') ||
+				('a' <= c && c <= 'z') ||
+				('A' <= c && c <= 'Z') ||
+				c == '_' ||
+				c == '.' ||
+				c == '-' ||
+				c == '\'' ||
+				(130 <= c && c <= 255) {
+				// continue
 			} else {
-				break Switch
+				break Outer2
 			}
 		}
 	}
+
 	if i < len(data) {
 		d.opcode = stateEndValue(&d.scan, data[i])
 	} else {
@@ -1445,7 +1457,7 @@ func (d *decodeState) literalStore(item []byte, v reflect.Value, fromQuoted bool
 		}
 
 	default: // number
-		if !('0' <= c && c <= '9' || 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || c == '_' || c == '.' || c == '-') {
+		if !('0' <= c && c <= '9' || 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || c == '_' || c == '.' || c == '-' || (130 < c && c <= 255)) {
 			if fromQuoted {
 				return fmt.Errorf("json: invalid use of ,string struct tag, trying to unmarshal %q into %v", item, v.Type())
 			}

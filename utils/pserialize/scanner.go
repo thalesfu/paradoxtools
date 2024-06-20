@@ -394,6 +394,10 @@ func stateEndValue(s *scanner, c byte) int {
 			s.step = stateBeginValue
 			return scanEndObject
 		}
+		if c == '#' {
+			s.step = stateInComment
+			return scanSkipComment
+		}
 		return s.error(c, "after object key")
 	case parseObjectValue:
 		if c == ',' {
@@ -424,6 +428,11 @@ func stateEndValue(s *scanner, c byte) int {
 			}
 			s.step = stateBeginValue
 			return scanEndObject
+		}
+		if c == '#' {
+			s.parseState[n-1] = parseObjectKey
+			s.step = stateInComment
+			return scanSkipComment
 		}
 		return s.error(c, "after object key:value pair")
 	case parseArrayValue:
@@ -616,6 +625,11 @@ func stateDot0Dot(s *scanner, c byte) int {
 		s.step = stateDot0Dot0
 		return scanContinue
 	}
+	if c == ' ' {
+		s.step = stateEndValue
+		return stateEndValue(s, c)
+	}
+
 	return s.error(c, "after decimal point in numeric literal")
 }
 
@@ -623,8 +637,25 @@ func stateDot0Dot0(s *scanner, c byte) int {
 	if '0' <= c && c <= '9' {
 		return scanContinue
 	}
+	if c == '.' {
+		s.step = stateDot0Dot0Dot
+		return scanContinue
+	}
 	s.step = stateEndValue
 	return stateEndValue(s, c)
+}
+
+func stateDot0Dot0Dot(s *scanner, c byte) int {
+	if '0' <= c && c <= '9' {
+		s.step = stateDot0Dot0
+		return scanContinue
+	}
+	if c == ' ' {
+		s.step = stateEndValue
+		return stateEndValue(s, c)
+	}
+
+	return s.error(c, "after decimal point in numeric literal")
 }
 
 // stateE is the state after reading the mantissa and e in a number,

@@ -161,7 +161,9 @@ func init() {
     IllTraitMap["{{$v.Code}}"] = Trait_{{$v.ID}}_{{$v.Code}}_{{RP $v.Name}}
     {{- end}}
 {{- end}}
-{{range $k, $v := .}}
+
+    CommonGoodTraits = make(map[string]*ck2nebula.Trait)
+{{- range $k, $v := .}}
     {{- if or (eq $v.Code "fair") (eq $v.Code "groomed") (eq $v.Code "shrewd") (eq $v.Code "robust") (eq $v.Code "strong")}}
     CommonGoodTraits["{{$v.Code}}"] = Trait_{{$v.ID}}_{{$v.Code}}_{{RP $v.Name}}
     {{- end}}
