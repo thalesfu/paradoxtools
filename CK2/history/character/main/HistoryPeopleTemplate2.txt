@@ -1,0 +1,12 @@
+package historypeople
+
+import "github.com/thalesfu/ck2nebula"
+
+func init() {
+{{- range $k, $v := .}}
+    HistoryPeopleMap[{{$k}}] = make(map[int]*ck2nebula.People)
+    {{- range $sk, $sv := .}}
+    HistoryPeopleMap[{{$k}}][{{$sk}}] = People_{{$sv.ID}}
+    {{- end}}
+{{- end}}
+}

@@ -3,16 +3,14 @@ package historypeople
 import "github.com/thalesfu/ck2nebula"
 var (
 {{- range $k, $v := .}}
-	People_{{$v.ID}} = &ck2nebula.People{
-		ID:       {{$v.ID}},
-		Culture:  "{{$v.Culture}}",
-		Religion: "{{$v.Religion}}",
+    {{- range $sk, $sv := .}}
+	People_{{$sv.ID}} = &ck2nebula.People{
+		ID:       {{$sv.ID}},
+		Culture:  "{{$sv.Culture}}",
+		Religion: "{{$sv.Religion}}",
 	}
+	{{- end}}
 {{- end}}
 )
 
-var HistoryPeopleMap = map[int]*ck2nebula.People{
-{{- range $k, $v := .}}
-    {{$v.ID}}: People_{{$v.ID}},
-{{- end}}
-}
+var HistoryPeopleMap = make(map[int]map[int]*ck2nebula.People)
