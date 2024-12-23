@@ -1,10 +1,33 @@
 package utils
 
 import (
+	"golang.org/x/text/encoding"
 	"log"
 	"os"
 	"path/filepath"
 )
+
+func LoadContentWithEncoding(path string, encode encoding.Encoding) (string, bool) {
+	if _, err := os.Stat(path); err != nil {
+		return "", false
+	}
+
+	bytes, err := os.ReadFile(path)
+	if err != nil {
+		log.Printf("读取文件失败：%s\nerror:%v", path, err)
+		return "", false
+	}
+
+	decoder := encode.NewDecoder()
+
+	bytes, err = decoder.Bytes(bytes)
+	if err != nil {
+		log.Printf("通过%T编码：%s报错\nerror:%v", encode, path, err)
+		return "", false
+	}
+
+	return string(bytes), true
+}
 
 func LoadContent(path string) (string, bool) {
 	if _, err := os.Stat(path); err != nil {

@@ -25,7 +25,7 @@ func UnmarshalP[T any](content string) (t *T, ok bool) {
 		content = "{\n" + content + "\n}"
 	}
 
-	logPosition := 0
+	logPosition := 210639
 	var writer *bufio.Writer
 	if logPosition > 0 {
 		line := 1
@@ -356,6 +356,9 @@ func (d *decodeState) skip() {
 	s, data, i := &d.scan, d.data, d.off
 	depth := len(s.parseState)
 	for {
+		//if i == 210324 {
+		//	fmt.Println()
+		//}
 		op := s.step(s, data[i])
 		i++
 		if len(s.parseState) < depth {
@@ -1162,6 +1165,10 @@ func (d *decodeState) object(v reflect.Value) error {
 		item := d.data[start:d.readIndex()]
 		key, ok := unquoteBytes(item)
 		keyName := string(key)
+		//fmt.Println(keyName)
+		//if keyName == "ITA" {
+		//	fmt.Printf("Debug point %s\n", keyName)
+		//}
 		if !ok {
 			log.Printf("json: invalid key: %q", keyName)
 			panic(phasePanicMsg)

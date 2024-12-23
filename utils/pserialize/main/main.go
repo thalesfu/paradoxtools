@@ -2,20 +2,30 @@ package main
 
 import (
 	"fmt"
-	"github.com/thalesfu/paradoxtools/CK2/save"
+	"github.com/thalesfu/paradoxtools/hoi3/save"
 	"github.com/thalesfu/paradoxtools/utils"
 	"github.com/thalesfu/paradoxtools/utils/pserialize"
+	"golang.org/x/text/encoding/simplifiedchinese"
 	"regexp"
 )
 
 func main() {
 
-	content, ok := utils.LoadContent("/Users/thalesfu/Documents/Paradox Interactive/Crusader Kings II/save games/test/疏勒779_09_042.ck2")
+	content, ok := utils.LoadContentWithEncoding("/Users/thalesfu/Documents/Paradox Interactive/Hearts of Iron III/ChineseLeaders/save games/CHI1934_07_13_14.hoi3", simplifiedchinese.GB18030)
 
 	saveFile, ok := pserialize.UnmarshalP[save.SaveFile](content)
 
 	if ok {
-		fmt.Println(utils.MarshalJSON(saveFile.Characters[2609830]))
+		fmt.Println(utils.MarshalJSON(saveFile))
+	}
+
+	for k, v := range saveFile.Province {
+		if len(v.Infra) == 0 {
+			continue
+		}
+		if v.Infra[0] != v.Infra[1] {
+			fmt.Println(k, v.Infra)
+		}
 	}
 
 	//traitContent, ok := utils.LoadContent("/Users/thalesfu/Windows/steam/steamapps/common/Crusader Kings II/common/traits/00_traits.txt")
