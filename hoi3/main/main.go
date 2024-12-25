@@ -8,12 +8,11 @@ import (
 
 func main() {
 	outputSVG := "/Users/thalesfu/Documents/My Games/HOI3/province-map-01.svg"
-	saveFilePath := "/Users/thalesfu/Documents/Paradox Interactive/Hearts of Iron III/ChineseLeaders/save games/CHI1934_07_13_14.hoi3"
+	saveFilePath := "/Users/thalesfu/Documents/Paradox Interactive/Hearts of Iron III/ChineseLeaders/save games/CHI1937_07_02_22.hoi3"
 
-	fileLocation := hoi3.NewFileLocationWithDefault(saveFilePath)
-	provinceList, width, height := hoi3.LoadProvinces(fileLocation)
+	world := hoi3.NewWorld(saveFilePath)
 
-	err := svgmap.GenerateSVG(provinceList, width, height, outputSVG, 2)
+	err := svgmap.GenerateCountrySVG(world, outputSVG, 8, "CHI", "JAP")
 	if err != nil {
 		fmt.Println("生成SVG错误:", err)
 		return

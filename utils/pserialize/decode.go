@@ -25,7 +25,7 @@ func UnmarshalP[T any](content string) (t *T, ok bool) {
 		content = "{\n" + content + "\n}"
 	}
 
-	logPosition := 210639
+	logPosition := 0
 	var writer *bufio.Writer
 	if logPosition > 0 {
 		line := 1

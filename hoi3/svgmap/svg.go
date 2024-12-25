@@ -5,15 +5,118 @@ import (
 	"github.com/ajstarks/svgo"
 	"github.com/samber/lo"
 	"github.com/thalesfu/paradoxtools/hoi3"
+	"math"
 	"os"
+	"strings"
 )
 
-type NameText struct {
-	Name string
-	X, Y int
+type ProvincePosition struct {
+	X, Y     int
+	Province *hoi3.Province
 }
 
-func GenerateSVG(allProvince map[string]*hoi3.Province, width, height int, outputPath string, scale int) error {
+func GenerateCountrySVG(world *hoi3.World, outputPath string, scale int, countries ...string) error {
+	polygons := make([][]*hoi3.Point, 0)
+
+	for _, c := range countries {
+		if country, ok := world.Countries[c]; ok {
+			if len(country.Provinces) > 0 {
+				for _, p := range country.Provinces {
+					if province, ok := world.Provinces[p]; ok {
+						polygons = append(polygons, province.Pixels)
+					}
+				}
+			}
+		}
+	}
+
+	xmin, ymin, xmax, ymax, width, height := getPolygonSharp(polygons, 50, world.Width, world.Height)
+
+	newWorld := &hoi3.World{
+		Provinces: map[string]*hoi3.Province{},
+		Regions:   map[string]*hoi3.Region{},
+		Countries: map[string]*hoi3.Country{},
+		Width:     width,
+		Height:    height,
+	}
+
+	for _, province := range world.Provinces {
+		pixels := make([]*hoi3.Point, 0)
+		for _, p := range province.Pixels {
+			if p.X >= xmin && p.X < xmax && p.Y >= ymin && p.Y < ymax {
+				pixels = append(pixels, &hoi3.Point{
+					X: p.X - xmin,
+					Y: p.Y - ymin,
+				})
+			}
+		}
+		if len(pixels) > 0 {
+			newWorld.Provinces[province.ID] = &hoi3.Province{
+				ID:             province.ID,
+				Name:           province.Name,
+				Color:          province.Color,
+				Terrain:        province.Terrain,
+				Pixels:         pixels,
+				Controller:     province.Controller,
+				Core:           province.Core,
+				Point:          province.Point,
+				Manpower:       province.Manpower,
+				Leadership:     province.Leadership,
+				Energy:         province.Energy,
+				Metal:          province.Metal,
+				RareMaterials:  province.RareMaterials,
+				CrudeOil:       province.CrudeOil,
+				AirBase:        province.AirBase,
+				NavalBase:      province.NavalBase,
+				LandFort:       province.LandFort,
+				CoastalFort:    province.CoastalFort,
+				AntiAir:        province.AntiAir,
+				RadarStation:   province.RadarStation,
+				NuclearReactor: province.NuclearReactor,
+				RocketTest:     province.RocketTest,
+				Industry:       province.Industry,
+				Infra:          province.Infra,
+				Supplies:       province.Supplies,
+				Fuel:           province.Fuel,
+			}
+		}
+	}
+
+	for _, region := range world.Regions {
+		provinces := make([]string, 0)
+		for _, p := range region.Provinces {
+			if _, ok := newWorld.Provinces[p]; ok {
+				provinces = append(provinces, p)
+			}
+		}
+		if len(provinces) > 0 {
+			newWorld.Regions[region.ID] = &hoi3.Region{
+				ID:        region.ID,
+				Name:      region.Name,
+				Provinces: provinces,
+			}
+		}
+	}
+
+	for _, country := range world.Countries {
+		provinces := make([]string, 0)
+		for _, p := range country.Provinces {
+			if _, ok := newWorld.Provinces[p]; ok {
+				provinces = append(provinces, p)
+			}
+		}
+		if len(provinces) > 0 {
+			newWorld.Countries[country.ID] = &hoi3.Country{
+				ID:        country.ID,
+				Provinces: provinces,
+			}
+		}
+	}
+
+	return GenerateDetailSVG(newWorld, outputPath, scale)
+}
+
+func GenerateDetailSVG(world *hoi3.World, outputPath string, scale int) error {
 	file, err := os.Create(outputPath)
 	if err != nil {
 		return err
@@ -21,20 +124,21 @@ func GenerateSVG(allProvince map[string]*hoi3.Province, width, height int, outpu
 	defer file.Close()
 
 	canvas := svg.New(file)
-	canvas.Start(width*scale, height*scale)
-	canvas.Rect(0, 0, width, height, "fill:white")
+	canvas.Start(world.Width*scale, world.Height*scale)
+	canvas.Rect(0, 0, world.Width, world.Height, "fill:white")
 
-	names := make([]NameText, 0)
+	positions := make([]ProvincePosition, 0)
 
 	provinceIndex := 0
-	for _, province := range allProvince {
+	for _, province := range world.Provinces {
 		//调试断点
-		if province.ID == "11585" {
-			fmt.Println("Debug", province.ID, province.Name)
-		}
-
+		//if province.ID == "11585" {
+		//	fmt.Println("Debug generate svg", province.ID, province.Name)
+		//}
 		provinceIndex++
-		polygons := lo.Filter(province.Polygons, func(p []*hoi3.Point, _ int) bool {
+
+		provincePolygons := world.GetProvincePolygons(province.ID)
+		polygons := lo.Filter(provincePolygons, func(p []*hoi3.Point, _ int) bool {
 			return len(p) >= 3
 		})
 
@@ -70,29 +174,420 @@ func GenerateSVG(allProvince map[string]*hoi3.Province, width, height int, outpu
 				}
 			}
 
-			canvas.Path(path, fmt.Sprintf("id=\"%s\" style=\"fill:%s;stroke:#464646;stroke-width:1;fill-rule:evenodd\"", province.ID, getDefaultColor(province)))
+			canvas.Path(path, fmt.Sprintf("id=\"%s\" style=\"fill:%s;stroke:#464646;stroke-width:1;fill-rule:evenodd\"", province.ID, getTerrainColor(province)))
 		}
 
 		centerX, centerY := getPolygonCenter(regionxs, regionys)
 
-		names = append(names, NameText{
-			Name: province.ID,
-			X:    centerX,
-			Y:    centerY,
+		positions = append(positions, ProvincePosition{
+			X:        centerX,
+			Y:        centerY,
+			Province: province,
 		})
 
 		canvas.Gend()
-		fmt.Printf("绘制 %d-%d %s\n", provinceIndex, len(allProvince), province.Name)
+		fmt.Printf("绘制 %d-%d %s\n", provinceIndex, len(world.Provinces), province.Name)
 	}
 
+	//区域边界
 	canvas.Group()
-	for _, name := range names {
-		canvas.Text(name.X, name.Y, name.Name, "font-family:PingFangSC-Medium-GBpc-EUC-H; font-size:6pt; fill:white; text-anchor:middle; alignment-baseline:middle")
+	regionIndex := 0
+	for _, region := range world.Regions {
+		//调试断点
+		//if province.ID == "11585" {
+		//	fmt.Println("Debug generate svg", province.ID, province.Name)
+		//}
+
+		regionIndex++
+
+		regionPolygons := world.GetRegionsPolygons(region.ID)
+		polygons := lo.Filter(regionPolygons, func(p []*hoi3.Point, _ int) bool {
+			return len(p) >= 3
+		})
+
+		if len(polygons) == 0 {
+			continue
+		}
+
+		containedPolygons := findContainedPolygons(polygons)
+		polygonsMap := make(map[int][]*hoi3.Point)
+		for i, p := range polygons {
+			polygonsMap[i] = p
+		}
+
+		canvas.Group()
+
+		for i, contained := range containedPolygons {
+			path := polygonToPath(polygonsMap[i], false, scale)
+
+			if len(contained) > 0 {
+				for _, c := range contained {
+					path = path + " " + polygonToPath(polygonsMap[c], true, scale)
+				}
+			}
+
+			canvas.Path(path, fmt.Sprintf("id=\"%s\" style=\"fill:none;stroke:#323232;stroke-width:2;fill-rule:evenodd\"", region.ID))
+		}
+
+		canvas.Gend()
+		fmt.Printf("绘制区域 %d-%d %s\n", regionIndex, len(world.Regions), region.Name)
 	}
 	canvas.Gend()
 
+	//区域边界
+	canvas.Group()
+	countryIndex := 0
+	for _, country := range world.Countries {
+		//调试断点
+		//if province.ID == "11585" {
+		//	fmt.Println("Debug generate svg", province.ID, province.Name)
+		//}
+		countryIndex++
+
+		countryPolygons := world.GetCountryPolygons(country.ID)
+		polygons := lo.Filter(countryPolygons, func(p []*hoi3.Point, _ int) bool {
+			return len(p) >= 3
+		})
+
+		if len(polygons) == 0 {
+			continue
+		}
+
+		containedPolygons := findContainedPolygons(polygons)
+		polygonsMap := make(map[int][]*hoi3.Point)
+		for i, p := range polygons {
+			polygonsMap[i] = p
+		}
+
+		canvas.Group()
+
+		for i, contained := range containedPolygons {
+			path := polygonToPath(polygonsMap[i], false, scale)
+
+			if len(contained) > 0 {
+				for _, c := range contained {
+					path = path + " " + polygonToPath(polygonsMap[c], true, scale)
+				}
+			}
+
+			canvas.Path(path, fmt.Sprintf("id=\"%s\" style=\"fill:none;stroke:#74fff5;stroke-width:3;fill-rule:evenodd;stroke-dasharray:8,8;\"", country.ID))
+		}
+
+		canvas.Gend()
+		fmt.Printf("绘制国家 %d-%d %s\n", countryIndex, len(world.Countries), country.ID)
+	}
+	canvas.Gend()
+
+	//省名
+	canvas.Group()
+	fontSize := 8
+	fontPadding := int(math.Ceil(float64(fontSize) / 4))
+	for _, position := range positions {
+		baseBuilder := strings.Builder{}
+		if position.Province.Infra < 2 {
+			baseBuilder.WriteString("基:X")
+		} else {
+			baseBuilder.WriteString(fmt.Sprintf("基:%d", position.Province.Infra))
+		}
+
+		if position.Province.Industry > 0 {
+			baseBuilder.WriteString(fmt.Sprintf(" 厂:%d", position.Province.Industry))
+		}
+
+		if position.Province.RadarStation > 0 {
+			baseBuilder.WriteString(fmt.Sprintf(" 雷:%d", position.Province.RadarStation))
+		}
+
+		if position.Province.RocketTest > 0 {
+			baseBuilder.WriteString(fmt.Sprintf(" 射:%d", position.Province.RocketTest))
+		}
+
+		if position.Province.NuclearReactor > 0 {
+			baseBuilder.WriteString(fmt.Sprintf(" 核:%d", position.Province.NuclearReactor))
+		}
+
+		if position.Province.AirBase > 0 {
+			baseBuilder.WriteString(fmt.Sprintf(" 空:%d", position.Province.AirBase))
+		}
+
+		if position.Province.NavalBase > 0 {
+			baseBuilder.WriteString(fmt.Sprintf(" 海:%d", position.Province.NavalBase))
+		}
+
+		if position.Province.LandFort > 0 {
+			baseBuilder.WriteString(fmt.Sprintf(" 堡:%d", position.Province.LandFort))
+		}
+
+		if position.Province.CoastalFort > 0 {
+			baseBuilder.WriteString(fmt.Sprintf(" 岸:%d", position.Province.CoastalFort))
+		}
+
+		countrySimpleName := getCountrySimpleName(position.Province.Controller)
+		name := position.Province.Name
+		if countrySimpleName != "" {
+			name = fmt.Sprintf("[%s] %s", countrySimpleName, position.Province.Name)
+		}
+
+		maxWordCount := len(name)
+		if len(baseBuilder.String()) > maxWordCount {
+			maxWordCount = len(baseBuilder.String())
+		}
+
+		// 计算背景矩形的宽度和高度
+		textWidth := maxWordCount * fontSize / 2 // 简单估算宽度（可以根据具体字体调整）
+		textHeight := fontSize
+
+		// 绘制背景矩形
+		rectWidth := textWidth + int(math.Ceil(float64(fontPadding)/2))
+		rectHeight := textHeight*2 + 6*fontPadding
+		rectX := position.X - int(math.Ceil(float64(rectWidth)/2))
+		rectY := position.Y - int(math.Ceil(float64(rectHeight)/2))
+
+		canvas.Rect(rectX, rectY, rectWidth, rectHeight, fmt.Sprintf("fill:%s;rx:16;ry:16", getInfraColor(position.Province))) // 添加圆角 rx 和 ry 可选
+
+		canvas.Text(position.X, position.Y-textHeight+fontPadding*2, name, fmt.Sprintf("font-family:PingFangSC-Medium-GBpc-EUC-H; font-size:%dpx; fill:white; text-anchor:middle; alignment-baseline:middle", fontSize))
+		canvas.Text(position.X, position.Y+textHeight-int(math.Ceil(float64(fontPadding)/2)), baseBuilder.String(), fmt.Sprintf("font-family:PingFangSC-Medium-GBpc-EUC-H; font-size:%dpx; fill:white; text-anchor:middle; alignment-baseline:middle", fontSize))
+	}
+	canvas.Gend()
 	canvas.End()
 	return nil
+}
+
+func getCountrySimpleName(country string) string {
+	country = strings.ToUpper(country)
+	switch country {
+	case "AFG":
+		return "阿"
+	case "AUS":
+		return "澳"
+	case "CHC":
+		return "共"
+	case "CHI":
+		return "国"
+	case "CSX":
+		return "晋"
+	case "ENG":
+		return "英"
+	case "FRA":
+		return "法"
+	case "GER":
+		return "德"
+	case "HOL":
+		return "荷"
+	case "ITA":
+		return "意"
+	case "JAP":
+		return "日"
+	case "MAN":
+		return "满"
+	case "PHI":
+		return "菲"
+	case "SIA":
+		return "泰"
+	case "SOV":
+		return "苏"
+	case "USA":
+		return "美"
+	}
+	return country
+}
+
+func GenerateSVG(world *hoi3.World, outputPath string, scale int) error {
+	file, err := os.Create(outputPath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	canvas := svg.New(file)
+	canvas.Start(world.Width*scale, world.Height*scale)
+	canvas.Rect(0, 0, world.Width, world.Height, "fill:white")
+
+	positions := make([]ProvincePosition, 0)
+
+	provinceIndex := 0
+	for _, province := range world.Provinces {
+		//调试断点
+		//if province.ID == "11585" {
+		//	fmt.Println("Debug generate svg", province.ID, province.Name)
+		//}
+		provinceIndex++
+
+		provincePolygons := world.GetProvincePolygons(province.ID)
+		polygons := lo.Filter(provincePolygons, func(p []*hoi3.Point, _ int) bool {
+			return len(p) >= 3
+		})
+
+		if len(polygons) == 0 {
+			continue
+		}
+
+		containedPolygons := findContainedPolygons(polygons)
+		polygonsMap := make(map[int][]*hoi3.Point)
+		for i, p := range polygons {
+			polygonsMap[i] = p
+		}
+
+		canvas.Group()
+
+		regionxs := make([]int, 0)
+		regionys := make([]int, 0)
+
+		for i, contained := range containedPolygons {
+			path := polygonToPath(polygonsMap[i], false, scale)
+			for _, p := range polygonsMap[i] {
+				regionxs = append(regionxs, p.X*scale)
+				regionys = append(regionys, p.Y*scale)
+			}
+
+			if len(contained) > 0 {
+				for _, c := range contained {
+					path = path + " " + polygonToPath(polygonsMap[c], true, scale)
+					for _, p := range polygonsMap[c] {
+						regionxs = append(regionxs, p.X*scale)
+						regionys = append(regionys, p.Y*scale)
+					}
+				}
+			}
+
+			canvas.Path(path, fmt.Sprintf("id=\"%s\" style=\"fill:%s;stroke:#464646;stroke-width:1;fill-rule:evenodd\"", province.ID, getTerrainColor(province)))
+		}
+
+		centerX, centerY := getPolygonCenter(regionxs, regionys)
+
+		positions = append(positions, ProvincePosition{
+			X: centerX,
+			Y: centerY,
+		})
+
+		canvas.Gend()
+		fmt.Printf("绘制 %d-%d %s\n", provinceIndex, len(world.Provinces), province.Name)
+	}
+
+	//区域边界
+	canvas.Group()
+	regionIndex := 0
+	for _, region := range world.Regions {
+		//调试断点
+		//if province.ID == "11585" {
+		//	fmt.Println("Debug generate svg", province.ID, province.Name)
+		//}
+
+		regionIndex++
+
+		regionPolygons := world.GetRegionsPolygons(region.ID)
+		polygons := lo.Filter(regionPolygons, func(p []*hoi3.Point, _ int) bool {
+			return len(p) >= 3
+		})
+
+		if len(polygons) == 0 {
+			continue
+		}
+
+		containedPolygons := findContainedPolygons(polygons)
+		polygonsMap := make(map[int][]*hoi3.Point)
+		for i, p := range polygons {
+			polygonsMap[i] = p
+		}
+
+		canvas.Group()
+
+		for i, contained := range containedPolygons {
+			path := polygonToPath(polygonsMap[i], false, scale)
+
+			if len(contained) > 0 {
+				for _, c := range contained {
+					path = path + " " + polygonToPath(polygonsMap[c], true, scale)
+				}
+			}
+
+			canvas.Path(path, fmt.Sprintf("id=\"%s\" style=\"fill:none;stroke:#323232;stroke-width:2;fill-rule:evenodd\"", region.ID))
+		}
+
+		canvas.Gend()
+		fmt.Printf("绘制区域 %d-%d %s\n", regionIndex, len(world.Regions), region.Name)
+	}
+	canvas.Gend()
+
+	//区域边界
+	canvas.Group()
+	countryIndex := 0
+	for _, country := range world.Countries {
+		//调试断点
+		//if province.ID == "11585" {
+		//	fmt.Println("Debug generate svg", province.ID, province.Name)
+		//}
+		countryIndex++
+
+		countryPolygons := world.GetCountryPolygons(country.ID)
+		polygons := lo.Filter(countryPolygons, func(p []*hoi3.Point, _ int) bool {
+			return len(p) >= 3
+		})
+
+		if len(polygons) == 0 {
+			continue
+		}
+
+		containedPolygons := findContainedPolygons(polygons)
+		polygonsMap := make(map[int][]*hoi3.Point)
+		for i, p := range polygons {
+			polygonsMap[i] = p
+		}
+
+		canvas.Group()
+
+		for i, contained := range containedPolygons {
+			path := polygonToPath(polygonsMap[i], false, scale)
+
+			if len(contained) > 0 {
+				for _, c := range contained {
+					path = path + " " + polygonToPath(polygonsMap[c], true, scale)
+				}
+			}
+
+			canvas.Path(path, fmt.Sprintf("id=\"%s\" style=\"fill:none;stroke:#7F2D2C;stroke-width:3;fill-rule:evenodd;stroke-dasharray:5,5;\"", country.ID))
+		}
+
+		canvas.Gend()
+		fmt.Printf("绘制国家 %d-%d %s\n", countryIndex, len(world.Countries), country.ID)
+	}
+	canvas.Gend()
+
+	//省名
+	canvas.Group()
+	for _, position := range positions {
+		canvas.Text(position.X, position.Y, position.Province.Name, "font-family:PingFangSC-Medium-GBpc-EUC-H; font-size:8pt; fill:white; text-anchor:middle; alignment-baseline:middle")
+	}
+	canvas.Gend()
+	canvas.End()
+	return nil
+}
+
+func getTerrainName(terrain string) string {
+	switch terrain {
+	case "mountain":
+		return "山脉"
+	case "forest":
+		return "森林"
+	case "woods":
+		return "林地"
+	case "marsh":
+		return "沼泽"
+	case "plains":
+		return "平原"
+	case "urban":
+		return "城市"
+	case "hills":
+		return "丘陵"
+	case "jungle":
+		return "丛林"
+	case "desert":
+		return "沙漠"
+	case "arctic":
+		return "北极"
+	default:
+		return "海"
+	}
 }
 
 func getDefaultColor(province *hoi3.Province) string {
@@ -101,6 +596,33 @@ func getDefaultColor(province *hoi3.Province) string {
 	g8 := uint8(g >> 8)
 	b8 := uint8(b >> 8)
 	return fmt.Sprintf("#%02x%02x%02x", r8, g8, b8)
+}
+
+func getTerrainColor(province *hoi3.Province) string {
+	switch province.Terrain {
+	case "mountain":
+		return "#756c77"
+	case "forest":
+		return "#5b7b2d"
+	case "woods":
+		return "#a5cd6c"
+	case "marsh":
+		return "#4c7069"
+	case "plains":
+		return "#f1ddb8"
+	case "urban":
+		return "#8968a5"
+	case "hills":
+		return "#874600"
+	case "jungle":
+		return "#209700"
+	case "desert":
+		return "#dac300"
+	case "arctic":
+		return "#ebebeb"
+	default:
+		return "#0000ff"
+	}
 }
 
 func getInfraColor(province *hoi3.Province) string {
@@ -214,4 +736,56 @@ func polygonToPath(polygon []*hoi3.Point, reverse bool, scale int) string {
 	}
 	path += "Z" // 闭合路径
 	return path
+}
+
+func getPolygonSharp(polygons [][]*hoi3.Point, padding int, originalWidth int, originalHeight int) (xmin int, ymin int, xmax int, ymax int, width int, height int) {
+	if len(polygons) == 0 {
+		return
+	}
+	xmin = math.MaxInt
+	ymin = math.MaxInt
+	xmax = math.MinInt
+	ymax = math.MinInt
+
+	for _, polygon := range polygons {
+		for _, p := range polygon {
+			if p.X < xmin {
+				xmin = p.X
+			}
+			if p.X > xmax {
+				xmax = p.X
+			}
+			if p.Y < ymin {
+				ymin = p.Y
+			}
+			if p.Y > ymax {
+				ymax = p.Y
+			}
+		}
+	}
+
+	xmin -= padding
+	if xmin < 0 {
+		xmin = 0
+	}
+
+	ymin -= padding
+	if ymin < 0 {
+		ymin = 0
+	}
+
+	xmax += padding
+	if xmax > originalWidth {
+		xmax = originalWidth
+	}
+
+	ymax += padding
+	if ymax > originalHeight {
+		ymax = originalHeight
+	}
+
+	width = xmax - xmin
+	height = ymax - ymin
+
+	return
 }
