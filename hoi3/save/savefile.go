@@ -14,6 +14,29 @@ type SaveFile struct {
 	Countries map[string]*CountryInSave  `paradox_type:"map" paradox_map_key_pattern:"^[a-zA-Z]{3}$"`
 }
 
+func (s *SaveFile) GetProvinceUnitCount() map[string]map[string]map[string]*UnitCount {
+	allUnitCount := make(map[string]map[string]map[string]*UnitCount)
+
+	for _, c := range s.Countries {
+		cNavyUnitCount := c.GetProvincesNavyCount()
+		for province, unitCount := range cNavyUnitCount {
+			if _, ok := allUnitCount[province]; !ok {
+				allUnitCount[province] = make(map[string]map[string]*UnitCount)
+			}
+			allUnitCount[province][c.ID] = unitCount
+		}
+		cAirUnitCount := c.GetProvincesAirCount()
+		for province, unitCount := range cAirUnitCount {
+			if _, ok := allUnitCount[province]; !ok {
+				allUnitCount[province] = make(map[string]map[string]*UnitCount)
+			}
+			allUnitCount[province][c.ID] = unitCount
+		}
+	}
+
+	return allUnitCount
+}
+
 func (s *SaveFile) GetProvinceStrength() map[string]map[string]*UnitStrength {
 	allStrength := make(map[string]map[string]*UnitStrength)
 
@@ -46,8 +69,10 @@ func LoadSave(savePath string) (*SaveFile, bool, error) {
 		return nil, false, errors.New("cannot unmarshal save file")
 	}
 
-	fmt.Println(utils.MarshalJSON(saveFile.Countries["JAP"].GetStrength()))
-	fmt.Println(utils.MarshalJSON(saveFile.Countries["CHI"].GetStrength()))
+	fmt.Println(utils.MarshalJSON(saveFile.Countries["FRA"].GetNavyCount()))
+	fmt.Println(utils.MarshalJSON(saveFile.Countries["FRA"].GetProvincesNavyCount()))
+	fmt.Println(utils.MarshalJSON(saveFile.Countries["FRA"].GetAirCount()))
+	fmt.Println(utils.MarshalJSON(saveFile.Countries["FRA"].GetProvincesAirCount()))
 
 	return saveFile, true, nil
 }

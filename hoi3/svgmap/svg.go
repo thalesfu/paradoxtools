@@ -79,6 +79,7 @@ func GenerateCountrySVG(world *hoi3.World, outputPath string, scale int, countri
 				Supplies:       province.Supplies,
 				Fuel:           province.Fuel,
 				Strength:       province.Strength,
+				UnitCounts:     province.UnitCounts,
 			}
 		}
 	}
@@ -347,10 +348,11 @@ func GenerateDetailSVG(world *hoi3.World, outputPath string, scale int) error {
 		canvas.Text(position.X, position.Y-textHeight+fontPadding*2, name, fmt.Sprintf("font-family:PingFangSC-Medium-GBpc-EUC-H; font-size:%dpx; fill:white; text-anchor:middle; alignment-baseline:middle", fontSize))
 		canvas.Text(position.X, position.Y+textHeight-int(math.Ceil(float64(fontPadding)/2)), baseBuilder.String(), fmt.Sprintf("font-family:PingFangSC-Medium-GBpc-EUC-H; font-size:%dpx; fill:white; text-anchor:middle; alignment-baseline:middle", fontSize))
 
+		strengthFontSize := 12
+		strengthBuilder := strings.Builder{}
+		si := 0
+
 		if len(position.Province.Strength) > 0 {
-			strengthFontSize := 12
-			strengthBuilder := strings.Builder{}
-			si := 0
 			for c, s := range position.Province.Strength {
 				if si > 0 {
 					strengthBuilder.WriteString(" ")
@@ -358,13 +360,76 @@ func GenerateDetailSVG(world *hoi3.World, outputPath string, scale int) error {
 				strengthBuilder.WriteString(fmt.Sprintf("%s:%.2f,%.2f", getCountrySimpleName(c), s.Strength, s.GetAverageOrganisation()))
 				si++
 			}
+		}
 
+		if len(position.Province.UnitCounts) > 0 {
+			for c, cuc := range position.Province.UnitCounts {
+				if si > 0 {
+					strengthBuilder.WriteString(" ")
+				}
+				strengthBuilder.WriteString(fmt.Sprintf("%s:", getCountrySimpleName(c)))
+				si++
+
+				for _, uc := range cuc {
+					if si > 0 {
+						strengthBuilder.WriteString(" ")
+					}
+					strengthBuilder.WriteString(fmt.Sprintf("%s-%d", getUnitTypeSimpleName(uc.Type), uc.Count))
+					si++
+				}
+			}
+		}
+
+		if strengthBuilder.Len() > 0 {
 			canvas.Text(position.X, rectY+rectHeight+strengthFontSize, strengthBuilder.String(), fmt.Sprintf("font-family:PingFangSC-Medium-GBpc-EUC-H; font-size:%dpx; fill:#FF40FF; font-weight:bold; text-anchor:middle; alignment-baseline:middle", strengthFontSize))
 		}
 	}
 	canvas.Gend()
 	canvas.End()
 	return nil
+}
+
+func getUnitTypeSimpleName(unitType string) string {
+	switch unitType {
+	case "battleship":
+		return "BB"
+	case "battlecruiser":
+		return "BC"
+	case "light_cruiser":
+		return "CL"
+	case "heavy_cruiser":
+		return "CA"
+	case "destroyer":
+		return "DD"
+	case "carrier":
+		return "CV"
+	case "escort_carrier":
+		return "ECV"
+	case "invasion_transport_ship":
+		return "ITS"
+	case "transport_ship":
+		return "TS"
+	case "submarine":
+		return "SS"
+	case "tactical_bomber":
+		return "轰"
+	case "cas":
+		return "支"
+	case "interceptor":
+		return "截"
+	case "fighter":
+		return "战"
+	case "cag":
+		return "舰"
+	case "strategic_bomber":
+		return "略"
+	case "transport_plane":
+		return "运"
+	case "naval_bomber":
+		return "海"
+	default:
+		return unitType
+	}
 }
 
 func getCountrySimpleName(country string) string {

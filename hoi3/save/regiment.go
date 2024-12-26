@@ -10,6 +10,7 @@ type Regiment struct {
 	Strength                  float64   `paradox_field:"strength" json:"strength,omitempty"`
 	HighestStrength           float64   `paradox_field:"highest" json:"highest_xp,omitempty"`
 	Experience                float64   `paradox_field:"experience" json:"experience,omitempty"`
+	Builder                   string    `paradox_field:"builder" json:"builder,omitempty"`
 	MobileWarfare             []float64 `paradox_field:"mobile_warfare" paradox_type:"field_list" json:"mobile_warfare,omitempty"`
 	ElasticDefence            []float64 `paradox_field:"elastic_defence" paradox_type:"field_list" json:"elastic_defence,omitempty"`
 	DelayDoctrine             []float64 `paradox_field:"delay_doctrine" paradox_type:"field_list" json:"delay_doctrine,omitempty"`

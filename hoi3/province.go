@@ -44,6 +44,7 @@ type Province struct {
 	Supplies       float64
 	Fuel           float64
 	Strength       map[string]*save.UnitStrength
+	UnitCounts     map[string]map[string]*save.UnitCount
 }
 
 func LoadProvinces(fileLocation *FileLocation, localisation map[string]string) (map[string]*Province, int, int) {
@@ -626,10 +627,11 @@ func generateProvinceFromMapDefineContent(content string) map[string]*Province {
 		}
 
 		provinces[fields[0]] = &Province{
-			ID:       fields[0],
-			Color:    color.RGBA{R: uint8(rVal), G: uint8(gVal), B: uint8(bVal), A: 255},
-			Core:     make(map[string]bool),
-			Strength: make(map[string]*save.UnitStrength),
+			ID:         fields[0],
+			Color:      color.RGBA{R: uint8(rVal), G: uint8(gVal), B: uint8(bVal), A: 255},
+			Core:       make(map[string]bool),
+			Strength:   make(map[string]*save.UnitStrength),
+			UnitCounts: make(map[string]map[string]*save.UnitCount),
 		}
 	}
 
@@ -643,6 +645,8 @@ func loadProvincesFromSave(fileLocation *FileLocation, provinces map[string]*Pro
 	}
 
 	allProvincesStrength := saveFile.GetProvinceStrength()
+
+	allProvincesUnitCount := saveFile.GetProvinceUnitCount()
 
 	for _, province := range provinces {
 		if sp, ok := saveFile.Provinces[province.ID]; ok {
@@ -735,6 +739,10 @@ func loadProvincesFromSave(fileLocation *FileLocation, provinces map[string]*Pro
 
 			if strength, ok := allProvincesStrength[province.ID]; ok {
 				province.Strength = strength
+			}
+
+			if unitCount, ok := allProvincesUnitCount[province.ID]; ok {
+				province.UnitCounts = unitCount
 			}
 		}
 	}
