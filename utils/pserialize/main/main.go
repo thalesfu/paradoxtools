@@ -19,7 +19,7 @@ func main() {
 		fmt.Println(utils.MarshalJSON(saveFile))
 	}
 
-	for k, v := range saveFile.Province {
+	for k, v := range saveFile.Provinces {
 		if len(v.Infra) == 0 {
 			continue
 		}

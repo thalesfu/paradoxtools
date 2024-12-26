@@ -18,3 +18,7 @@ func NewFileLocation(baseDirectory, dlcDirectory, modDirectory, saveFile string)
 func NewFileLocationWithDefault(saveFile string) *FileLocation {
 	return &FileLocation{BaseDirectory: BaseDirectory, DLCDirectory: DLCDirectory, ModDirectory: ModDirectory, SaveFile: saveFile}
 }
+
+func DefaultFileLocation() *FileLocation {
+	return &FileLocation{BaseDirectory: BaseDirectory, DLCDirectory: DLCDirectory, ModDirectory: ModDirectory}
+}

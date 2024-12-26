@@ -78,6 +78,7 @@ func GenerateCountrySVG(world *hoi3.World, outputPath string, scale int, countri
 				Infra:          province.Infra,
 				Supplies:       province.Supplies,
 				Fuel:           province.Fuel,
+				Strength:       province.Strength,
 			}
 		}
 	}
@@ -117,6 +118,7 @@ func GenerateCountrySVG(world *hoi3.World, outputPath string, scale int, countri
 }
 
 func GenerateDetailSVG(world *hoi3.World, outputPath string, scale int) error {
+
 	file, err := os.Create(outputPath)
 	if err != nil {
 		return err
@@ -186,7 +188,6 @@ func GenerateDetailSVG(world *hoi3.World, outputPath string, scale int) error {
 		})
 
 		canvas.Gend()
-		fmt.Printf("绘制 %d-%d %s\n", provinceIndex, len(world.Provinces), province.Name)
 	}
 
 	//区域边界
@@ -230,7 +231,6 @@ func GenerateDetailSVG(world *hoi3.World, outputPath string, scale int) error {
 		}
 
 		canvas.Gend()
-		fmt.Printf("绘制区域 %d-%d %s\n", regionIndex, len(world.Regions), region.Name)
 	}
 	canvas.Gend()
 
@@ -274,7 +274,6 @@ func GenerateDetailSVG(world *hoi3.World, outputPath string, scale int) error {
 		}
 
 		canvas.Gend()
-		fmt.Printf("绘制国家 %d-%d %s\n", countryIndex, len(world.Countries), country.ID)
 	}
 	canvas.Gend()
 
@@ -347,6 +346,21 @@ func GenerateDetailSVG(world *hoi3.World, outputPath string, scale int) error {
 
 		canvas.Text(position.X, position.Y-textHeight+fontPadding*2, name, fmt.Sprintf("font-family:PingFangSC-Medium-GBpc-EUC-H; font-size:%dpx; fill:white; text-anchor:middle; alignment-baseline:middle", fontSize))
 		canvas.Text(position.X, position.Y+textHeight-int(math.Ceil(float64(fontPadding)/2)), baseBuilder.String(), fmt.Sprintf("font-family:PingFangSC-Medium-GBpc-EUC-H; font-size:%dpx; fill:white; text-anchor:middle; alignment-baseline:middle", fontSize))
+
+		if len(position.Province.Strength) > 0 {
+			strengthFontSize := 12
+			strengthBuilder := strings.Builder{}
+			si := 0
+			for c, s := range position.Province.Strength {
+				if si > 0 {
+					strengthBuilder.WriteString(" ")
+				}
+				strengthBuilder.WriteString(fmt.Sprintf("%s:%.2f,%.2f", getCountrySimpleName(c), s.Strength, s.GetAverageOrganisation()))
+				si++
+			}
+
+			canvas.Text(position.X, rectY+rectHeight+strengthFontSize, strengthBuilder.String(), fmt.Sprintf("font-family:PingFangSC-Medium-GBpc-EUC-H; font-size:%dpx; fill:#FF40FF; font-weight:bold; text-anchor:middle; alignment-baseline:middle", strengthFontSize))
+		}
 	}
 	canvas.Gend()
 	canvas.End()
@@ -461,7 +475,6 @@ func GenerateSVG(world *hoi3.World, outputPath string, scale int) error {
 		})
 
 		canvas.Gend()
-		fmt.Printf("绘制 %d-%d %s\n", provinceIndex, len(world.Provinces), province.Name)
 	}
 
 	//区域边界
@@ -505,7 +518,6 @@ func GenerateSVG(world *hoi3.World, outputPath string, scale int) error {
 		}
 
 		canvas.Gend()
-		fmt.Printf("绘制区域 %d-%d %s\n", regionIndex, len(world.Regions), region.Name)
 	}
 	canvas.Gend()
 
@@ -549,7 +561,6 @@ func GenerateSVG(world *hoi3.World, outputPath string, scale int) error {
 		}
 
 		canvas.Gend()
-		fmt.Printf("绘制国家 %d-%d %s\n", countryIndex, len(world.Countries), country.ID)
 	}
 	canvas.Gend()
 

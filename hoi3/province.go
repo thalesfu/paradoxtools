@@ -43,6 +43,7 @@ type Province struct {
 	Infra          int
 	Supplies       float64
 	Fuel           float64
+	Strength       map[string]*save.UnitStrength
 }
 
 func LoadProvinces(fileLocation *FileLocation, localisation map[string]string) (map[string]*Province, int, int) {
@@ -625,9 +626,10 @@ func generateProvinceFromMapDefineContent(content string) map[string]*Province {
 		}
 
 		provinces[fields[0]] = &Province{
-			ID:    fields[0],
-			Color: color.RGBA{R: uint8(rVal), G: uint8(gVal), B: uint8(bVal), A: 255},
-			Core:  make(map[string]bool),
+			ID:       fields[0],
+			Color:    color.RGBA{R: uint8(rVal), G: uint8(gVal), B: uint8(bVal), A: 255},
+			Core:     make(map[string]bool),
+			Strength: make(map[string]*save.UnitStrength),
 		}
 	}
 
@@ -640,8 +642,10 @@ func loadProvincesFromSave(fileLocation *FileLocation, provinces map[string]*Pro
 		return
 	}
 
+	allProvincesStrength := saveFile.GetProvinceStrength()
+
 	for _, province := range provinces {
-		if sp, ok := saveFile.Province[province.ID]; ok {
+		if sp, ok := saveFile.Provinces[province.ID]; ok {
 			restProvince(province)
 			if sp.Owner != "" {
 				province.Owner = sp.Owner
@@ -727,6 +731,10 @@ func loadProvincesFromSave(fileLocation *FileLocation, provinces map[string]*Pro
 				if sp.Pool.Fuel > 0 {
 					province.Fuel = sp.Pool.Fuel
 				}
+			}
+
+			if strength, ok := allProvincesStrength[province.ID]; ok {
+				province.Strength = strength
 			}
 		}
 	}
