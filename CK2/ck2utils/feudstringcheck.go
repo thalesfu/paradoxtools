@@ -1,7 +1,7 @@
 package ck2utils
 
 import (
-	"github.com/thalesfu/paradoxtools/utils"
+	"github.com/thalesfu/golangutils"
 	"regexp"
 )
 
@@ -69,7 +69,7 @@ func IsFeudAdjString(s string) bool {
 func GetFeudName(s string) string {
 	matchString := rxFeud.MatchString(s)
 	if matchString {
-		return utils.ReplaceSpecialChars(rxFeud.FindStringSubmatch(s)[2])
+		return golangutils.ReplaceSpecialChars(rxFeud.FindStringSubmatch(s)[2])
 	}
 
 	return ""

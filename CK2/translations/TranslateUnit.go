@@ -3,9 +3,9 @@ package translations
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/thalesfu/golangutils"
 	"github.com/thalesfu/paradoxtools/CK2/ck2utils"
 	"github.com/thalesfu/paradoxtools/CK2/config"
-	"github.com/thalesfu/paradoxtools/utils"
 	"os"
 	"path/filepath"
 	"strings"
@@ -71,11 +71,11 @@ func init() {
 
 func GetFeudName(name string) string {
 	if u, ok := FeudTranslations[name]; ok {
-		return utils.ReplaceSpecialChars(u.Translation)
+		return golangutils.ReplaceSpecialChars(u.Translation)
 	}
 
 	if u, ok := FeudAdjTranslations[name+"_adj"]; ok {
-		return utils.ReplaceSpecialChars(u.Translation)
+		return golangutils.ReplaceSpecialChars(u.Translation)
 	}
 
 	return name

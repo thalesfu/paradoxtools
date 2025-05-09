@@ -2,11 +2,11 @@ package province
 
 import (
 	"fmt"
+	"github.com/thalesfu/golangutils"
 	"github.com/thalesfu/paradoxtools/CK2/ck2utils"
 	"github.com/thalesfu/paradoxtools/CK2/config"
 	"github.com/thalesfu/paradoxtools/CK2/translations"
 	"github.com/thalesfu/paradoxtools/segments"
-	"github.com/thalesfu/paradoxtools/utils"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -60,7 +60,7 @@ func getIDAndTitle(p string, segments []*segments.Segment) (string, string, bool
 	var id, titleCode string
 	var ok bool
 
-	fileName := utils.GetFileNameWithoutExtension(p)
+	fileName := golangutils.GetFileNameWithoutExtension(p)
 
 	matches := rgxProvince.FindStringSubmatch(fileName)
 	if len(matches) >= 2 {

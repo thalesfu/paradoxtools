@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"github.com/thalesfu/golangutils"
 	"github.com/thalesfu/paradoxtools/utils"
 	"log"
 	"reflect"
@@ -29,7 +30,7 @@ func UnmarshalP[T any](content string) (t *T, ok bool) {
 	var writer *bufio.Writer
 	if logPosition > 0 {
 		line := 1
-		logWriter, deferFunc := utils.CreateLogWriter("punmarshal")
+		logWriter, deferFunc := golangutils.CreateLogWriter("punmarshal")
 		writer = logWriter
 		defer deferFunc()
 

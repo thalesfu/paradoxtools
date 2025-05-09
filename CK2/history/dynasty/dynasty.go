@@ -2,7 +2,7 @@ package dynasty
 
 import (
 	"fmt"
-	"github.com/thalesfu/paradoxtools/utils"
+	"github.com/thalesfu/golangutils"
 	"github.com/thalesfu/paradoxtools/utils/pserialize"
 	"log"
 	"os"
@@ -40,7 +40,7 @@ func LoadAllHistoryDynasty(path string) map[int]*HistoryDynasty {
 		if strings.HasSuffix(filename, ".txt") {
 			filepath := filepath.Join(characterPath, filename)
 
-			content, ok := utils.LoadContent(filepath)
+			content, ok := golangutils.LoadContent(filepath)
 
 			if ok {
 				ts, o := pserialize.UnmarshalP[map[int]*HistoryDynasty](content)

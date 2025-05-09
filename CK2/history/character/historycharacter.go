@@ -2,8 +2,8 @@ package character
 
 import (
 	"fmt"
+	"github.com/thalesfu/golangutils"
 	"github.com/thalesfu/paradoxtools/CK2/localisation"
-	"github.com/thalesfu/paradoxtools/utils"
 	"github.com/thalesfu/paradoxtools/utils/pserialize"
 	"log"
 	"os"
@@ -55,7 +55,7 @@ func LoadAllHistoryCharacter(path string) map[int]*HistoryCharacter {
 			//if strings.HasSuffix(filename, "russian.txt") {
 			filepath := filepath.Join(characterPath, filename)
 
-			content, ok := utils.LoadContent(filepath)
+			content, ok := golangutils.LoadContent(filepath)
 
 			if ok {
 				ts, o := pserialize.UnmarshalP[map[int]*HistoryCharacter](content)

@@ -1,7 +1,7 @@
 package localisation
 
 import (
-	"github.com/thalesfu/paradoxtools/utils"
+	"github.com/thalesfu/golangutils"
 	"os"
 	"path/filepath"
 	"strings"
@@ -41,10 +41,10 @@ func LoadAllTranslationsDetail(path string) (map[string]*TranslateEntity, map[st
 
 		// 检查文件后缀是否为.csv或.json
 		if strings.HasSuffix(filename, ".csv.json") || strings.HasSuffix(filename, ".txt.json") {
-			content, ok := utils.LoadContent(path)
+			content, ok := golangutils.LoadContent(path)
 
 			if ok {
-				ts, o := utils.UnmarshalJSON[[]*TranslateEntity](content)
+				ts, o := golangutils.UnmarshalJSON[[]*TranslateEntity](content)
 
 				if o {
 					for _, t := range *ts {

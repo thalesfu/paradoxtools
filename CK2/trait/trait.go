@@ -2,8 +2,8 @@ package trait
 
 import (
 	"fmt"
+	"github.com/thalesfu/golangutils"
 	"github.com/thalesfu/paradoxtools/CK2/localisation"
-	"github.com/thalesfu/paradoxtools/utils"
 	"github.com/thalesfu/paradoxtools/utils/pserialize"
 	"os"
 	"path/filepath"
@@ -210,7 +210,7 @@ func LoadAllTraits(path string) map[string]*Trait {
 		if strings.HasSuffix(filename, ".txt") {
 			filepath := filepath.Join(religionPath, filename)
 
-			content, ok := utils.LoadContent(filepath)
+			content, ok := golangutils.LoadContent(filepath)
 
 			if ok {
 				ts, o := pserialize.UnmarshalP[map[string]*Trait](content)

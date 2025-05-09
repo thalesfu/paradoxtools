@@ -3,7 +3,7 @@ package pserialize
 import (
 	"bufio"
 	"errors"
-	"github.com/thalesfu/paradoxtools/utils"
+	"github.com/thalesfu/golangutils"
 	"log"
 	"strconv"
 	"sync"
@@ -25,7 +25,7 @@ func checkValid(data []byte, scan *scanner) error {
 	writeLog := false
 	var writer *bufio.Writer
 	if writeLog {
-		logWriter, deferFunc := utils.CreateLogWriter("scanerror")
+		logWriter, deferFunc := golangutils.CreateLogWriter("scanerror")
 		writer = logWriter
 		defer deferFunc()
 	}

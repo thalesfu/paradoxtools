@@ -3,7 +3,7 @@ package save
 import (
 	"errors"
 	"fmt"
-	"github.com/thalesfu/paradoxtools/utils"
+	"github.com/thalesfu/golangutils"
 	"github.com/thalesfu/paradoxtools/utils/pserialize"
 	"golang.org/x/text/encoding/simplifiedchinese"
 )
@@ -57,7 +57,7 @@ func LoadSave(savePath string) (*SaveFile, bool, error) {
 	var f string
 	f = savePath
 
-	content, ok := utils.LoadContentWithEncoding(f, simplifiedchinese.GB18030)
+	content, ok := golangutils.LoadContentWithEncoding(f, simplifiedchinese.GB18030)
 
 	if !ok {
 		return nil, false, errors.New("cannot load save file")
@@ -69,10 +69,15 @@ func LoadSave(savePath string) (*SaveFile, bool, error) {
 		return nil, false, errors.New("cannot unmarshal save file")
 	}
 
-	fmt.Println(utils.MarshalJSON(saveFile.Countries["FRA"].GetNavyCount()))
-	fmt.Println(utils.MarshalJSON(saveFile.Countries["FRA"].GetProvincesNavyCount()))
-	fmt.Println(utils.MarshalJSON(saveFile.Countries["FRA"].GetAirCount()))
-	fmt.Println(utils.MarshalJSON(saveFile.Countries["FRA"].GetProvincesAirCount()))
+	fmt.Println("GER")
+	fmt.Println(golangutils.MarshalJSON(saveFile.Countries["ENG"].GetStrength()))
+	fmt.Println(golangutils.MarshalJSON(saveFile.Countries["ENG"].GetNavyCount()))
+	fmt.Println(golangutils.MarshalJSON(saveFile.Countries["ENG"].GetAirCount()))
+
+	fmt.Println("FRA")
+	fmt.Println(golangutils.MarshalJSON(saveFile.Countries["USA"].GetStrength()))
+	fmt.Println(golangutils.MarshalJSON(saveFile.Countries["USA"].GetNavyCount()))
+	fmt.Println(golangutils.MarshalJSON(saveFile.Countries["USA"].GetAirCount()))
 
 	return saveFile, true, nil
 }

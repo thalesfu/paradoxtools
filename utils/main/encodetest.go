@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/thalesfu/golangutils"
 	"github.com/thalesfu/paradoxtools/utils"
 )
 
@@ -20,7 +21,7 @@ func printHexW(wideText []uint16) {
 }
 
 func main1() {
-	content, ok := utils.LoadContent("T:\\codes\\github.com\\thalesfu\\cplusplus\\name2.txt")
+	content, ok := golangutils.LoadContent("T:\\codes\\github.com\\thalesfu\\cplusplus\\name2.txt")
 
 	if ok {
 		fmt.Println("paradox", []byte(content))

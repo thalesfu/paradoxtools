@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/thalesfu/golangutils"
 	"github.com/thalesfu/paradoxtools/CK2/modifier"
 	"github.com/thalesfu/paradoxtools/utils"
 	"golang.org/x/text/cases"
@@ -60,7 +61,7 @@ func buildModifiesField(dir string) {
 		if strings.HasSuffix(filename, ".txt") {
 			filepath := filepath.Join(modifiers_dir, filename)
 
-			content, ok := utils.LoadContent(filepath)
+			content, ok := golangutils.LoadContent(filepath)
 
 			if ok {
 				lines := strings.Split(content, "\n")
@@ -170,5 +171,5 @@ func buildModifiesField(dir string) {
 		}
 	}
 
-	utils.WriteContent("logs/modifies_fields.txt", boolFieldsContent+stringFieldsContent+float32FieldsContent+intFieldsContent+structFieldsContent)
+	golangutils.WriteContent("logs/modifies_fields.txt", boolFieldsContent+stringFieldsContent+float32FieldsContent+intFieldsContent+structFieldsContent)
 }

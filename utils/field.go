@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"github.com/thalesfu/golangutils"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"os"
@@ -47,7 +48,7 @@ func BuildFields(path string, indent int) {
 
 		filepath := filepath.Join(path, filename)
 
-		content, ok := LoadContent(filepath)
+		content, ok := golangutils.LoadContent(filepath)
 
 		if ok {
 			lines := strings.Split(content, "\n")
@@ -156,5 +157,5 @@ func BuildFields(path string, indent int) {
 		}
 	}
 
-	WriteContent("temps/fields.txt", boolFieldsContent+stringFieldsContent+float32FieldsContent+intFieldsContent+structFieldsContent)
+	golangutils.WriteContent("temps/fields.txt", boolFieldsContent+stringFieldsContent+float32FieldsContent+intFieldsContent+structFieldsContent)
 }

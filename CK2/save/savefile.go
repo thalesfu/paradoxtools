@@ -3,8 +3,8 @@ package save
 import (
 	"errors"
 	"fmt"
+	"github.com/thalesfu/golangutils"
 	"github.com/thalesfu/paradoxtools/CK2/localisation"
-	"github.com/thalesfu/paradoxtools/utils"
 	"github.com/thalesfu/paradoxtools/utils/pserialize"
 	"os"
 	"path/filepath"
@@ -53,10 +53,10 @@ type SaveFile struct {
 func LoadSave(path string, savePath string) (*SaveFile, bool, error) {
 	var f string
 
-	if utils.IsCompressedFile(savePath) {
+	if golangutils.IsCompressedFile(savePath) {
 		dir := filepath.Join(os.TempDir(), "ck2", "unzipsavefile", strings.TrimSuffix(filepath.Base(savePath), filepath.Ext(savePath)))
 
-		err := utils.Unzip(savePath, dir)
+		err := golangutils.Unzip(savePath, dir)
 
 		if err != nil {
 			return nil, false, err
@@ -92,7 +92,7 @@ func LoadSave(path string, savePath string) (*SaveFile, bool, error) {
 		f = savePath
 	}
 
-	content, ok := utils.LoadContent(f)
+	content, ok := golangutils.LoadContent(f)
 
 	if !ok {
 		return nil, false, errors.New("cannot load save file")
@@ -105,7 +105,7 @@ func LoadSave(path string, savePath string) (*SaveFile, bool, error) {
 	}
 
 	saveFile.FilePath = strings.ReplaceAll(savePath, "\\", "/")
-	hash, err := utils.GetFileHash(savePath)
+	hash, err := golangutils.GetFileHash(savePath)
 	if err != nil {
 		return nil, false, err
 	}

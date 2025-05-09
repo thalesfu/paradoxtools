@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/thalesfu/golangutils"
 	"github.com/thalesfu/paradoxtools/CK2/save"
 	"github.com/thalesfu/paradoxtools/utils"
 	"github.com/thalesfu/paradoxtools/utils/pserialize"
@@ -16,7 +17,7 @@ import (
 func main() {
 	//buildCharacterField("T:\\codes\\github.com\\thalesfu\\paradoxtools")
 
-	content, ok := utils.LoadContent("/Users/thalesfu/Documents/Paradox Interactive/Crusader Kings II/save games/酒泉771_02_14dd.ck2")
+	content, ok := golangutils.LoadContent("/Users/thalesfu/Documents/Paradox Interactive/Crusader Kings II/save games/酒泉771_02_14dd.ck2")
 
 	saveFile, ok := pserialize.UnmarshalP[save.SaveFile](content)
 
@@ -63,7 +64,7 @@ func buildCharacterField(dir string) {
 		if filename == "character.txt" {
 			filepath := filepath.Join(building_dir, filename)
 
-			content, ok := utils.LoadContent(filepath)
+			content, ok := golangutils.LoadContent(filepath)
 
 			if ok {
 				lines := strings.Split(content, "\n")
@@ -173,5 +174,5 @@ func buildCharacterField(dir string) {
 		}
 	}
 
-	utils.WriteContent("logs/character_fields.txt", boolFieldsContent+stringFieldsContent+float32FieldsContent+intFieldsContent+structFieldsContent)
+	golangutils.WriteContent("logs/character_fields.txt", boolFieldsContent+stringFieldsContent+float32FieldsContent+intFieldsContent+structFieldsContent)
 }

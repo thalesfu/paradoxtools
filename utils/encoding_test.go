@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	. "github.com/smartystreets/goconvey/convey"
+	"github.com/thalesfu/golangutils"
 	"testing"
 )
 
@@ -19,7 +20,7 @@ func TestCK2EscapedText(t *testing.T) {
 
 			fmt.Println(data, string(data))
 
-			WriteContent("temps/escapedtext.txt", string(data))
+			golangutils.WriteContent("temps/escapedtext.txt", string(data))
 		})
 
 		Convey("解码测试", func() {
@@ -33,7 +34,7 @@ func TestCK2EscapedText(t *testing.T) {
 
 			fmt.Println(data, s)
 
-			content, ok := LoadContent("temps/escapedtext2.txt")
+			content, ok := golangutils.LoadContent("temps/escapedtext2.txt")
 
 			if ok {
 

@@ -1,8 +1,8 @@
 package save
 
 import (
+	"github.com/thalesfu/golangutils"
 	"github.com/thalesfu/paradoxtools/CK2/localisation"
-	"github.com/thalesfu/paradoxtools/utils"
 	"github.com/thalesfu/paradoxtools/utils/pserialize"
 	"time"
 )
@@ -97,7 +97,7 @@ type TitleHistoryHolder struct {
 
 func LoadTitles(path string, savePath string) (map[string]*Title, bool) {
 
-	content, ok := utils.LoadContent(savePath)
+	content, ok := golangutils.LoadContent(savePath)
 
 	if !ok {
 		return nil, false

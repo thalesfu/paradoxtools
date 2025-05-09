@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/thalesfu/golangutils"
 	"github.com/thalesfu/paradoxtools/CK2/building"
-	"github.com/thalesfu/paradoxtools/utils"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"os"
@@ -65,7 +65,7 @@ func buildBuildingField(dir string) {
 		if strings.HasSuffix(filename, ".txt") {
 			filepath := filepath.Join(building_dir, filename)
 
-			content, ok := utils.LoadContent(filepath)
+			content, ok := golangutils.LoadContent(filepath)
 
 			if ok {
 				lines := strings.Split(content, "\n")
@@ -175,5 +175,5 @@ func buildBuildingField(dir string) {
 		}
 	}
 
-	utils.WriteContent("logs/building_fields.txt", boolFieldsContent+stringFieldsContent+float32FieldsContent+intFieldsContent+structFieldsContent)
+	golangutils.WriteContent("logs/building_fields.txt", boolFieldsContent+stringFieldsContent+float32FieldsContent+intFieldsContent+structFieldsContent)
 }

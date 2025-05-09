@@ -1,7 +1,7 @@
 package hoi3
 
 import (
-	"github.com/thalesfu/paradoxtools/utils"
+	"github.com/thalesfu/golangutils"
 	"path"
 	"regexp"
 )
@@ -33,7 +33,7 @@ func LoadRegion(fileLocation *FileLocation, localisation map[string]string) map[
 }
 
 func LoadRegionsFromFile(regionPath string, regions map[string]*Region) {
-	content, ok := utils.LoadContent(regionPath)
+	content, ok := golangutils.LoadContent(regionPath)
 	if ok {
 		// 查找匹配项
 		matches := regionRegex.FindAllStringSubmatch(content, -1)

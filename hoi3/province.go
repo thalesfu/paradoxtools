@@ -3,8 +3,8 @@ package hoi3
 import (
 	"fmt"
 	"github.com/samber/lo"
+	"github.com/thalesfu/golangutils"
 	"github.com/thalesfu/paradoxtools/hoi3/save"
-	"github.com/thalesfu/paradoxtools/utils"
 	"image"
 	"image/color"
 	"os"
@@ -70,7 +70,7 @@ func LoadProvinces(fileLocation *FileLocation, localisation map[string]string) (
 func loadProvinceTerrain(location *FileLocation, provinces map[string]*Province) {
 	terrainMap := loadTerrainMap(location)
 
-	terrainMap = utils.VerticalFlip(terrainMap)
+	terrainMap = golangutils.VerticalFlip(terrainMap)
 
 	for _, province := range provinces {
 		loadTerrainFromMap(province, terrainMap)
@@ -568,17 +568,17 @@ func getTerrainFromColor(countColor color.RGBA) string {
 
 func loadTerrainMap(fileLocation *FileLocation) image.Image {
 	const ProvinceMapPath = "map/terrain.bmp"
-	bmp, ok := utils.LoadBmpFile(path.Join(fileLocation.ModDirectory, ProvinceMapPath))
+	bmp, ok := golangutils.LoadBmpFile(path.Join(fileLocation.ModDirectory, ProvinceMapPath))
 	if ok {
 		return bmp
 	}
 
-	bmp, ok = utils.LoadBmpFile(path.Join(fileLocation.DLCDirectory, ProvinceMapPath))
+	bmp, ok = golangutils.LoadBmpFile(path.Join(fileLocation.DLCDirectory, ProvinceMapPath))
 	if ok {
 		return bmp
 	}
 
-	bmp, ok = utils.LoadBmpFile(path.Join(fileLocation.BaseDirectory, ProvinceMapPath))
+	bmp, ok = golangutils.LoadBmpFile(path.Join(fileLocation.BaseDirectory, ProvinceMapPath))
 	if ok {
 		return bmp
 	}
@@ -588,17 +588,17 @@ func loadTerrainMap(fileLocation *FileLocation) image.Image {
 
 func loadProvincesFromMap(fileLocation *FileLocation) map[string]*Province {
 	const MapDefinePath = "map/definition.csv"
-	content, ok := utils.LoadContent(path.Join(fileLocation.ModDirectory, MapDefinePath))
+	content, ok := golangutils.LoadContent(path.Join(fileLocation.ModDirectory, MapDefinePath))
 	if ok {
 		return generateProvinceFromMapDefineContent(content)
 	}
 
-	content, ok = utils.LoadContent(path.Join(fileLocation.DLCDirectory, MapDefinePath))
+	content, ok = golangutils.LoadContent(path.Join(fileLocation.DLCDirectory, MapDefinePath))
 	if ok {
 		return generateProvinceFromMapDefineContent(content)
 	}
 
-	content, ok = utils.LoadContent(path.Join(fileLocation.BaseDirectory, MapDefinePath))
+	content, ok = golangutils.LoadContent(path.Join(fileLocation.BaseDirectory, MapDefinePath))
 	if ok {
 		return generateProvinceFromMapDefineContent(content)
 	}
@@ -754,7 +754,7 @@ func loadProvincePolygons(fileLocation *FileLocation, provinces map[string]*Prov
 		return provinces, 0, 0
 	}
 
-	mapBmp = utils.VerticalFlip(mapBmp)
+	mapBmp = golangutils.VerticalFlip(mapBmp)
 
 	bounds := mapBmp.Bounds()
 	width, height := bounds.Max.X, bounds.Max.Y
@@ -773,17 +773,17 @@ func loadProvincePolygons(fileLocation *FileLocation, provinces map[string]*Prov
 
 func loadProvinceMap(fileLocation *FileLocation) image.Image {
 	const ProvinceMapPath = "map/provinces.bmp"
-	bmp, ok := utils.LoadBmpFile(path.Join(fileLocation.ModDirectory, ProvinceMapPath))
+	bmp, ok := golangutils.LoadBmpFile(path.Join(fileLocation.ModDirectory, ProvinceMapPath))
 	if ok {
 		return bmp
 	}
 
-	bmp, ok = utils.LoadBmpFile(path.Join(fileLocation.DLCDirectory, ProvinceMapPath))
+	bmp, ok = golangutils.LoadBmpFile(path.Join(fileLocation.DLCDirectory, ProvinceMapPath))
 	if ok {
 		return bmp
 	}
 
-	bmp, ok = utils.LoadBmpFile(path.Join(fileLocation.BaseDirectory, ProvinceMapPath))
+	bmp, ok = golangutils.LoadBmpFile(path.Join(fileLocation.BaseDirectory, ProvinceMapPath))
 	if ok {
 		return bmp
 	}
@@ -990,7 +990,7 @@ func loadProvinceDataFromSingleFile(path string, province *Province) {
 	//}
 
 	rest := false
-	content, ok := utils.LoadContent(path)
+	content, ok := golangutils.LoadContent(path)
 	if !ok {
 		return
 	}

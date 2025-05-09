@@ -8,7 +8,7 @@ import (
 
 func main() {
 	outputSVG := "/Users/thalesfu/Documents/My Games/HOI3/province-map-01.svg"
-	saveFilePath := "/Users/thalesfu/Documents/Paradox Interactive/Hearts of Iron III/ChineseLeaders/save games/CHI1938_08_02_01.hoi3"
+	saveFilePath := "/Users/thalesfu/Documents/Paradox Interactive/Hearts of Iron III/ChineseLeadersEN/save games/Nationalist_China1935_08_28_20.hoi3"
 
 	world := hoi3.NewWorld(saveFilePath)
 

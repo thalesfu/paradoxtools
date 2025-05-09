@@ -2,7 +2,7 @@ package hoi3
 
 import (
 	"fmt"
-	"github.com/thalesfu/paradoxtools/utils"
+	"github.com/thalesfu/golangutils"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"os"
 	"path/filepath"
@@ -34,7 +34,7 @@ func LoadLocalisationFromDirect(localisationPath string, localisation map[string
 			return nil
 		}
 
-		content, ok := utils.LoadContentWithEncoding(path, simplifiedchinese.GB18030)
+		content, ok := golangutils.LoadContentWithEncoding(path, simplifiedchinese.GB18030)
 		if ok {
 			loadLocalisationFromContent(content, localisation)
 		}

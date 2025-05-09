@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/thalesfu/golangutils"
 	"github.com/thalesfu/paradoxtools/hoi3/save"
-	"github.com/thalesfu/paradoxtools/utils"
 	"github.com/thalesfu/paradoxtools/utils/pserialize"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"regexp"
@@ -11,12 +11,12 @@ import (
 
 func main() {
 
-	content, ok := utils.LoadContentWithEncoding("/Users/thalesfu/Documents/Paradox Interactive/Hearts of Iron III/ChineseLeaders/save games/CHI1934_07_13_14.hoi3", simplifiedchinese.GB18030)
+	content, ok := golangutils.LoadContentWithEncoding("/Users/thalesfu/Documents/Paradox Interactive/Hearts of Iron III/ChineseLeaders/save games/CHI1934_07_13_14.hoi3", simplifiedchinese.GB18030)
 
 	saveFile, ok := pserialize.UnmarshalP[save.SaveFile](content)
 
 	if ok {
-		fmt.Println(utils.MarshalJSON(saveFile))
+		fmt.Println(golangutils.MarshalJSON(saveFile))
 	}
 
 	for k, v := range saveFile.Provinces {

@@ -2,8 +2,8 @@ package culture
 
 import (
 	"fmt"
+	"github.com/thalesfu/golangutils"
 	"github.com/thalesfu/paradoxtools/CK2/localisation"
-	"github.com/thalesfu/paradoxtools/utils"
 	"github.com/thalesfu/paradoxtools/utils/pserialize"
 	"os"
 	"path/filepath"
@@ -56,7 +56,7 @@ func LoadAllCultures(path string) map[string]*CultureGroup {
 		if strings.HasSuffix(filename, ".txt") {
 			filepath := filepath.Join(culturePath, filename)
 
-			content, ok := utils.LoadContent(filepath)
+			content, ok := golangutils.LoadContent(filepath)
 
 			if ok {
 				ts, o := pserialize.UnmarshalP[map[string]*CultureGroup](content)
